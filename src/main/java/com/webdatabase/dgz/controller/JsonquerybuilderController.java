@@ -19,13 +19,12 @@ import com.webdatabase.dgz.query.utils.SearchCriteria;
 import com.webdatabase.dgz.query.utils.SearchQuery;
 import com.webdatabase.dgz.service.QueryBuilderService;
 
-
 @RestController
 @RequestMapping("/data-api/query")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class JsonquerybuilderController {
 
-
+//dssdsds
     
     @Autowired
     private QueryBuilderService queryApi;

@@ -24,6 +24,7 @@ import com.webdatabase.dgz.service.QueryBuilderService;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class JsonquerybuilderController {
 
+	
     @Autowired
     private QueryBuilderService queryApi;
     

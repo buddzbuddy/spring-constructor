@@ -1,5 +1,6 @@
 package com.webdatabase.dgz.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -14,11 +15,14 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.webdatabase.dgz.model.base.AuditModel;
+import com.webdatabase.dgz.query.utils.IsMetaClass;
+import com.webdatabase.dgz.query.utils.MetaFieldName;
 
 @Entity
 @Table(name = "appeals")
+@IsMetaClass(label = "Обращение")
 public class Appeal extends AuditModel{
-
+	@MetaFieldName(label = "ID")
 	@Id
     @GeneratedValue(generator = "appeal_generator")
     @SequenceGenerator(
@@ -27,24 +31,17 @@ public class Appeal extends AuditModel{
             initialValue = 1000,
             allocationSize = 1
     )
-	
 	private Long id;
 	
+	@MetaFieldName(label = "Описание")
 	private String description;
 	
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "supplier_id", nullable = true)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonIgnore
-	private Supplier supplier;
+	/*
+	@MetaFieldName(label = "Закупающая организация", selectClassName = "ProcuringEntity")
+	@Column(name="procuring_entity_id", nullable=true)
+	private Long procuringEntity;
 	
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "procuring_entity_id", nullable = true)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonIgnore
-	private ProcuringEntity procuringEntity;
-
-	
+	*/
 	
 	public Long getId() {
 		return id;
@@ -61,22 +58,14 @@ public class Appeal extends AuditModel{
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
-	public Supplier getSupplier() {
-		return supplier;
-	}
-
-	public void setSupplier(Supplier supplier) {
-		this.supplier = supplier;
-	}
-
-	public ProcuringEntity getProcuring_entity() {
+	/*
+	public Long getProcuring_entity() {
 		return procuringEntity;
 	}
 
-	public void setProcuring_entity(ProcuringEntity procuringEntity) {
+	public void setProcuring_entity(Long procuringEntity) {
 		this.procuringEntity = procuringEntity;
 	}
-	
+	*/
 	
 }

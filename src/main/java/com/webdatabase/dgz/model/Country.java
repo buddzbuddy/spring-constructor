@@ -11,12 +11,14 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import com.webdatabase.dgz.model.base.AuditModel;
+import com.webdatabase.dgz.query.utils.IsMetaClass;
+import com.webdatabase.dgz.query.utils.MetaFieldName;
 
 @Entity
 @Table(name = "countries")
+@IsMetaClass(label = "Страна")
 public class Country extends AuditModel {
-	
-	
+	@MetaFieldName(label = "ID")
 	@Id
     @GeneratedValue(
     	generator = "country_generator"
@@ -29,7 +31,8 @@ public class Country extends AuditModel {
             allocationSize = 1
     )
     private Long id;
-
+	
+	@MetaFieldName(label = "Наименование страны")
 	@Column(name = "name")
     private String name;
 

@@ -3,6 +3,7 @@ package com.webdatabase.dgz.model;
 import java.util.Date;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -17,12 +18,16 @@ import org.springframework.lang.Nullable;
 
 import com.webdatabase.dgz.model.Supplier;
 import com.webdatabase.dgz.model.base.AuditModel;
+import com.webdatabase.dgz.query.utils.IsMetaClass;
+import com.webdatabase.dgz.query.utils.MetaFieldName;
 
 
 @Entity
 @Table (name = "supplier_members")
+@IsMetaClass(label = "Члены поставщика")
 public class SupplierMember extends AuditModel {
-
+	
+	@MetaFieldName(label = "ID")
 	@Id
     @GeneratedValue(generator = "supplier_member_generator",
     		strategy = GenerationType.SEQUENCE)
@@ -33,69 +38,96 @@ public class SupplierMember extends AuditModel {
             allocationSize = 1
     )
 	
-	
 	private Long id;
 	
-	private MemberType memberType;
+	/*
+	@MetaFieldName(label = "Тип члена", selectClassName = "MemberType")
+	@Column(name = "member_type_id", nullable = true)
+	private Long member_typeId;
+	*/
 	
-	private Supplier Supplier;
-	
+	@MetaFieldName(label = "ПИН")
 	private String pin;
 	
+	@MetaFieldName(label = "ИНН")
 	private String inn;
 	
+	@MetaFieldName(label = "Фамилия")
 	private String surname;
 	
+	@MetaFieldName(label = "Имя")
 	private String name;
 	
+	@MetaFieldName(label = "Отчество")
 	private String patronymic;
 	
+	@MetaFieldName(label = "Национальность")
 	private String nationality;
 	
+	@MetaFieldName(label = "Дата рождения")
 	private Date dateOfBirth;
 	
+	@MetaFieldName(label = "Серия паспорта")
 	private String passportSeries;
 	
+	@MetaFieldName(label = "Номер паспорта")
 	private String passportNumber;
 	
+	@MetaFieldName(label = "Паспортный орган")
 	private String passportAuthority;
 	
+	@MetaFieldName(label = "Дата выпуска")
 	private Date issuedDate;
 	
+	@MetaFieldName(label = "Дата истечения срока")
 	private Date expiredDate;
 	
+	@MetaFieldName(label = "Недействительный статус" )
 	private int voidStatus;
 	
+	@MetaFieldName(label = "Семейное положение")
 	private int familyStatus;
 	
+	@MetaFieldName(label = "Пол")
 	private String gender;
 	
+	@MetaFieldName(label = "Регион")
 	private String addressRegion;
 	
+	@MetaFieldName(label = "Населенный пункт")
 	private String addressLocality;
 	
+	@MetaFieldName(label = "Улица")
 	private String addressStreet;
 	
+	@MetaFieldName(label = "Дом")
 	private String addressHouse;
 	
+	@MetaFieldName(label = "ID региона")
 	@Nullable
 	private int regionId;
 	
+	@MetaFieldName(label = "ID района")
 	@Nullable
 	private int districtId;
 	
+	@MetaFieldName(label = "ID области")
 	@Nullable
 	private int areaId;
 	
+	@MetaFieldName(label = "ID подрайона")
 	@Nullable
 	private int subareaId;
 	
+	@MetaFieldName(label = "ID улицы")
 	@Nullable
 	private int streetId;
 	
+	@MetaFieldName(label = "ID дома")
 	@Nullable
 	private int houseId;
 	
+	@MetaFieldName(label = "ID типа поставщика")
 	@Nullable
 	private int memberTypeId;
 	
@@ -315,23 +347,16 @@ public class SupplierMember extends AuditModel {
 	public void setMemberTypeId(int memberTypeId) {
 		this.memberTypeId = memberTypeId;
 	}
-
-	public MemberType getMember_type() {
-		return memberType;
-	}
-
-	public void setMember_type(MemberType memberType) {
-		this.memberType = memberType;
-	}
-
-	public Supplier getSupplier() {
-		return Supplier;
-	}
-
-	public void setSupplier(Supplier supplier) {
-		Supplier = supplier;
-	}
 	
+	/*
+	public Long getMember_type() {
+		return member_typeId;
+	}
+
+	public void setMember_type(Long member_typeId) {
+		this.member_typeId = member_typeId;
+	}
+	*/
 	
 	
 }

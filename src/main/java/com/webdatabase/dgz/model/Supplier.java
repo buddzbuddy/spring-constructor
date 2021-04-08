@@ -41,15 +41,18 @@ public class Supplier extends AuditModel {
 
 	@MetaFieldName(label = "Наименование поставщика")
 	private String name;
-
+	
+	/*
 	@MetaFieldName(label = "Форма собственности", selectClassName = "OwnershipType")
 	@Column(name="ownership_type_id", nullable=true)
 	private Long ownershipTypeId;
+	*/
 	
-
+	/*
 	@MetaFieldName(label = "Отрасль", selectClassName = "Industry")
 	@Column(name="industry_id", nullable=true)
 	private Long industryId;
+	*/
 
 	@MetaFieldName(label = "ИНН")
 	private String inn;
@@ -91,7 +94,15 @@ public class Supplier extends AuditModel {
 	@JoinColumn(name = "supplier_id", nullable = true)
 	private Set<License> licenses;
 	
+	@OneToMany(fetch = FetchType.LAZY)
+	@JoinColumn(name = "supplier_id", nullable = true)
+	private Set<SupplierMember> supplierMembers;
+	
+	@OneToMany(fetch = FetchType.LAZY)
+	@JoinColumn(name = "supplier_id", nullable = true)
+	private Set<Appeal> appeals;
 
+	
 	public Long getId() {
 		return id;
 	}
@@ -196,7 +207,8 @@ public class Supplier extends AuditModel {
 	public void setIsBlack(Boolean isBlack) {
 		this.isBlack = isBlack;
 	}
-
+	
+	/*
 	public Long getOwnershipTypeId() {
 		return ownershipTypeId;
 	}
@@ -212,7 +224,8 @@ public class Supplier extends AuditModel {
 	public void setIndustryId(Long industryId) {
 		this.industryId = industryId;
 	}
-
+	*/
+	
 	public Set<License> getLicenses() {
 		return licenses;
 	}
@@ -220,4 +233,21 @@ public class Supplier extends AuditModel {
 	public void setLicenses(Set<License> licenses) {
 		this.licenses = licenses;
 	}
+	
+	public Set<Appeal> getAppeals() {
+		return appeals;
+	}
+
+	public void setAppeals(Set<Appeal> appeals) {
+		this.appeals = appeals;
+	}
+
+	public Set<SupplierMember> getSupplierMembers() {
+		return supplierMembers;
+	}
+
+	public void setSupplierMembers(Set<SupplierMember> supplierMembers) {
+		this.supplierMembers = supplierMembers;
+	}
+
 }

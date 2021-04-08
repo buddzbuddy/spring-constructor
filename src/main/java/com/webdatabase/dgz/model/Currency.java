@@ -9,11 +9,14 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import com.webdatabase.dgz.model.base.AuditModel;
+import com.webdatabase.dgz.query.utils.IsMetaClass;
+import com.webdatabase.dgz.query.utils.MetaFieldName;
 
 @Entity
 @Table(name = "currencies")
+@IsMetaClass(label = "Валюта")
 public class Currency extends AuditModel {
-
+	@MetaFieldName(label = "ID")
 	@Id
     @GeneratedValue(generator = "currency_generator")
     @SequenceGenerator(
@@ -23,7 +26,8 @@ public class Currency extends AuditModel {
             allocationSize = 1
     )
     private Long id;
-
+	
+	@MetaFieldName(label = "Наименование валюты")
     private String name;
 
 	public Long getId() {

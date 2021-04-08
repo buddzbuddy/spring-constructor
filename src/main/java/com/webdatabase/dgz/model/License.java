@@ -3,20 +3,13 @@ package com.webdatabase.dgz.model;
 import java.util.Date;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.lang.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.webdatabase.dgz.model.base.AuditModel;
 import com.webdatabase.dgz.query.utils.IsMetaClass;
 import com.webdatabase.dgz.query.utils.MetaFieldName;
@@ -25,7 +18,8 @@ import com.webdatabase.dgz.query.utils.MetaFieldName;
 @Table(name = "license")
 @IsMetaClass(label = "Лицензия")
 public class License extends AuditModel{
-
+	
+	@MetaFieldName(label = "ID")
 	@Id
     @GeneratedValue(generator = "license_generator")
     @SequenceGenerator(
@@ -34,24 +28,31 @@ public class License extends AuditModel{
             initialValue = 1000,
             allocationSize = 1
     )
-	
 	private Long id;
 	
+	@MetaFieldName(label = "Эмитент")
 	private String issuer;
 	
+	@MetaFieldName(label = "Номер")
 	private String no;
 	
+	@MetaFieldName(label = "Дата выпуска")
 	@Nullable
 	private Date issueDate;
 	
+	
+	/*
 	@MetaFieldName(label = "Тип лицензии", selectClassName = "LicenseType")
 	private Long license_type_id;
-	
+	*/
+	@MetaFieldName(label = "Срок действия")
 	@Nullable
 	private Date expiryDate;
 	
+	@MetaFieldName(label = "Статус")
 	private String status;
 	
+	@MetaFieldName(label = "Дополнительная информация")
 	private String additionalInfo;
 
 	public Long getId() {
@@ -109,7 +110,7 @@ public class License extends AuditModel{
 	public void setAdditionalInfo(String additionalInfo) {
 		this.additionalInfo = additionalInfo;
 	}
-
+	/*
 	public Long getLicense_type_id() {
 		return license_type_id;
 	}
@@ -117,4 +118,5 @@ public class License extends AuditModel{
 	public void setLicense_type_id(Long license_type_id) {
 		this.license_type_id = license_type_id;
 	}
+	*/
 }

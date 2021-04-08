@@ -7,11 +7,14 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.webdatabase.dgz.model.base.AuditModel;
+import com.webdatabase.dgz.query.utils.IsMetaClass;
+import com.webdatabase.dgz.query.utils.MetaFieldName;
 
 @Entity
 @Table(name = "audit_method_types")
+@IsMetaClass(label = "Тип метода аудита")
 public class AuditMethodType extends AuditModel{
-
+	@MetaFieldName(label = "ID")
 	@Id
     @GeneratedValue(generator = "audit_method_type_generator")
     @SequenceGenerator(
@@ -22,8 +25,10 @@ public class AuditMethodType extends AuditModel{
     )
 	private Long id;
 	
+	@MetaFieldName(label = "Код")
 	private String code;
 	
+	@MetaFieldName(label = "Наименование типа методов аудита")
 	private String name;
 	
 	public Long getId() {

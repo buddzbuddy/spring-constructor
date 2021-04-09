@@ -42,17 +42,17 @@ public class Supplier extends AuditModel {
 	@MetaFieldName(label = "Наименование поставщика")
 	private String name;
 	
-	/*
+	
 	@MetaFieldName(label = "Форма собственности", selectClassName = "OwnershipType")
 	@Column(name="ownership_type_id", nullable=true)
 	private Long ownershipTypeId;
-	*/
 	
-	/*
+	
+	
 	@MetaFieldName(label = "Отрасль", selectClassName = "Industry")
 	@Column(name="industry_id", nullable=true)
 	private Long industryId;
-	*/
+	
 
 	@MetaFieldName(label = "ИНН")
 	private String inn;
@@ -208,7 +208,7 @@ public class Supplier extends AuditModel {
 		this.isBlack = isBlack;
 	}
 	
-	/*
+	
 	public Long getOwnershipTypeId() {
 		return ownershipTypeId;
 	}
@@ -224,7 +224,7 @@ public class Supplier extends AuditModel {
 	public void setIndustryId(Long industryId) {
 		this.industryId = industryId;
 	}
-	*/
+	
 	
 	public Set<License> getLicenses() {
 		return licenses;

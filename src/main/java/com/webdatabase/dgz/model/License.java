@@ -2,6 +2,7 @@ package com.webdatabase.dgz.model;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -40,11 +41,14 @@ public class License extends AuditModel{
 	@Nullable
 	private Date issueDate;
 	
+	@MetaFieldName(label = "Поставщик", selectClassName = "Supplier")
+	@Column(name = "supplier_id", nullable = true)
+	private Long supplierId;
 	
-	/*
 	@MetaFieldName(label = "Тип лицензии", selectClassName = "LicenseType")
-	private Long license_type_id;
-	*/
+	@Column(name = "license_type_id", nullable = true)
+	private Long license_typeId;
+	
 	@MetaFieldName(label = "Срок действия")
 	@Nullable
 	private Date expiryDate;
@@ -110,13 +114,21 @@ public class License extends AuditModel{
 	public void setAdditionalInfo(String additionalInfo) {
 		this.additionalInfo = additionalInfo;
 	}
-	/*
-	public Long getLicense_type_id() {
-		return license_type_id;
+	
+	public Long getLicense_typeId() {
+		return license_typeId;
 	}
 
-	public void setLicense_type_id(Long license_type_id) {
-		this.license_type_id = license_type_id;
+	public void setLicense_typeId(Long license_type_id) {
+		this.license_typeId = license_type_id;
 	}
-	*/
+
+	public Long getSupplierId() {
+		return supplierId;
+	}
+
+	public void setSupplierId(Long supplierId) {
+		this.supplierId = supplierId;
+	}
+	
 }

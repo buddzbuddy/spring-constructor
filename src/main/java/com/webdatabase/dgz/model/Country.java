@@ -20,16 +20,7 @@ import com.webdatabase.dgz.query.utils.MetaFieldName;
 public class Country extends AuditModel {
 	@MetaFieldName(label = "ID")
 	@Id
-    @GeneratedValue(
-    	generator = "country_generator"
-    	
-    )
-    @SequenceGenerator(
-            name = "country_generator",
-            sequenceName = "country_sequence",
-            initialValue = 1000,
-            allocationSize = 1
-    )
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 	
 	@MetaFieldName(label = "Наименование страны")

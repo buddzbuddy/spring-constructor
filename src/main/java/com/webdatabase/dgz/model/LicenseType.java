@@ -5,6 +5,7 @@ import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
@@ -21,22 +22,17 @@ import com.webdatabase.dgz.query.utils.MetaFieldName;
 public class LicenseType extends AuditModel{
 	@MetaFieldName(label = "ID")
 	@Id
-    @GeneratedValue(generator = "license_type_generator")
-    @SequenceGenerator(
-            name = "license_type_generator",
-            sequenceName = "license_type_sequence",
-            initialValue = 1000,
-            allocationSize = 1
-    )
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
 	@MetaFieldName(label = "Наименование типа лицензии")
 	private String name;
 	
+	/*
 	@OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "license_type_id", nullable = true)
 	private Set<License> licenses;
-	
+	*/
 	public Long getId() {
 		return id;
 	}
@@ -52,7 +48,7 @@ public class LicenseType extends AuditModel{
 	public void setName(String name) {
 		this.name = name;
 	}
-
+	/*
 	public Set<License> getLicenses() {
 		return licenses;
 	}
@@ -60,5 +56,5 @@ public class LicenseType extends AuditModel{
 	public void setLicenses(Set<License> licenses) {
 		this.licenses = licenses;
 	}
-	
+	*/
 }

@@ -29,15 +29,7 @@ public class SupplierMember extends AuditModel {
 	
 	@MetaFieldName(label = "ID")
 	@Id
-    @GeneratedValue(generator = "supplier_member_generator",
-    		strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(
-            name = "supplier_member_generator",
-            sequenceName = "supplier_member_sequence",
-            initialValue = 1000,
-            allocationSize = 1
-    )
-	
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
 	
@@ -85,7 +77,7 @@ public class SupplierMember extends AuditModel {
 	@MetaFieldName(label = "Дата истечения срока")
 	private Date expiredDate;
 	
-	@MetaFieldName(label = "Недействительный статус" )
+	@MetaFieldName(label = "Статус недействительности" )
 	private int voidStatus;
 	
 	@MetaFieldName(label = "Семейное положение")

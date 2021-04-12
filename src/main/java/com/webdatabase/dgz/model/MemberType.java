@@ -5,6 +5,7 @@ import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
@@ -21,22 +22,16 @@ import com.webdatabase.dgz.query.utils.MetaFieldName;
 public class MemberType extends AuditModel{
 	@MetaFieldName(label = "ID")
 	@Id
-    @GeneratedValue(generator = "member_type_generator")
-    @SequenceGenerator(
-            name = "member_type_generator",
-            sequenceName = "member_type_sequence",
-            initialValue = 1000,
-            allocationSize = 1
-    )
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
 	@MetaFieldName(label = "Наименование типа члена")
 	private String name;
-
+	/*
 	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_type_id", nullable = true)
 	private Set<SupplierMember> supplierMembers;
-	
+	*/
 	public Long getId() {
 		return id;
 	}
@@ -52,7 +47,7 @@ public class MemberType extends AuditModel{
 	public void setName(String name) {
 		this.name = name;
 	}
-
+	/*
 	public Set<SupplierMember> getSupplierMembers() {
 		return supplierMembers;
 	}
@@ -60,4 +55,5 @@ public class MemberType extends AuditModel{
 	public void setSupplierMembers(Set<SupplierMember> supplierMembers) {
 		this.supplierMembers = supplierMembers;
 	}
+	*/
 }

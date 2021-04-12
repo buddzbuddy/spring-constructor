@@ -5,6 +5,7 @@ import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -22,13 +23,7 @@ import com.webdatabase.dgz.query.utils.MetaFieldName;
 public class ProcuringEntity extends AuditModel {
 	@MetaFieldName(label = "ID")
 	@Id
-    @GeneratedValue(generator = "procuring_entity_generator")
-    @SequenceGenerator(
-            name = "procuring_entity_generator",
-            sequenceName = "procuring_entity_sequence",
-            initialValue = 1000,
-            allocationSize = 1
-    )
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 	
 	@MetaFieldName(label = "ИНН")
@@ -42,6 +37,7 @@ public class ProcuringEntity extends AuditModel {
 	
 	@MetaFieldName(label = "Контактные данные")
 	private String contactData;
+	/*
 	
 	@OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "license_type_id", nullable = true)
@@ -51,6 +47,7 @@ public class ProcuringEntity extends AuditModel {
 	@JoinColumn(name = "procuring_entity_id", nullable = true)
 	private Set<Appeal> appeals;
 	
+	*/
 	public Long getId() {
 		return id;
 	}
@@ -90,7 +87,8 @@ public class ProcuringEntity extends AuditModel {
 	public void setContactData(String contactData) {
 		this.contactData = contactData;
 	}
-
+	
+	/*
 	public Set<LicenseType> getLicenseTypes() {
 		return licenseTypes;
 	}
@@ -106,4 +104,5 @@ public class ProcuringEntity extends AuditModel {
 	public void setAppeals(Set<Appeal> appeals) {
 		this.appeals = appeals;
 	}
+	*/
 }

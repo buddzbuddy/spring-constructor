@@ -2,6 +2,7 @@ package com.webdatabase.dgz.model;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -16,13 +17,7 @@ import com.webdatabase.dgz.query.utils.MetaFieldName;
 public class AuditMethodType extends AuditModel{
 	@MetaFieldName(label = "ID")
 	@Id
-    @GeneratedValue(generator = "audit_method_type_generator")
-    @SequenceGenerator(
-            name = "audit_method_type_generator",
-            sequenceName = "audit_method_type_sequence",
-            initialValue = 1000,
-            allocationSize = 1
-    )
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
 	@MetaFieldName(label = "Код")

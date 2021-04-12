@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -22,13 +23,7 @@ public class License extends AuditModel{
 	
 	@MetaFieldName(label = "ID")
 	@Id
-    @GeneratedValue(generator = "license_generator")
-    @SequenceGenerator(
-            name = "license_generator",
-            sequenceName = "license_sequence",
-            initialValue = 1000,
-            allocationSize = 1
-    )
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
 	@MetaFieldName(label = "Эмитент")

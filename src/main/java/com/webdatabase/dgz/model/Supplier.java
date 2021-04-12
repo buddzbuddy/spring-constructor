@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -30,13 +31,7 @@ public class Supplier extends AuditModel {
 	
 	@MetaFieldName(label = "ID")
 	@Id
-    @GeneratedValue(generator = "supplier_generator")
-    @SequenceGenerator(
-            name = "supplier_generator",
-            sequenceName = "supplier_sequence",
-            initialValue = 1000,
-            allocationSize = 1
-    )
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 
 	@MetaFieldName(label = "Наименование поставщика")
@@ -89,7 +84,7 @@ public class Supplier extends AuditModel {
 	@MetaFieldName(label = "В черном списке (да/нет)")
 	private Boolean isBlack;
 	
-	
+	/*
 	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name = "supplier_id", nullable = true)
 	private Set<License> licenses;
@@ -101,7 +96,7 @@ public class Supplier extends AuditModel {
 	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name = "supplier_id", nullable = true)
 	private Set<Appeal> appeals;
-
+	*/
 	
 	public Long getId() {
 		return id;
@@ -225,7 +220,7 @@ public class Supplier extends AuditModel {
 		this.industryId = industryId;
 	}
 	
-	
+	/*
 	public Set<License> getLicenses() {
 		return licenses;
 	}
@@ -249,5 +244,5 @@ public class Supplier extends AuditModel {
 	public void setSupplierMembers(Set<SupplierMember> supplierMembers) {
 		this.supplierMembers = supplierMembers;
 	}
-
+	*/
 }

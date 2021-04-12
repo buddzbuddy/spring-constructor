@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -24,13 +25,7 @@ import com.webdatabase.dgz.query.utils.MetaFieldName;
 public class Appeal extends AuditModel{
 	@MetaFieldName(label = "ID")
 	@Id
-    @GeneratedValue(generator = "appeal_generator")
-    @SequenceGenerator(
-            name = "appeal_generator",
-            sequenceName = "appeal_sequence",
-            initialValue = 1000,
-            allocationSize = 1
-    )
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
 	@MetaFieldName(label = "Описание")

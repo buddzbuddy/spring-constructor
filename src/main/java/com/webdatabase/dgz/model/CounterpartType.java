@@ -11,16 +11,17 @@ import com.webdatabase.dgz.query.utils.IsMetaClass;
 import com.webdatabase.dgz.query.utils.MetaFieldName;
 
 @Entity
-@Table(name = "currencies")
-@IsMetaClass(label = "Валюта")
-public class Currency extends AuditModel {
+@Table(name = "counterpart_types")
+@IsMetaClass(label = "Тип партнера")
+public class CounterpartType extends AuditModel {
+	
 	@MetaFieldName(label = "ID")
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Long id;
+	private Long id;
 	
-	@MetaFieldName(label = "Наименование валюты")
-    private String name;
+	@MetaFieldName(label = "Наименовани типа партнера")
+	private String name;
 
 	public Long getId() {
 		return id;

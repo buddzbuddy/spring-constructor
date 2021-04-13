@@ -11,9 +11,10 @@ import com.webdatabase.dgz.query.utils.IsMetaClass;
 import com.webdatabase.dgz.query.utils.MetaFieldName;
 
 @Entity
-@Table(name = "audit_method_types")
-@IsMetaClass(label = "Тип метода аудита")
-public class AuditMethodType extends AuditModel{
+@Table (name = "taxe_codes")
+@IsMetaClass(label = "Налоговый кодекс")
+public class Taxe_code extends AuditModel{
+	
 	@MetaFieldName(label = "ID")
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -22,13 +23,15 @@ public class AuditMethodType extends AuditModel{
 	@MetaFieldName(label = "Код")
 	private String code;
 	
-	@MetaFieldName(label = "Наименование типа методов аудита")
+	@MetaFieldName(label = "Наименование налогового кодекса")
 	private String name;
+	
+	@MetaFieldName(label = "Название детализации")
+	private String detailName;
 	
 	public Long getId() {
 		return id;
 	}
-	
 	public void setId(Long id) {
 		this.id = id;
 	}
@@ -48,5 +51,14 @@ public class AuditMethodType extends AuditModel{
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	public String getDetailName() {
+		return detailName;
+	}
+
+	public void setDetailName(String detailName) {
+		this.detailName = detailName;
+	}
+	
 	
 }

@@ -46,6 +46,7 @@ public class Tpb_usiness_activity_date_by_inn_response extends AuditModel{
 	@MetaFieldName(label = "Банка")
 	private String tin;
 	
+	
 	public void setId(Long id) {
 		this.id = id;
 	}

@@ -25,7 +25,7 @@ public class Pension_info extends AuditModel{
 	@Column(name = "supplier_member_id", nullable = true)
 	private Long supplier_member;
 	
-    @MetaFieldName(label = "Rusf")
+    @MetaFieldName(label = "РУСФ")
 	private String rusf;
 	
     @MetaFieldName(label = "Номер досье")
@@ -41,12 +41,12 @@ public class Pension_info extends AuditModel{
 	private String dateFromInitial;
 	
     @MetaFieldName(label = "Сумма")
-	private String sum;
+	private String summa;
 	
     @MetaFieldName(label = "Вид пенсии")
 	private String kindOfPension;
 	
-    @MetaFieldName(label = "Категория пенсия")
+    @MetaFieldName(label = "Категории пенсии")
 	private String categoryPension;
 
 	public Long getId() {
@@ -105,12 +105,12 @@ public class Pension_info extends AuditModel{
 		this.dateFromInitial = dateFromInitial;
 	}
 
-	public String getSum() {
-		return sum;
+	public String getSumma() {
+		return summa;
 	}
 
-	public void setSum(String sum) {
-		this.sum = sum;
+	public void setSumma(String sum) {
+		this.summa = sum;
 	}
 
 	public String getKindOfPension() {

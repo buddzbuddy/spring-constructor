@@ -18,7 +18,7 @@ public class Tp_data_by_inn_for_business_activity_response extends AuditModel {
 	@MetaFieldName(label = "ID")
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Long id;
+	private long id;
 	
 	@MetaFieldName(label = "ИНН")
 	private String inn;
@@ -37,10 +37,10 @@ public class Tp_data_by_inn_for_business_activity_response extends AuditModel {
 	
 	
 	
-	public Long getId() {
+	public long getId() {
 		return id;
 	}
-	public void setId(Long id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 

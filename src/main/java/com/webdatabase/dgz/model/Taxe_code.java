@@ -18,7 +18,7 @@ public class Taxe_code extends AuditModel{
 	@MetaFieldName(label = "ID")
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Long id;
+	private long id;
 	
 	@MetaFieldName(label = "Код")
 	private String code;
@@ -29,10 +29,10 @@ public class Taxe_code extends AuditModel{
 	@MetaFieldName(label = "Название детализации")
 	private String detailName;
 	
-	public Long getId() {
+	public long getId() {
 		return id;
 	}
-	public void setId(Long id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 

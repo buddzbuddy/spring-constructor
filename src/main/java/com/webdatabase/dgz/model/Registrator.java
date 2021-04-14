@@ -20,7 +20,7 @@ public class Registrator extends AuditModel {
 	@MetaFieldName(label = "ID")
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 	
 	@MetaFieldName(label = "Наименование регистратора")
 	private String name;
@@ -32,11 +32,11 @@ public class Registrator extends AuditModel {
 	@MetaFieldName(label = "Контактные данные")
 	private String contactData;
 
-	public Long getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 

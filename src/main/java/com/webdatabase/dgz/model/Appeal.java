@@ -26,7 +26,7 @@ public class Appeal extends AuditModel{
 	@MetaFieldName(label = "ID")
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Long id;
+	private long id;
 	
 	@MetaFieldName(label = "Описание")
 	private String description;
@@ -34,18 +34,18 @@ public class Appeal extends AuditModel{
 	
 	@MetaFieldName(label = "Закупающая организация", selectClassName = "ProcuringEntity")
 	@Column(name="procuring_entity_id", nullable=true)
-	private Long procuringEntityId;
+	private long procuringEntityId;
 	
 	@MetaFieldName(label = "Поставщик", selectClassName = "Supplier")
 	@Column(name = "supplier_id", nullable = true)
-	private Long supplierId;
+	private long supplierId;
 	
 	
-	public Long getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -57,19 +57,19 @@ public class Appeal extends AuditModel{
 		this.description = description;
 	}
 	
-	public Long getProcuring_entityId() {
+	public long getProcuring_entityId() {
 		return procuringEntityId;
 	}
 
-	public void setProcuring_entityId(Long procuringEntity) {
+	public void setProcuring_entityId(long procuringEntity) {
 		this.procuringEntityId = procuringEntity;
 	}
 
-	public Long getSupplierId() {
+	public long getSupplierId() {
 		return supplierId;
 	}
 
-	public void setSupplierId(Long supplierId) {
+	public void setSupplierId(long supplierId) {
 		this.supplierId = supplierId;
 	}
 	

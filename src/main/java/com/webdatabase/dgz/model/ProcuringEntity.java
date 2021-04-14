@@ -24,7 +24,7 @@ public class ProcuringEntity extends AuditModel {
 	@MetaFieldName(label = "ID")
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 	
 	@MetaFieldName(label = "ИНН")
 	private String inn;
@@ -48,11 +48,11 @@ public class ProcuringEntity extends AuditModel {
 	private Set<Appeal> appeals;
 	
 	*/
-	public Long getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 

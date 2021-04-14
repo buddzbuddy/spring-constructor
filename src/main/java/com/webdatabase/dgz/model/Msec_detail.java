@@ -24,7 +24,7 @@ public class Msec_detail extends AuditModel {
 	@MetaFieldName(label = "ID")
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 	
 	@MetaFieldName(label = "Название организации")
     @NotBlank
@@ -56,11 +56,11 @@ public class Msec_detail extends AuditModel {
     @Nullable
     private int supplier_member;
 
-	public Long getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 

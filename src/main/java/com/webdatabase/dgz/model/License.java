@@ -24,7 +24,7 @@ public class License extends AuditModel{
 	@MetaFieldName(label = "ID")
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Long id;
+	private long id;
 	
 	@MetaFieldName(label = "Эмитент")
 	private String issuer;
@@ -38,11 +38,11 @@ public class License extends AuditModel{
 	
 	@MetaFieldName(label = "Поставщик", selectClassName = "Supplier")
 	@Column(name = "supplier_id", nullable = true)
-	private Long supplierId;
+	private long supplierId;
 	
 	@MetaFieldName(label = "Тип лицензии", selectClassName = "LicenseType")
 	@Column(name = "license_type_id", nullable = true)
-	private Long license_typeId;
+	private long license_typeId;
 	
 	@MetaFieldName(label = "Срок действия")
 	@Nullable
@@ -54,11 +54,11 @@ public class License extends AuditModel{
 	@MetaFieldName(label = "Дополнительная информация")
 	private String additionalInfo;
 
-	public Long getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -110,19 +110,19 @@ public class License extends AuditModel{
 		this.additionalInfo = additionalInfo;
 	}
 	
-	public Long getLicense_typeId() {
+	public long getLicense_typeId() {
 		return license_typeId;
 	}
 
-	public void setLicense_typeId(Long license_type_id) {
+	public void setLicense_typeId(long license_type_id) {
 		this.license_typeId = license_type_id;
 	}
 
-	public Long getSupplierId() {
+	public long getSupplierId() {
 		return supplierId;
 	}
 
-	public void setSupplierId(Long supplierId) {
+	public void setSupplierId(long supplierId) {
 		this.supplierId = supplierId;
 	}
 	

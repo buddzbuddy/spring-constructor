@@ -17,7 +17,7 @@ public class AuditMethodType extends AuditModel{
 	@MetaFieldName(label = "ID")
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Long id;
+	private long id;
 	
 	@MetaFieldName(label = "Код")
 	private String code;
@@ -25,11 +25,11 @@ public class AuditMethodType extends AuditModel{
 	@MetaFieldName(label = "Наименование типа методов аудита")
 	private String name;
 	
-	public Long getId() {
+	public long getId() {
 		return id;
 	}
 	
-	public void setId(Long id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 

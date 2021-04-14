@@ -20,7 +20,7 @@ public class Tpb_usiness_activity_date_by_inn_response extends AuditModel{
 	@MetaFieldName(label = "ID")
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Long id;
+	private long id;
 	
 	@MetaFieldName(label = "Юр. адрес")
 	private String legalAddress;
@@ -47,11 +47,11 @@ public class Tpb_usiness_activity_date_by_inn_response extends AuditModel{
 	private String tin;
 	
 	
-	public void setId(Long id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 	
-	public Long getId() {
+	public long getId() {
 		return id;
 	}
 

@@ -19,11 +19,11 @@ public class Pension_info extends AuditModel{
 	@MetaFieldName(label = "ID")
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Long id;
+	private long id;
 	
     @MetaFieldName(label = "Члены поставщика", selectClassName = "SupplierMember")
 	@Column(name = "supplier_member_id", nullable = true)
-	private Long supplier_member;
+	private long supplier_member;
 	
     @MetaFieldName(label = "РУСФ")
 	private String rusf;
@@ -49,19 +49,19 @@ public class Pension_info extends AuditModel{
     @MetaFieldName(label = "Категории пенсии")
 	private String categoryPension;
 
-	public Long getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
-	public Long getSupplier_member() {
+	public long getSupplier_member() {
 		return supplier_member;
 	}
 
-	public void setSupplier_member(Long supplier_member) {
+	public void setSupplier_member(long supplier_member) {
 		this.supplier_member = supplier_member;
 	}
 

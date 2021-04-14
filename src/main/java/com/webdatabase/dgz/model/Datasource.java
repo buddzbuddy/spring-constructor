@@ -21,7 +21,7 @@ public class Datasource extends AuditModel {
 	@MetaFieldName(label = "ID")
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 	
 	@MetaFieldName(label = "Наименование")
 	@NotBlank
@@ -33,10 +33,10 @@ public class Datasource extends AuditModel {
 	@Column(columnDefinition = "text")
     private String description;
 	
-    public Long getId(){
+    public long getId(){
     	return id;
     }
-    public void setId(Long id) {
+    public void setId(long id) {
     	this.id = id;
     }
     

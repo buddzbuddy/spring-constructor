@@ -32,7 +32,7 @@ public class Supplier extends AuditModel {
 	@MetaFieldName(label = "ID")
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
 	@MetaFieldName(label = "Наименование поставщика")
 	private String name;
@@ -40,13 +40,13 @@ public class Supplier extends AuditModel {
 	
 	@MetaFieldName(label = "Форма собственности", selectClassName = "OwnershipType")
 	@Column(name="ownership_type_id", nullable=true)
-	private Long ownershipTypeId;
+	private long ownershipTypeId;
 	
 	
 	
 	@MetaFieldName(label = "Отрасль", selectClassName = "Industry")
 	@Column(name="industry_id", nullable=true)
-	private Long industryId;
+	private long industryId;
 	
 
 	@MetaFieldName(label = "ИНН")
@@ -78,11 +78,11 @@ public class Supplier extends AuditModel {
 
 	@MetaFieldName(label = "Резидент (да/нет)")
 	@Nullable
-	private Boolean isResident;
+	private boolean isResident;
 	
 	@Nullable
 	@MetaFieldName(label = "В черном списке (да/нет)")
-	private Boolean isBlack;
+	private boolean isBlack;
 	
 	/*
 	@OneToMany(fetch = FetchType.LAZY)
@@ -98,11 +98,11 @@ public class Supplier extends AuditModel {
 	private Set<Appeal> appeals;
 	*/
 	
-	public Long getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -187,36 +187,36 @@ public class Supplier extends AuditModel {
 		this.rayonCode = rayonCode;
 	}
 
-	public Boolean getIsResident() {
+	public boolean getIsResident() {
 		return isResident;
 	}
 
-	public void setIsResident(Boolean isResident) {
+	public void setIsResident(boolean isResident) {
 		this.isResident = isResident;
 	}
 
-	public Boolean getIsBlack() {
+	public boolean getIsBlack() {
 		return isBlack;
 	}
 
-	public void setIsBlack(Boolean isBlack) {
+	public void setIsBlack(boolean isBlack) {
 		this.isBlack = isBlack;
 	}
 	
 	
-	public Long getOwnershipTypeId() {
+	public long getOwnershipTypeId() {
 		return ownershipTypeId;
 	}
 
-	public void setOwnershipTypeId(Long ownershipTypeId) {
+	public void setOwnershipTypeId(long ownershipTypeId) {
 		this.ownershipTypeId = ownershipTypeId;
 	}
 
-	public Long getIndustryId() {
+	public long getIndustryId() {
 		return industryId;
 	}
 
-	public void setIndustryId(Long industryId) {
+	public void setIndustryId(long industryId) {
 		this.industryId = industryId;
 	}
 	

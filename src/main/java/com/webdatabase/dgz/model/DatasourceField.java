@@ -19,11 +19,11 @@ public class DatasourceField extends AuditModel {
 	@MetaFieldName(label = "ID")
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Long id;
+	private long id;
 	
 	@MetaFieldName(label = "Источник данных", selectClassName = "Datasource")
 	@Column(name = "datasource_id", nullable = true)
-	private Long datasource;
+	private long datasource;
 	
 	@MetaFieldName(label = "Наименование")
 	@Column(name = "name")
@@ -37,18 +37,18 @@ public class DatasourceField extends AuditModel {
 	@Column(name = "data_type")
 	private String dataType;
 	
-	public Long getId() {
+	public long getId() {
 		return id;
 	}
-	public void setId(Long id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 	
-	public Long getDatasource() {
+	public long getDatasource() {
 		return datasource;
 	}
 	
-	public void setDatasource(Long datasource) {
+	public void setDatasource(long datasource) {
 		this.datasource = datasource;
 	}
 	

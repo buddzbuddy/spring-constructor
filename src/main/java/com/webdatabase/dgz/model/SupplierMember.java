@@ -30,16 +30,16 @@ public class SupplierMember extends AuditModel {
 	@MetaFieldName(label = "ID")
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Long id;
+	private long id;
 	
 	
 	@MetaFieldName(label = "Тип члена", selectClassName = "MemberType")
 	@Column(name = "member_type_id", nullable = true)
-	private Long member_typeId;
+	private long member_typeId;
 	
 	@MetaFieldName(label = "Поставщик", selectClassName = "Supplier")
 	@Column(name = "supplier_id", nullable = true)
-	private Long supplierId;
+	private long supplierId;
 	
 	@MetaFieldName(label = "ПИН")
 	private String pin;
@@ -126,11 +126,11 @@ public class SupplierMember extends AuditModel {
 	@Nullable
 	private int _memberTypeId;
 	
-	public Long getId() {
+	public long getId() {
 		return id;
 	}
 	
-	public void setId(Long id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 	
@@ -343,20 +343,20 @@ public class SupplierMember extends AuditModel {
 		this._memberTypeId = memberTypeId;
 	}
 
-	public Long getSupplierId() {
+	public long getSupplierId() {
 		return supplierId;
 	}
 
-	public void setSupplierId(Long supplierId) {
+	public void setSupplierId(long supplierId) {
 		this.supplierId = supplierId;
 	}
 	
 	
-	public Long getMember_type() {
+	public long getMember_type() {
 		return member_typeId;
 	}
 
-	public void setMember_type(Long member_typeId) {
+	public void setMember_type(long member_typeId) {
 		this.member_typeId = member_typeId;
 	}
 	

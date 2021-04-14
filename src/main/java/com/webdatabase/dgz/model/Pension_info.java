@@ -46,7 +46,7 @@ public class Pension_info extends AuditModel{
     @MetaFieldName(label = "Вид пенсии")
 	private String kindOfPension;
 	
-    @MetaFieldName(label = "Категория пенсия")
+    @MetaFieldName(label = "Категории пенсии")
 	private String categoryPension;
 
 	public Long getId() {

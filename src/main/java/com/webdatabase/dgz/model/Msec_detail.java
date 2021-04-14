@@ -18,7 +18,7 @@ import com.webdatabase.dgz.query.utils.MetaFieldName;
 
 @Entity
 @Table(name = "msec_details")
-@IsMetaClass(label = "Детализация МСЕК")
+@IsMetaClass(label = "Детализация МСЭК")
 public class Msec_detail extends AuditModel {
 
 	@MetaFieldName(label = "ID")

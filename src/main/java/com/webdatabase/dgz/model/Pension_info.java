@@ -41,7 +41,7 @@ public class Pension_info extends AuditModel{
 	private String dateFromInitial;
 	
     @MetaFieldName(label = "Сумма")
-	private String sum;
+	private String summa;
 	
     @MetaFieldName(label = "Вид пенсии")
 	private String kindOfPension;
@@ -105,12 +105,12 @@ public class Pension_info extends AuditModel{
 		this.dateFromInitial = dateFromInitial;
 	}
 
-	public String getSum() {
-		return sum;
+	public String getSumma() {
+		return summa;
 	}
 
-	public void setSum(String sum) {
-		this.sum = sum;
+	public void setSumma(String sum) {
+		this.summa = sum;
 	}
 
 	public String getKindOfPension() {

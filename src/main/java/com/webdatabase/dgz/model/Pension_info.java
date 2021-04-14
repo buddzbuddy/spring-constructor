@@ -25,7 +25,7 @@ public class Pension_info extends AuditModel{
 	@Column(name = "supplier_member_id", nullable = true)
 	private Long supplier_member;
 	
-    @MetaFieldName(label = "Rusf")
+    @MetaFieldName(label = "РУСФ")
 	private String rusf;
 	
     @MetaFieldName(label = "Номер досье")

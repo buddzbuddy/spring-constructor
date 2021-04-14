@@ -29,7 +29,7 @@ public class Msec_detail extends AuditModel {
 	@MetaFieldName(label = "Название организации")
     @NotBlank
     @Size(min = 3, max = 100)
-    private String orgnizationName;
+    private String organizationName;
     
 	@MetaFieldName(label = "Дата обследования")
     @Nullable
@@ -64,12 +64,12 @@ public class Msec_detail extends AuditModel {
 		this.id = id;
 	}
 
-	public String getOrgnizationName() {
-		return orgnizationName;
+	public String getOrganizationName() {
+		return organizationName;
 	}
 
-	public void setOrgnizationName(String orgnizationName) {
-		this.orgnizationName = orgnizationName;
+	public void setOrganizationName(String organizationName) {
+		this.organizationName = organizationName;
 	}
 
 	public Date getExaminationDate() {

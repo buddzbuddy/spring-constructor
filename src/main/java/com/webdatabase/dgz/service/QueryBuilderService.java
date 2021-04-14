@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -15,7 +16,6 @@ import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
 import com.webdatabase.dgz.ClassFinder;
 import com.webdatabase.dgz.query.utils.QueryCriteriaConsumer;
 import com.webdatabase.dgz.query.utils.FieldDesc;
@@ -51,22 +51,6 @@ public class QueryBuilderService {
         return result;
 	}
 	
-	public <T> CriteriaQuery<T> CreateQuery(Class<T> clazz, List<SearchCriteria> params) {
-		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<T> query = builder.createQuery(clazz);
-        Root<?> r = query.from(clazz);
-
-        if(params != null && params.size() > 0) {
-            Predicate predicate = builder.conjunction();
-        	QueryCriteriaConsumer searchConsumer =
-        			new QueryCriteriaConsumer(predicate, builder, r);
-	        params.stream().forEach(searchConsumer);
-	        predicate = searchConsumer.getPredicate();
-	        query.where(predicate);
-        }
-        return query;
-	}
-	
 	public <T> List<T> test(Class<T> clazz, SearchQuery searchQuery){
 		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<T> query = builder.createQuery(clazz);
@@ -77,6 +61,33 @@ public class QueryBuilderService {
         //System.out.println(q.unwrap(Query.class).getQueryString());
         List<T> result = q.getResultList();
         return result;
+	}
+	
+	@Transactional
+	public void addEntry(Object t, Class<?> clazz) {
+		List<String> names = new ArrayList<>();
+		List<Object> vals = new ArrayList<>();
+		
+		for(Field f : clazz.getDeclaredFields()) {
+			try {
+				f.setAccessible(true);
+				if(f.getType().isAssignableFrom(Long.class)) {
+					System.out.print(f.getName()  + ":" + f.getLong(t));	
+				}
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			names.add(f.getName());
+			
+			
+		}
+		
+		Query q = entityManager.createNativeQuery(
+				"INSERT INTO person (id, first_name, last_name) VALUES (?,?,?)");
 	}
 	
 	

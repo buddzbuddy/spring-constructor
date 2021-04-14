@@ -1,6 +1,8 @@
 package com.webdatabase.dgz.controller;
 
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +59,49 @@ public class JsonquerybuilderController {
     	try {
     		Class<?> birdClass = Class.forName("com.webdatabase.dgz.model." + searchQuery.getRootName());
         	QueryResult res = new QueryResult(true, "", queryApi.test(birdClass, searchQuery).toArray(new Object[0]));
+	    	return new ResponseEntity<QueryResult>(res, HttpStatus.OK);
+		} catch (ClassNotFoundException e) {
+	    	QueryResult res = new QueryResult(false, "Класс не найден", null);
+			e.printStackTrace();
+			return new ResponseEntity<QueryResult>(res, HttpStatus.BAD_REQUEST);
+		}
+    }
+    
+    @PostMapping(path = "/insert",
+    		consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<QueryResult> insert(@RequestBody SearchQuery searchQuery)
+    {
+    	try {
+    		Class<?> birdClass = Class.forName("com.webdatabase.dgz.model." + searchQuery.getRootName());
+    		 
+			try {
+
+				Constructor<?> constructor = birdClass.getConstructor();
+				
+	    	    Object t = constructor.newInstance();
+	    		queryApi.addEntry(t, t.getClass());
+			} catch (NoSuchMethodException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SecurityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InstantiationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	      
+        	QueryResult res = new QueryResult(true, "", null);
 	    	return new ResponseEntity<QueryResult>(res, HttpStatus.OK);
 		} catch (ClassNotFoundException e) {
 	    	QueryResult res = new QueryResult(false, "Класс не найден", null);

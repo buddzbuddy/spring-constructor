@@ -69,10 +69,15 @@ public class QueryBuilderService {
 		List<Object> vals = new ArrayList<>();
 		
 		for(Field f : clazz.getDeclaredFields()) {
+			if(f.getName().equals("id")) continue;
+			
+			//TODO: Filter by name to fetch fieldtype and set to vals
+			names.add(f.getName());
 			try {
 				f.setAccessible(true);
-				if(f.getType().isAssignableFrom(Long.class)) {
-					System.out.print(f.getName()  + ":" + f.getLong(t));	
+				if(f.getType().isAssignableFrom(long.class)) {
+					System.out.print(f.getName()  + ":" + f.getLong(t));
+					vals.add(f.getLong(t));
 				}
 			} catch (IllegalArgumentException e) {
 				// TODO Auto-generated catch block
@@ -81,13 +86,17 @@ public class QueryBuilderService {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			names.add(f.getName());
-			
 			
 		}
 		
 		Query q = entityManager.createNativeQuery(
-				"INSERT INTO person (id, first_name, last_name) VALUES (?,?,?)");
+				"INSERT INTO person ("+ String.join(", ", names) +") VALUES (" + String.join(", ", names) + ")");
+		
+		for(int i = 0; i < names.size(); i++) {
+			q.setParameter(i, vals.get(i));
+		}
+		
+		System.out.println("insert-result" + q.executeUpdate());
 	}
 	
 	

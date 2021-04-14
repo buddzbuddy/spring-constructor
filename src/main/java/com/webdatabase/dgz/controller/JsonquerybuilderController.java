@@ -124,6 +124,46 @@ public class JsonquerybuilderController {
     }
 }
 
+class InsertEntityModel{
+	private String toTable;
+	private InsertEntityFieldModel[] fields;
+
+	public String getToTable() {
+		return toTable;
+	}
+
+	public void setToTable(String toTable) {
+		this.toTable = toTable;
+	}
+
+	public InsertEntityFieldModel[] getFields() {
+		return fields;
+	}
+
+	public void setFields(InsertEntityFieldModel[] fields) {
+		this.fields = fields;
+	}
+	
+}
+
+class InsertEntityFieldModel{
+	private String name;
+	private Object val;
+	public Object getVal() {
+		return val;
+	}
+	public void setVal(Object val) {
+		this.val = val;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+}
+
 class QueryCondition {
 	private String table;
 	

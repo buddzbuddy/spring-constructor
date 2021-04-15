@@ -2,6 +2,7 @@ package com.webdatabase.dgz.model;
 
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -24,18 +25,23 @@ public class ProcuringEntity extends AuditModel {
 	@MetaFieldName(label = "ID")
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name = "id")
     private long id;
 	
 	@MetaFieldName(label = "ИНН")
+	@Column(name = "inn")
 	private String inn;
 	
 	@MetaFieldName(label = "Наименование закупающей организации")
+	@Column(name = "name")
 	private String name;
 	
 	@MetaFieldName(label = "Адрес")
+	@Column(name = "address")
 	private String address;
 	
 	@MetaFieldName(label = "Контактные данные")
+	@Column(name = "contact_data")
 	private String contactData;
 	/*
 	

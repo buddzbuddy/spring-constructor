@@ -26,9 +26,11 @@ public class Appeal extends AuditModel{
 	@MetaFieldName(label = "ID")
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name = "id")
 	private long id;
 	
 	@MetaFieldName(label = "Описание")
+	@Column(name = "description")
 	private String description;
 	
 	

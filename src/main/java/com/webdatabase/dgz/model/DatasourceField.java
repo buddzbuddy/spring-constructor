@@ -19,6 +19,7 @@ public class DatasourceField extends AuditModel {
 	@MetaFieldName(label = "ID")
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name = "id")
 	private long id;
 	
 	@MetaFieldName(label = "Источник данных", selectClassName = "Datasource")

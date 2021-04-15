@@ -32,9 +32,11 @@ public class Supplier extends AuditModel {
 	@MetaFieldName(label = "ID")
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name = "id")
     private long id;
 
 	@MetaFieldName(label = "Наименование поставщика")
+	@Column(name = "name")
 	private String name;
 	
 	
@@ -50,38 +52,49 @@ public class Supplier extends AuditModel {
 	
 
 	@MetaFieldName(label = "ИНН")
+	@Column(name = "inn")
 	private String inn;
 
 	@MetaFieldName(label = "Юр. адрес")
+	@Column(name = "legal_address")
 	private String legalAddress;
 
 	@MetaFieldName(label = "Факт. адрес")
+	@Column(name = "fact_address")
 	private String factAddress;
 
 	@MetaFieldName(label = "Телефон")
+	@Column(name = "telephone")
 	private String telephone;
 
 	@MetaFieldName(label = "Банк")
+	@Column(name = "bank_name")
 	private String bankName;
 
 	@MetaFieldName(label = "Счет")
+	@Column(name = "bank_account")
 	private String bankAccount;
 
 	@MetaFieldName(label = "БИК")
+	@Column(name = "bic")
 	private String bic;
 
 	@MetaFieldName(label = "Индекс")
+	@Column(name = "zip")
 	private String zip;
 
 	@MetaFieldName(label = "Код района")
+	@Column(name = "rayon_code")
 	private String rayonCode;
 
 	@MetaFieldName(label = "Резидент (да/нет)")
 	@Nullable
+	@Column(name = "is_resident")
 	private boolean isResident;
 	
 	@Nullable
 	@MetaFieldName(label = "В черном списке (да/нет)")
+	@Column(name = "is_black")
 	private boolean isBlack;
 	
 	/*

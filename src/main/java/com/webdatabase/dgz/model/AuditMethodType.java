@@ -1,5 +1,6 @@
 package com.webdatabase.dgz.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,12 +18,15 @@ public class AuditMethodType extends AuditModel{
 	@MetaFieldName(label = "ID")
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name = "id")
 	private long id;
 	
 	@MetaFieldName(label = "Код")
+	@Column(name = "code")
 	private String code;
 	
 	@MetaFieldName(label = "Наименование типа методов аудита")
+	@Column(name = "name")
 	private String name;
 	
 	public long getId() {

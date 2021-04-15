@@ -2,6 +2,7 @@ package com.webdatabase.dgz.model;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,36 +25,45 @@ public class Msec_detail extends AuditModel {
 	@MetaFieldName(label = "ID")
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name = "id")
     private long id;
 	
 	@MetaFieldName(label = "Название организации")
     @NotBlank
     @Size(min = 3, max = 100)
+	@Column(name = "organization_name")
     private String organizationName;
     
 	@MetaFieldName(label = "Дата обследования")
     @Nullable
+    @Column(name = "examination_date")
     private Date examinationDate;
     
 	@MetaFieldName(label = "Тип обследования")
+	@Column(name = "examination_type")
     private String examinationType;
     
 	@MetaFieldName(label = "Группа инвалидности")
+	@Column(name = "disability_group")
     private String disabilityGroup;
     
 	@MetaFieldName(label = "От даты")
     @Nullable
+    @Column(name = "from_date")
     private Date fromDate;
     
 	@MetaFieldName(label = "До даты")
     @Nullable
+    @Column(name = "to_date")
     private Date toDate;
     
 	@MetaFieldName(label = "Повторное обследование")
+	@Column(name = "re_examination")
     private String reExamination;
     
 	@MetaFieldName(label = "Члены поставщика")
     @Nullable
+    @Column(name = "supplier_member")
     private int supplier_member;
 
 	public long getId() {

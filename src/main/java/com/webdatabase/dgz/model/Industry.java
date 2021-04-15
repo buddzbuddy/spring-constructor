@@ -2,6 +2,7 @@ package com.webdatabase.dgz.model;
 
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -23,9 +24,11 @@ public class Industry extends AuditModel{
 	@MetaFieldName(label = "ID")
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name = "id")
 	private long id;
 	
 	@MetaFieldName(label = "Наименование отрасли")
+	@Column(name = "name")
 	private String name;
 
 	/*

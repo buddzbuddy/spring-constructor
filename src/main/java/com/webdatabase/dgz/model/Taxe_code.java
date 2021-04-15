@@ -1,5 +1,6 @@
 package com.webdatabase.dgz.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,15 +19,19 @@ public class Taxe_code extends AuditModel{
 	@MetaFieldName(label = "ID")
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name = "id")
 	private long id;
 	
 	@MetaFieldName(label = "Код")
+	@Column(name = "code")
 	private String code;
 	
 	@MetaFieldName(label = "Наименование налогового кодекса")
+	@Column(name = "name")
 	private String name;
 	
 	@MetaFieldName(label = "Название детализации")
+	@Column(name = "detail_name")
 	private String detailName;
 	
 	public long getId() {

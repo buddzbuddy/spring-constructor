@@ -2,6 +2,7 @@ package com.webdatabase.dgz.model;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -20,30 +21,39 @@ public class Tpb_usiness_activity_date_by_inn_response extends AuditModel{
 	@MetaFieldName(label = "ID")
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name = "id")
 	private long id;
 	
 	@MetaFieldName(label = "Юр. адрес")
+	@Column(name = "legal_address")
 	private String legalAddress;
 	
 	@MetaFieldName(label = "Наименование")
+	@Column(name = "name")
 	private String name;
 	
 	@MetaFieldName(label = "Код района")
+	@Column(name = "rayon_code")
 	private String rayonCode;
 	
 	@MetaFieldName(label = "Наименование района")
+	@Column(name = "rayon_name")
 	private String rayonName;
 	
 	@MetaFieldName(label = "Дата начала действия налога")
+	@Column(name = "tax_active_date")
 	private Date taxActiveDate;
 	
 	@MetaFieldName(label = "Код типа налога")
+	@Column(name = "tax_type_code")
 	private String taxTypeCode;
 	
 	@MetaFieldName(label = "Название типа налога")
+	@Column(name = "tax_type_name")
 	private String taxTypeName;
 	
 	@MetaFieldName(label = "Банка")
+	@Column(name = "tin")
 	private String tin;
 	
 	

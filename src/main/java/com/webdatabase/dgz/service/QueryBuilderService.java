@@ -142,7 +142,7 @@ public class QueryBuilderService {
 			q = q.setParameter(i + 1, vals.get(i));
 		}
 		
-		//System.out.println("insert-result" + q.executeUpdate());
+		System.out.println("insert-result" + q.executeUpdate());
 	}
 	
 	

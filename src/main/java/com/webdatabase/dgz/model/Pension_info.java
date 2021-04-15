@@ -19,6 +19,7 @@ public class Pension_info extends AuditModel{
 	@MetaFieldName(label = "ID")
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name = "id")
 	private long id;
 	
     @MetaFieldName(label = "Члены поставщика", selectClassName = "SupplierMember")
@@ -26,27 +27,35 @@ public class Pension_info extends AuditModel{
 	private long supplier_member;
 	
     @MetaFieldName(label = "РУСФ")
+    @Column(name = "rusf")
 	private String rusf;
 	
     @MetaFieldName(label = "Номер досье")
+    @Column(name = "num_dossier")
 	private String numDossier;
 	
     @MetaFieldName(label = "ПИН пенсионера")
+    @Column(name = "pin_pensioner")
 	private String pinPensioner;
 	
     @MetaFieldName(label = "ПИН получателя")
+    @Column(name = "pin_recipient")
 	private String pinRecipient;
 	
     @MetaFieldName(label = "Дата начало")
+    @Column(name = "date_from_initial")
 	private String dateFromInitial;
 	
     @MetaFieldName(label = "Сумма")
+    @Column(name = "summa")
 	private String summa;
 	
     @MetaFieldName(label = "Вид пенсии")
+    @Column(name = "kind_of_pension")
 	private String kindOfPension;
 	
     @MetaFieldName(label = "Категории пенсии")
+    @Column(name = "category_pension")
 	private String categoryPension;
 
 	public long getId() {

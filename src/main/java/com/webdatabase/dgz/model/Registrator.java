@@ -1,5 +1,6 @@
 package com.webdatabase.dgz.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -20,16 +21,20 @@ public class Registrator extends AuditModel {
 	@MetaFieldName(label = "ID")
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name = "id")
     private long id;
 	
 	@MetaFieldName(label = "Наименование регистратора")
+	@Column(name = "name")
 	private String name;
 	
 	@MetaFieldName(label = "Партнер")
 	@Nullable
+	@Column(name = "counterpart")
 	private int counterpart;
 	
 	@MetaFieldName(label = "Контактные данные")
+	@Column(name = "contact_data")
 	private String contactData;
 
 	public long getId() {

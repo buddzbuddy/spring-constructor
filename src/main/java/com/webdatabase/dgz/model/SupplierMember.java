@@ -30,6 +30,7 @@ public class SupplierMember extends AuditModel {
 	@MetaFieldName(label = "ID")
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name = "id")
 	private long id;
 	
 	
@@ -42,88 +43,114 @@ public class SupplierMember extends AuditModel {
 	private long supplierId;
 	
 	@MetaFieldName(label = "ПИН")
+	@Column(name = "pin")
 	private String pin;
 	
 	@MetaFieldName(label = "ИНН")
+	@Column(name = "inn")
 	private String inn;
 	
 	@MetaFieldName(label = "Фамилия")
+	@Column(name = "surname")
 	private String surname;
 	
 	@MetaFieldName(label = "Имя")
+	@Column(name = "name")
 	private String name;
 	
 	@MetaFieldName(label = "Отчество")
+	@Column(name = "patronymic")
 	private String patronymic;
 	
 	@MetaFieldName(label = "Национальность")
+	@Column(name = "nationality")
 	private String nationality;
 	
 	@MetaFieldName(label = "Дата рождения")
+	@Column(name = "date_of_birth")
 	private Date dateOfBirth;
 	
 	@MetaFieldName(label = "Серия паспорта")
+	@Column(name = "passport_series")
 	private String passportSeries;
 	
 	@MetaFieldName(label = "Номер паспорта")
+	@Column(name = "passport_number")
 	private String passportNumber;
 	
 	@MetaFieldName(label = "Паспортный орган")
+	@Column(name = "passport_authority")
 	private String passportAuthority;
 	
 	@MetaFieldName(label = "Дата выпуска")
+	@Column(name = "issued_date")
 	private Date issuedDate;
 	
 	@MetaFieldName(label = "Дата истечения срока")
+	@Column(name = "expired_date")
 	private Date expiredDate;
 	
 	@MetaFieldName(label = "Статус недействительности" )
+	@Column(name = "void_status")
 	private int voidStatus;
 	
 	@MetaFieldName(label = "Семейное положение")
+	@Column(name = "family_status")
 	private int familyStatus;
 	
 	@MetaFieldName(label = "Пол")
+	@Column(name = "gender")
 	private String gender;
 	
 	@MetaFieldName(label = "Регион")
+	@Column(name = "address_region")
 	private String addressRegion;
 	
 	@MetaFieldName(label = "Населенный пункт")
+	@Column(name = "address_locality")
 	private String addressLocality;
 	
 	@MetaFieldName(label = "Улица")
+	@Column(name = "address_street")
 	private String addressStreet;
 	
 	@MetaFieldName(label = "Дом")
+	@Column(name = "address_house")
 	private String addressHouse;
 	
 	@MetaFieldName(label = "ID региона")
 	@Nullable
+	@Column(name = "region_id")
 	private int regionId;
 	
 	@MetaFieldName(label = "ID района")
 	@Nullable
+	@Column(name = "district_id")
 	private int districtId;
 	
 	@MetaFieldName(label = "ID области")
 	@Nullable
+	@Column(name = "area_id")
 	private int areaId;
 	
 	@MetaFieldName(label = "ID подрайона")
 	@Nullable
+	@Column(name = "subarea_id")
 	private int subareaId;
 	
 	@MetaFieldName(label = "ID улицы")
 	@Nullable
+	@Column(name = "street_id")
 	private int streetId;
 	
 	@MetaFieldName(label = "ID дома")
 	@Nullable
+	@Column(name = "house_id")
 	private int houseId;
 	
 	@MetaFieldName(label = "ID типа поставщика")
 	@Nullable
+	@Column(name = "_member_type_Id")
 	private int _memberTypeId;
 	
 	public long getId() {

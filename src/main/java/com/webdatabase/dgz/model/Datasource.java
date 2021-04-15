@@ -21,6 +21,7 @@ public class Datasource extends AuditModel {
 	@MetaFieldName(label = "ID")
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name = "id")
     private long id;
 	
 	@MetaFieldName(label = "Наименование")
@@ -30,7 +31,7 @@ public class Datasource extends AuditModel {
     private String name;
 	
 	@MetaFieldName(label = "Описание")
-	@Column(columnDefinition = "text")
+	@Column(columnDefinition = "text", name = "description")
     private String description;
 	
     public long getId(){

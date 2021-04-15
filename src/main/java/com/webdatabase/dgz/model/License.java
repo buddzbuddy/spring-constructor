@@ -24,16 +24,20 @@ public class License extends AuditModel{
 	@MetaFieldName(label = "ID")
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name = "id")
 	private long id;
 	
 	@MetaFieldName(label = "Эмитент")
+	@Column(name = "issuer")
 	private String issuer;
 	
 	@MetaFieldName(label = "Номер")
+	@Column(name = "no")
 	private String no;
 	
 	@MetaFieldName(label = "Дата выпуска")
 	@Nullable
+	@Column(name = "issue_date")
 	private Date issueDate;
 	
 	@MetaFieldName(label = "Поставщик", selectClassName = "Supplier")
@@ -46,12 +50,15 @@ public class License extends AuditModel{
 	
 	@MetaFieldName(label = "Срок действия")
 	@Nullable
+	@Column(name = "expiry_date")
 	private Date expiryDate;
 	
 	@MetaFieldName(label = "Статус")
+	@Column(name = "status")
 	private String status;
 	
 	@MetaFieldName(label = "Дополнительная информация")
+	@Column(name = "additional_info")
 	private String additionalInfo;
 
 	public long getId() {

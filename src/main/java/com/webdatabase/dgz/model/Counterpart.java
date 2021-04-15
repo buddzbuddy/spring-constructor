@@ -21,26 +21,32 @@ public class Counterpart extends AuditModel {
 	@MetaFieldName(label = "ID")
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name = "id")
     private long id;
 	
 	@MetaFieldName(label = "Наименование партнера")
+	@Column(name = "name")
     private String name;
     
 	@MetaFieldName(label = "Тип партнера")
     @Nullable
+    @Column(name = "counterpart_type")
     private int counterpart_type;
     
 	@MetaFieldName(label = "Контактные данные")
-    @Column(columnDefinition = "text")
+    @Column(columnDefinition = "text", name = "contact_data")
     private String contactData;
     
 	@MetaFieldName(label = "Адрес")
+	@Column(name = "address")
     private String address;
     
 	@MetaFieldName(label = "Номер банковского счета")
+	@Column(name = "bank_account_no")
     private String bankAccountNo;
     
 	@MetaFieldName(label = "Комментарии")
+	@Column(name = "comments")
     private String comments;
 
 	public long getId() {

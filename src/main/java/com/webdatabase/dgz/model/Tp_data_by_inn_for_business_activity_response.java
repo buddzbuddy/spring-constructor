@@ -1,5 +1,6 @@
 package com.webdatabase.dgz.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,23 +19,28 @@ public class Tp_data_by_inn_for_business_activity_response extends AuditModel {
 	@MetaFieldName(label = "ID")
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name = "id")
 	private long id;
 	
 	@MetaFieldName(label = "ИНН")
+	@Column(name = "inn")
 	private String inn;
 	
 	@MetaFieldName(label = "Код района")
+	@Column(name = "rayon_code")
 	private String rayonCode;
 	
 	@MetaFieldName(label = "Полное название")
+	@Column(name = "full_name")
 	private String fullName;
 	
 	@MetaFieldName(label = "Полный адрес")
+	@Column(name = "full_address")
 	private String fullAddress;
 	
 	@MetaFieldName(label = "ZIP")
+	@Column(name = "zip")
 	private String zip;
-	
 	
 	
 	public long getId() {

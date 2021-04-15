@@ -4,9 +4,12 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.Table;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -19,6 +22,8 @@ import org.springframework.stereotype.Service;
 import com.webdatabase.dgz.ClassFinder;
 import com.webdatabase.dgz.query.utils.QueryCriteriaConsumer;
 import com.webdatabase.dgz.query.utils.FieldDesc;
+import com.webdatabase.dgz.query.utils.InsertEntityFieldModel;
+import com.webdatabase.dgz.query.utils.InsertEntityModel;
 import com.webdatabase.dgz.query.utils.IsMetaClass;
 import com.webdatabase.dgz.query.utils.MetaFieldName;
 import com.webdatabase.dgz.query.utils.MyClassDesc;
@@ -64,39 +69,80 @@ public class QueryBuilderService {
 	}
 	
 	@Transactional
-	public void addEntry(Object t, Class<?> clazz) {
+	public void addEntry(InsertEntityModel insertModel, Class<?> clazz) {
 		List<String> names = new ArrayList<>();
+		List<String> symbols = new ArrayList<>();
 		List<Object> vals = new ArrayList<>();
-		
-		for(Field f : clazz.getDeclaredFields()) {
-			if(f.getName().equals("id")) continue;
+		Table et = clazz.getAnnotation(Table.class);
+		if(et == null) {
+			System.out.println("Entity не найден у класса " + clazz.getName());
+		}
+		else
+		for(InsertEntityFieldModel item : insertModel.getFields()) {
 			
-			//TODO: Filter by name to fetch fieldtype and set to vals
-			names.add(f.getName());
+			//names.add(item.getName());
 			try {
+				Field f = clazz.getDeclaredField(item.getName());
+				if(f.getName().equals("id")) continue;
+				
 				f.setAccessible(true);
-				if(f.getType().isAssignableFrom(long.class)) {
-					System.out.print(f.getName()  + ":" + f.getLong(t));
-					vals.add(f.getLong(t));
+				if(f.getType().getName().equals(long.class.getName())) {
+					vals.add(((Number) item.getVal()).longValue());
 				}
+				else if (f.getType().getName().equals(int.class.getName())) {
+					vals.add((int)item.getVal());
+				}
+				else if (f.getType().getName().equals(float.class.getName())) {
+					vals.add((float)item.getVal());
+				}
+				else if (f.getType().getName().equals(double.class.getName())) {
+					vals.add((double)item.getVal());
+				}
+				else if (f.getType().getName().equals(boolean.class.getName())) {
+					vals.add((boolean)item.getVal());
+				}
+				else if (f.getType().getName().equals(String.class.getName())) {
+					vals.add((String)item.getVal());
+				}
+				else {
+					System.out.println("Поле " + item.getName() + " имеет неизвстный тип: " + f.getType().getName());
+				}
+				Column cAnnot = f.getAnnotation(Column.class);
+				if(cAnnot != null) {
+					names.add(cAnnot.name());
+					symbols.add("?");
+				}
+				else {
+					System.out.println("Поле " + item.getName() + " не имеет аннотации Column");
+				}
+					
+				
 			} catch (IllegalArgumentException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} catch (IllegalAccessException e) {
+			} catch (RuntimeException e) {
 				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NoSuchFieldException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (Exception e) {
+				System.out.println(item.getName());
 				e.printStackTrace();
 			}
 			
+			
 		}
-		
-		Query q = entityManager.createNativeQuery(
-				"INSERT INTO person ("+ String.join(", ", names) +") VALUES (" + String.join(", ", names) + ")");
+		String queryString = "INSERT INTO " + et.name() + " ("+ String.join(", ", names) +") VALUES (" + String.join(",", symbols) + ")";
+		Query q = entityManager.createNativeQuery(queryString);
+	
+		System.out.println(queryString);
 		
 		for(int i = 0; i < names.size(); i++) {
-			q.setParameter(i, vals.get(i));
+			q = q.setParameter(i + 1, vals.get(i));
 		}
 		
-		System.out.println("insert-result" + q.executeUpdate());
+		//System.out.println("insert-result" + q.executeUpdate());
 	}
 	
 	

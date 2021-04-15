@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.webdatabase.dgz.query.utils.InsertEntityModel;
 import com.webdatabase.dgz.query.utils.MyClassDesc;
 import com.webdatabase.dgz.query.utils.SearchCriteria;
 import com.webdatabase.dgz.query.utils.SearchQuery;
@@ -70,17 +72,15 @@ public class JsonquerybuilderController {
     @PostMapping(path = "/insert",
     		consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<QueryResult> insert(@RequestBody SearchQuery searchQuery)
+    public ResponseEntity<Boolean> insert(@RequestBody InsertEntityModel insert)
     {
     	try {
-    		Class<?> birdClass = Class.forName("com.webdatabase.dgz.model." + searchQuery.getRootName());
+    		Class<?> birdClass = Class.forName("com.webdatabase.dgz.model." + insert.getEntityName());
     		 
 			try {
-
 				Constructor<?> constructor = birdClass.getConstructor();
-				
 	    	    Object t = constructor.newInstance();
-	    		queryApi.addEntry(t, t.getClass());
+	    		queryApi.addEntry(insert, t.getClass());
 			} catch (NoSuchMethodException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -102,11 +102,11 @@ public class JsonquerybuilderController {
 			}
     	      
         	QueryResult res = new QueryResult(true, "", null);
-	    	return new ResponseEntity<QueryResult>(res, HttpStatus.OK);
+	    	return new ResponseEntity<Boolean>(true, HttpStatus.OK);
 		} catch (ClassNotFoundException e) {
 	    	QueryResult res = new QueryResult(false, "Класс не найден", null);
 			e.printStackTrace();
-			return new ResponseEntity<QueryResult>(res, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<Boolean>(true, HttpStatus.BAD_REQUEST);
 		}
     }
     
@@ -123,47 +123,6 @@ public class JsonquerybuilderController {
     	return new ResponseEntity<MyClassDesc>(queryApi.getClassDescription(className), HttpStatus.OK);
     }
 }
-
-class InsertEntityModel{
-	private String toTable;
-	private InsertEntityFieldModel[] fields;
-
-	public String getToTable() {
-		return toTable;
-	}
-
-	public void setToTable(String toTable) {
-		this.toTable = toTable;
-	}
-
-	public InsertEntityFieldModel[] getFields() {
-		return fields;
-	}
-
-	public void setFields(InsertEntityFieldModel[] fields) {
-		this.fields = fields;
-	}
-	
-}
-
-class InsertEntityFieldModel{
-	private String name;
-	private Object val;
-	public Object getVal() {
-		return val;
-	}
-	public void setVal(Object val) {
-		this.val = val;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-}
-
 class QueryCondition {
 	private String table;
 	

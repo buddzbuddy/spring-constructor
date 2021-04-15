@@ -150,7 +150,7 @@ public class SupplierMember extends AuditModel {
 	
 	@MetaFieldName(label = "ID типа поставщика")
 	@Nullable
-	@Column(name = "_member_type_Id")
+	@Column(name = "_member_type_id")
 	private int _memberTypeId;
 	
 	public long getId() {

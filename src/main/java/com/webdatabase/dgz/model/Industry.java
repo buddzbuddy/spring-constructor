@@ -19,7 +19,7 @@ import com.webdatabase.dgz.query.utils.MetaFieldName;
 
 @Entity
 @Table(name = "industries")
-@IsMetaClass(label = "Отрасль")
+@IsMetaClass(label = "Отрасль", orderNo = 3)
 public class Industry extends AuditModel{
 	@MetaFieldName(label = "ID")
 	@Id

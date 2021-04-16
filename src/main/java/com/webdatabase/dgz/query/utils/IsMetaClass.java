@@ -10,4 +10,5 @@ import java.lang.annotation.Target;
 @Target({TYPE})
 public @interface IsMetaClass {
 	public String label() default "";
+	public int orderNo() default 100;
 }

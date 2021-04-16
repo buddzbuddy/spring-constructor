@@ -26,7 +26,7 @@ import com.webdatabase.dgz.query.utils.MetaFieldName;
 
 @Entity
 @Table(name = "suppliers")
-@IsMetaClass(label = "Поставщик")
+@IsMetaClass(label = "Поставщик", orderNo = 1)
 public class Supplier extends AuditModel {
 	
 	@MetaFieldName(label = "ID")

@@ -5,6 +5,7 @@ import java.util.List;
 public class MyClassDesc {
 	private String className;
 	private String classLabel;
+	private Integer orderNo;
 	private List <FieldDesc> propList;
 	public String getClassName() {
 		return className;
@@ -23,5 +24,11 @@ public class MyClassDesc {
 	}
 	public void setClassLabel(String classLabel) {
 		this.classLabel = classLabel;
+	}
+	public Integer getOrderNo() {
+		return orderNo;
+	}
+	public void setOrderNo(Integer orderNo) {
+		this.orderNo = orderNo;
 	}
 }

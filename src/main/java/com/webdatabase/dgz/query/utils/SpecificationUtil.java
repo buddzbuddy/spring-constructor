@@ -1,7 +1,12 @@
 package com.webdatabase.dgz.query.utils;
 
+import java.lang.reflect.Field;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -32,7 +37,22 @@ public class SpecificationUtil {
 			if (searchFilters != null && !searchFilters.isEmpty()) {
 
 				for (final SearchFilter searchFilter : searchFilters) {
-					addPredicates(predicates, searchFilter, criterailBuilder, root);
+					
+					try {
+						Field f = clazz.getDeclaredField(searchFilter.getProperty());
+						f.setAccessible(true);
+						if (f.getType().getName().equals(Date.class.getName())) {
+							String dateSrc = searchFilter.getValue().toString();
+							searchFilter.setValue(castToDate(dateSrc));
+						}
+						addPredicates(predicates, searchFilter, criterailBuilder, root);
+					} catch (NoSuchFieldException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (SecurityException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}
 
@@ -45,6 +65,13 @@ public class SpecificationUtil {
 		};
 	}
 
+    
+	public static Date castToDate(String src) {
+    	DateTimeFormatter formatter = 
+    	        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH);
+    	LocalDateTime date = LocalDateTime.parse(src, formatter);
+    	return java.sql.Timestamp.valueOf(date);
+    }
 	private static <T> void addJoinColumnProps(List<Predicate> predicates, JoinColumnProps joinColumnProp,
 			CriteriaBuilder criterailBuilder, Root<T> root) {
 

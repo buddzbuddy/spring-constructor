@@ -3,8 +3,13 @@ package com.webdatabase.dgz.controller;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -60,7 +65,10 @@ public class JsonquerybuilderController {
     {
     	try {
     		Class<?> birdClass = Class.forName("com.webdatabase.dgz.model." + searchQuery.getRootName());
-        	QueryResult res = new QueryResult(true, "", queryApi.test(birdClass, searchQuery).toArray(new Object[0]));
+    		
+    		
+    		
+        	QueryResult res = new QueryResult(true, "", queryApi.exec(birdClass, searchQuery).toArray(new Object[0]));
 	    	return new ResponseEntity<QueryResult>(res, HttpStatus.OK);
 		} catch (ClassNotFoundException e) {
 	    	QueryResult res = new QueryResult(false, "Класс не найден", null);

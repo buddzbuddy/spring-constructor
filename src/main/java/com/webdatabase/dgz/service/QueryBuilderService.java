@@ -2,6 +2,9 @@ package com.webdatabase.dgz.service;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -56,14 +59,13 @@ public class QueryBuilderService {
         return result;
 	}
 	
-	public <T> List<T> test(Class<T> clazz, SearchQuery searchQuery){
+	public <T> List<T> exec(Class<T> clazz, SearchQuery searchQuery){
 		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<T> query = builder.createQuery(clazz);
         Root<T> r = query.from(clazz);
         Specification<T> s = SpecificationUtil.bySearchQuery(searchQuery, clazz);
         query.where(s.toPredicate(r, query, builder));
         TypedQuery<T> q = entityManager.createQuery(query);
-        //System.out.println(q.unwrap(Query.class).getQueryString());
         List<T> result = q.getResultList();
         return result;
 	}
@@ -80,7 +82,6 @@ public class QueryBuilderService {
 		else
 		for(InsertEntityFieldModel item : insertModel.getFields()) {
 			
-			//names.add(item.getName());
 			try {
 				Field f = clazz.getDeclaredField(item.getName());
 				if(f.getName().equals("id")) continue;
@@ -103,6 +104,9 @@ public class QueryBuilderService {
 				}
 				else if (f.getType().getName().equals(String.class.getName())) {
 					vals.add((String)item.getVal());
+				}
+				else if (f.getType().getName().equals(Date.class.getName())) {
+					vals.add((Date)item.getVal());
 				}
 				else {
 					System.out.println("Поле " + item.getName() + " имеет неизвстный тип: " + f.getType().getName());
@@ -165,8 +169,8 @@ public class QueryBuilderService {
 		List<Class<?>> classes = ClassFinder.find("com.webdatabase.dgz.model");
 		
 		
-		ArrayList<MyClassDesc> descModel = new ArrayList<MyClassDesc> ();
 		
+		ArrayList<MyClassDesc> descModel = new ArrayList<MyClassDesc> ();
 		for(Class<?> c : classes) {
 			IsMetaClass mc = c.getAnnotation(IsMetaClass.class);
 			if(mc == null) {
@@ -176,6 +180,7 @@ public class QueryBuilderService {
 			
 			cm.setClassName(c.getSimpleName());
 			cm.setClassLabel(mc.label());
+			cm.setOrderNo(mc.orderNo());
 			
 			ArrayList<FieldDesc> fList = new ArrayList<FieldDesc>();
 			for(Field f : c.getDeclaredFields()) {
@@ -196,6 +201,15 @@ public class QueryBuilderService {
 			
 			descModel.add(cm);
 		}
+		
+
+		Collections.sort(descModel, new Comparator<MyClassDesc>() {
+			  @Override
+			  public int compare(MyClassDesc c1, MyClassDesc c2) {
+			    return c1.getOrderNo().compareTo(c2.getOrderNo());
+			  }
+			});
+		
 		MyClassDesc[] a = new MyClassDesc[descModel.size()];
 		return descModel.toArray(a);
 	}

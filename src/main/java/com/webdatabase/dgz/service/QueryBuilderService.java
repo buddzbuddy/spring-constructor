@@ -41,24 +41,6 @@ public class QueryBuilderService {
 	@PersistenceContext
 	private EntityManager entityManager;
 
-	public <T> List<T> execute(Class<T> clazz, List<SearchCriteria> params) {
-		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<T> query = builder.createQuery(clazz);
-        Root<?> r = query.from(clazz);
-
-        if(params != null && params.size() > 0) {
-            Predicate predicate = builder.conjunction();
-        	QueryCriteriaConsumer searchConsumer =
-        			new QueryCriteriaConsumer(predicate, builder, r);
-	        params.stream().forEach(searchConsumer);
-	        predicate = searchConsumer.getPredicate();
-	        query.where(predicate);	
-        }
-        
-        List<T> result = entityManager.createQuery(query).getResultList();
-        return result;
-	}
-	
 	public <T> List<T> exec(Class<T> clazz, SearchQuery searchQuery){
 		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<T> query = builder.createQuery(clazz);
@@ -214,41 +196,48 @@ public class QueryBuilderService {
 		return descModel.toArray(a);
 	}
 	public MyClassDesc getClassDescription(String className) {
+		
+		Class<?> c = findClassByName(className);
+		if(c == null) {
+			return null;
+		}
+		MyClassDesc cm = new MyClassDesc();
+		IsMetaClass mc = c.getAnnotation(IsMetaClass.class);
+		if(mc == null) {
+			return null;
+		}
+		cm.setClassName(c.getSimpleName());
+		cm.setClassLabel(mc.label());
+		
+		ArrayList<FieldDesc> fList = new ArrayList<FieldDesc>();
+		for(Field f : c.getDeclaredFields()) {
+			FieldDesc fd = new FieldDesc();
+			fd.setName(f.getName());
+			fd.setDataType(f.getType().getSimpleName());
+			MetaFieldName fName = f.getAnnotation(MetaFieldName.class);
+			if(fName != null) {
+				fd.setLabel(fName.label());
+				if(!fName.selectClassName().isEmpty()) {
+					fd.setDictionaryClassName(fName.selectClassName());
+					fd.setDictionaryFieldName(fName.selectClassFieldName());
+				}
+			}
+			fList.add(fd);
+		}
+		cm.setPropList(fList);
+		return cm;
+	}
+	public Class<?> findClassByName(String name){
 		List<Class<?>> classes = ClassFinder.find("com.webdatabase.dgz.model");
-		
-		
 		for(Class<?> c : classes) {
 			IsMetaClass mc = c.getAnnotation(IsMetaClass.class);
 			if(mc == null) {
 				continue;
 			}
-			if(!c.getSimpleName().equals(className)) {
-				continue;
+			if(c.getSimpleName().equals(name)) {
+				return c;
 			}
-			MyClassDesc cm = new MyClassDesc();
-			
-			cm.setClassName(c.getSimpleName());
-			cm.setClassLabel(mc.label());
-			
-			ArrayList<FieldDesc> fList = new ArrayList<FieldDesc>();
-			for(Field f : c.getDeclaredFields()) {
-				FieldDesc fd = new FieldDesc();
-				fd.setName(f.getName());
-				fd.setDataType(f.getType().getSimpleName());
-				MetaFieldName fName = f.getAnnotation(MetaFieldName.class);
-				if(fName != null) {
-					fd.setLabel(fName.label());
-					if(!fName.selectClassName().isEmpty()) {
-						fd.setDictionaryClassName(fName.selectClassName());
-						fd.setDictionaryFieldName(fName.selectClassFieldName());
-					}
-				}
-				fList.add(fd);
-			}
-			cm.setPropList(fList);
-			return cm;
 		}
 		return null;
 	}
-	
 }

@@ -20,8 +20,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.webdatabase.dgz.message.ResponseMessage;
+import com.webdatabase.dgz.query.utils.ExcelUpload;
+import com.webdatabase.dgz.query.utils.InsertEntityFieldModel;
 import com.webdatabase.dgz.query.utils.InsertEntityModel;
 import com.webdatabase.dgz.query.utils.MyClassDesc;
 import com.webdatabase.dgz.query.utils.SearchCriteria;
@@ -36,27 +41,6 @@ public class JsonquerybuilderController {
     @Autowired
     private QueryBuilderService queryApi;
     
-    @PostMapping(path = "/execute",
-    		consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
-            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity<QueryResult> execute(@RequestBody QueryCondition condition)
-    {
-    	List<SearchCriteria> params = null;
-    	if(condition.getParams() != null && condition.getParams().length > 0) {
-    		params = Arrays.asList(condition.getParams());
-    	}
-    	
-    	try {
-			Class<?> birdClass = Class.forName("com.webdatabase.dgz.model." + condition.getTable());
-			List<?> results = queryApi.execute(birdClass, params);
-	    	QueryResult res = new QueryResult(true, "", results.toArray());
-	    	return new ResponseEntity<QueryResult>(res, HttpStatus.OK);
-		} catch (ClassNotFoundException e) {
-	    	QueryResult res = new QueryResult(false, "Класс не найден", null);
-			e.printStackTrace();
-			return new ResponseEntity<QueryResult>(res, HttpStatus.BAD_REQUEST);
-		}
-    }
     
     @PostMapping(path = "/exec",
     		consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -66,9 +50,9 @@ public class JsonquerybuilderController {
     	try {
     		Class<?> birdClass = Class.forName("com.webdatabase.dgz.model." + searchQuery.getRootName());
     		
+    		List<?> list = queryApi.exec(birdClass, searchQuery);
     		
-    		
-        	QueryResult res = new QueryResult(true, "", queryApi.exec(birdClass, searchQuery).toArray(new Object[0]));
+        	QueryResult res = new QueryResult(true, "", list.toArray(new Object[0]));
 	    	return new ResponseEntity<QueryResult>(res, HttpStatus.OK);
 		} catch (ClassNotFoundException e) {
 	    	QueryResult res = new QueryResult(false, "Класс не найден", null);
@@ -129,6 +113,30 @@ public class JsonquerybuilderController {
     public ResponseEntity<MyClassDesc> getMeta(@PathVariable String className)
     {
     	return new ResponseEntity<MyClassDesc>(queryApi.getClassDescription(className), HttpStatus.OK);
+    }
+    
+    @PostMapping("/{className}/upload/excel")
+    public ResponseEntity<ResponseMessage> uploadFile(@PathVariable String className,
+    		@RequestParam("file") MultipartFile file) {
+        String message = "";
+
+        if (ExcelUpload.hasExcelFormat(file)) {
+          try {
+        	  Class<?> clazz = queryApi.findClassByName(className);
+        	  List<InsertEntityModel> m = ExcelUpload.excelToList(file.getInputStream(), className, clazz);
+        	  for(InsertEntityModel mItem : m) {
+        		  queryApi.addEntry(mItem, clazz);
+        	  }
+            message = "Файл успешно загружен: " + file.getOriginalFilename();
+            return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
+          } catch (Exception e) {
+            message = "Не удалось загрузить файл: " + file.getOriginalFilename() + "!";
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
+          }
+        }
+
+        message = "Загрузите файл в формате Excel!";
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(message));
     }
 }
 class QueryCondition {

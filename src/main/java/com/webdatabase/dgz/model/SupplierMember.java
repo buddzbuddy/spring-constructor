@@ -24,7 +24,7 @@ import com.webdatabase.dgz.query.utils.MetaFieldName;
 
 @Entity
 @Table (name = "supplier_members")
-@IsMetaClass(label = "Члены поставщика", orderNo = 2)
+@IsMetaClass(label = "Участники поставщика", orderNo = 2)
 public class SupplierMember extends AuditModel {
 	
 	@MetaFieldName(label = "ID")
@@ -34,9 +34,13 @@ public class SupplierMember extends AuditModel {
 	private long id;
 	
 	
-	@MetaFieldName(label = "Тип члена", selectClassName = "MemberType")
+	@MetaFieldName(label = "Тип участника", selectClassName = "MemberType")
 	@Column(name = "member_type_id", nullable = true)
-	private long member_typeId;
+	private long memberTypeId;
+	
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name="member_type_id", referencedColumnName="id", insertable=false, updatable=false)
+	private MemberType memberType;
 	
 	@MetaFieldName(label = "Поставщик", selectClassName = "Supplier")
 	@Column(name = "supplier_id", nullable = true)
@@ -148,10 +152,6 @@ public class SupplierMember extends AuditModel {
 	@Column(name = "house_id")
 	private int houseId;
 	
-	@MetaFieldName(label = "ID типа поставщика")
-	@Nullable
-	@Column(name = "_member_type_id")
-	private int _memberTypeId;
 	
 	public long getId() {
 		return id;
@@ -362,12 +362,12 @@ public class SupplierMember extends AuditModel {
 		this.houseId = houseId;
 	}
 
-	public int get_MemberTypeId() {
-		return _memberTypeId;
+	public long getMemberTypeId() {
+		return memberTypeId;
 	}
 
-	public void set_MemberTypeId(int memberTypeId) {
-		this._memberTypeId = memberTypeId;
+	public void setMemberTypeId(long memberTypeId) {
+		this.memberTypeId = memberTypeId;
 	}
 
 	public long getSupplierId() {
@@ -377,15 +377,13 @@ public class SupplierMember extends AuditModel {
 	public void setSupplierId(long supplierId) {
 		this.supplierId = supplierId;
 	}
-	
-	
-	public long getMember_type() {
-		return member_typeId;
+
+	public MemberType getMemberType() {
+		return memberType;
 	}
 
-	public void setMember_type(long member_typeId) {
-		this.member_typeId = member_typeId;
+	public void setMemberType(MemberType memberType) {
+		this.memberType = memberType;
 	}
-	
 	
 }

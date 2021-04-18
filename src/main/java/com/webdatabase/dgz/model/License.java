@@ -4,9 +4,12 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -46,7 +49,12 @@ public class License extends AuditModel{
 	
 	@MetaFieldName(label = "Тип лицензии", selectClassName = "LicenseType")
 	@Column(name = "license_type_id", nullable = true)
-	private long license_typeId;
+	private long licenseTypeId;
+	
+
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name="license_type_id", referencedColumnName="id", insertable=false, updatable=false)
+	private LicenseType licenseType;
 	
 	@MetaFieldName(label = "Срок действия")
 	@Nullable
@@ -117,12 +125,12 @@ public class License extends AuditModel{
 		this.additionalInfo = additionalInfo;
 	}
 	
-	public long getLicense_typeId() {
-		return license_typeId;
+	public long getLicenseTypeId() {
+		return licenseTypeId;
 	}
 
-	public void setLicense_typeId(long license_type_id) {
-		this.license_typeId = license_type_id;
+	public void setLicenseTypeId(long licenseTypeId) {
+		this.licenseTypeId = licenseTypeId;
 	}
 
 	public long getSupplierId() {
@@ -131,6 +139,14 @@ public class License extends AuditModel{
 
 	public void setSupplierId(long supplierId) {
 		this.supplierId = supplierId;
+	}
+
+	public LicenseType getLicenseType() {
+		return licenseType;
+	}
+
+	public void setLicenseType(LicenseType licenseType) {
+		this.licenseType = licenseType;
 	}
 	
 }

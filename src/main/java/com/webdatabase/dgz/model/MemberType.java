@@ -27,7 +27,7 @@ public class MemberType extends AuditModel{
 	@Column(name = "id")
 	private long id;
 	
-	@MetaFieldName(label = "Наименование типа члена")
+	@MetaFieldName(label = "Наименование типа участника")
 	@Column(name = "name")
 	private String name;
 	/*

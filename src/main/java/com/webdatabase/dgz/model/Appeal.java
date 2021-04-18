@@ -21,7 +21,7 @@ import com.webdatabase.dgz.query.utils.MetaFieldName;
 
 @Entity
 @Table(name = "appeals")
-@IsMetaClass(label = "Обращение")
+@IsMetaClass(label = "Жалобы")
 public class Appeal extends AuditModel{
 	@MetaFieldName(label = "ID")
 	@Id
@@ -37,6 +37,10 @@ public class Appeal extends AuditModel{
 	@MetaFieldName(label = "Закупающая организация", selectClassName = "ProcuringEntity")
 	@Column(name="procuring_entity_id", nullable=true)
 	private long procuringEntityId;
+	
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name="procuring_entity_id", referencedColumnName="id", insertable=false, updatable=false)
+	private ProcuringEntity procuringEntity;
 	
 	@MetaFieldName(label = "Поставщик", selectClassName = "Supplier")
 	@Column(name = "supplier_id", nullable = true)
@@ -73,6 +77,14 @@ public class Appeal extends AuditModel{
 
 	public void setSupplierId(long supplierId) {
 		this.supplierId = supplierId;
+	}
+
+	public ProcuringEntity getProcuringEntity() {
+		return procuringEntity;
+	}
+
+	public void setProcuringEntity(ProcuringEntity procuringEntity) {
+		this.procuringEntity = procuringEntity;
 	}
 	
 	

@@ -19,6 +19,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.lang.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.webdatabase.dgz.model.base.AuditModel;
 import com.webdatabase.dgz.query.utils.IsMetaClass;
@@ -44,11 +45,19 @@ public class Supplier extends AuditModel {
 	@Column(name="ownership_type_id", nullable=true)
 	private long ownershipTypeId;
 	
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name="ownership_type_id", referencedColumnName="id", insertable=false, updatable=false)
+	private OwnershipType ownershipType;
 	
 	
 	@MetaFieldName(label = "Отрасль", selectClassName = "Industry")
 	@Column(name="industry_id", nullable=true)
 	private long industryId;
+	
+
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name="industry_id", referencedColumnName="id", insertable=false, updatable=false)
+	private Industry industry;
 	
 
 	@MetaFieldName(label = "ИНН")
@@ -97,9 +106,9 @@ public class Supplier extends AuditModel {
 	@Column(name = "is_black")
 	private boolean isBlack;
 	
-	/*
+	
 	@OneToMany(fetch = FetchType.LAZY)
-	@JoinColumn(name = "supplier_id", nullable = true)
+	@JoinColumn(name = "supplier_id")
 	private Set<License> licenses;
 	
 	@OneToMany(fetch = FetchType.LAZY)
@@ -109,7 +118,7 @@ public class Supplier extends AuditModel {
 	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name = "supplier_id", nullable = true)
 	private Set<Appeal> appeals;
-	*/
+	
 	
 	public long getId() {
 		return id;
@@ -232,8 +241,24 @@ public class Supplier extends AuditModel {
 	public void setIndustryId(long industryId) {
 		this.industryId = industryId;
 	}
+
+	public OwnershipType getOwnershipType() {
+		return ownershipType;
+	}
+
+	public void setOwnershipType(OwnershipType ownershipType) {
+		this.ownershipType = ownershipType;
+	}
+
+	public Industry getIndustry() {
+		return industry;
+	}
+
+	public void setIndustry(Industry industry) {
+		this.industry = industry;
+	}
 	
-	/*
+	
 	public Set<License> getLicenses() {
 		return licenses;
 	}
@@ -257,5 +282,5 @@ public class Supplier extends AuditModel {
 	public void setSupplierMembers(Set<SupplierMember> supplierMembers) {
 		this.supplierMembers = supplierMembers;
 	}
-	*/
+	
 }

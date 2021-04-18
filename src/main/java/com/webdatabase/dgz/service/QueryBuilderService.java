@@ -176,8 +176,8 @@ public class QueryBuilderService {
 						fd.setDictionaryClassName(fName.selectClassName());
 						fd.setDictionaryFieldName(fName.selectClassFieldName());
 					}
+					fList.add(fd);
 				}
-				fList.add(fd);
 			}
 			cm.setPropList(fList);
 			
@@ -221,8 +221,8 @@ public class QueryBuilderService {
 					fd.setDictionaryClassName(fName.selectClassName());
 					fd.setDictionaryFieldName(fName.selectClassFieldName());
 				}
+				fList.add(fd);
 			}
-			fList.add(fd);
 		}
 		cm.setPropList(fList);
 		return cm;

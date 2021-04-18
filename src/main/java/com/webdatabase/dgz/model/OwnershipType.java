@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.webdatabase.dgz.model.base.AuditModel;
 import com.webdatabase.dgz.query.utils.IsMetaClass;
 import com.webdatabase.dgz.query.utils.MetaFieldName;
@@ -34,6 +35,7 @@ public class OwnershipType extends AuditModel {
 	/*
 	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ownership_type_id", nullable = true)
+	@JsonManagedReference
 	private Set<Supplier> suppliers;
 	*/
 	

@@ -17,6 +17,7 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
@@ -46,8 +47,29 @@ public class QueryBuilderService {
         CriteriaQuery<T> query = builder.createQuery(clazz);
         Root<T> r = query.from(clazz);
         Specification<T> s = SpecificationUtil.bySearchQuery(searchQuery, clazz);
+        List<Order> o = new ArrayList<>();
         query.where(s.toPredicate(r, query, builder));
-        TypedQuery<T> q = entityManager.createQuery(query);
+        
+        
+        int pageSize = searchQuery.getPageSize();//10
+        int pageNumber = searchQuery.getPageNumber();//2
+        
+        if(pageSize == 0) {
+        	pageSize = 100;
+        }
+        if(pageNumber == 0) {
+        	pageNumber = 1;
+        }
+        
+        int skipSize = pageSize * (pageNumber - 1);//10
+        
+        
+        
+        //int qTotal = entityManager.createQuery(query).getMaxResults();
+        //System.out.println("Total rows: " + qTotal);
+        TypedQuery<T> q = entityManager.createQuery(query)/*
+        		.setMaxResults(pageSize)
+        		.setFirstResult(skipSize + pageNumber)*/;
         List<T> result = q.getResultList();
         return result;
 	}

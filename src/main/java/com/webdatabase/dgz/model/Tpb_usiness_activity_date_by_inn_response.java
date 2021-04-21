@@ -15,7 +15,7 @@ import com.webdatabase.dgz.query.utils.MetaFieldName;
 
 @Entity
 @Table (name = "tpb_usiness_activity_date_by_inn_responses")
-@IsMetaClass(label = "Ввод даты для ответа деловой активности по инн")
+@IsMetaClass(label = "Данные инн об активности ИП(детальная)")
 public class Tpb_usiness_activity_date_by_inn_response extends AuditModel{
 	
 	@MetaFieldName(label = "ID")

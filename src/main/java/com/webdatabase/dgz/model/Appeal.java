@@ -34,7 +34,7 @@ public class Appeal extends AuditModel{
 	private String description;
 	
 	
-	@MetaFieldName(label = "Закупающая организация", selectClassName = "ProcuringEntity")
+	@MetaFieldName(label = "Закупающая организация", selectClassName = "ProcuringEntity", selectClassFieldName="name")
 	@Column(name="procuring_entity_id", nullable=true)
 	private long procuringEntityId;
 	
@@ -63,11 +63,11 @@ public class Appeal extends AuditModel{
 		this.description = description;
 	}
 	
-	public long getProcuring_entityId() {
+	public long getProcuringEntityId() {
 		return procuringEntityId;
 	}
 
-	public void setProcuring_entityId(long procuringEntity) {
+	public void setProcuringEntityId(long procuringEntity) {
 		this.procuringEntityId = procuringEntity;
 	}
 

@@ -13,7 +13,7 @@ import com.webdatabase.dgz.query.utils.MetaFieldName;
 
 @Entity
 @Table (name = "tp_data_by_inn_for_business_activity_responses")
-@IsMetaClass(label = "Ввод данных по инн для ответа о деловой активности")
+@IsMetaClass(label = "Данные инн об активности ИП")
 public class Tp_data_by_inn_for_business_activity_response extends AuditModel {
 	
 	@MetaFieldName(label = "ID")

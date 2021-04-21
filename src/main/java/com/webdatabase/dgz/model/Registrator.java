@@ -2,9 +2,12 @@ package com.webdatabase.dgz.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.springframework.lang.Nullable;
@@ -28,10 +31,13 @@ public class Registrator extends AuditModel {
 	@Column(name = "name")
 	private String name;
 	
-	@MetaFieldName(label = "Партнер")
-	@Nullable
-	@Column(name = "counterpart")
-	private int counterpart;
+	@MetaFieldName(label = "Партнер", selectClassName = "Counterpart")
+	@Column(name = "counterpart_id", nullable = true)
+	private long counterpartId;
+	
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name="counterpart_id", referencedColumnName="id", insertable=false, updatable=false)
+	private Counterpart counterpart;
 	
 	@MetaFieldName(label = "Контактные данные")
 	@Column(name = "contact_data")
@@ -53,19 +59,23 @@ public class Registrator extends AuditModel {
 		this.name = name;
 	}
 
-	public int getCounterpart() {
-		return counterpart;
-	}
-
-	public void setCounterpart(int counterpart) {
-		this.counterpart = counterpart;
-	}
-
 	public String getContactData() {
 		return contactData;
 	}
 
 	public void setContactData(String contactData) {
 		this.contactData = contactData;
+	}
+
+	public long getCounterpartId() {
+		return counterpartId;
+	}
+
+	public void setCounterpartId(long counterpartId) {
+		this.counterpartId = counterpartId;
+	}
+
+	public void setCounterpart(Counterpart counterpart) {
+		this.counterpart = counterpart;
 	}
 }

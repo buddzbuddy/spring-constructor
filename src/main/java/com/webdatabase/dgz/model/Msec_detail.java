@@ -4,9 +4,12 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -61,11 +64,14 @@ public class Msec_detail extends AuditModel {
 	@Column(name = "re_examination")
     private String reExamination;
     
-	@MetaFieldName(label = "Члены поставщика")
-    @Nullable
-    @Column(name = "supplier_member")
-    private int supplier_member;
+	@MetaFieldName(label = "Участники поставщика", selectClassName = "SupplierMember")
+    @Column(name = "supplier_member_id", nullable = true)
+    private long supplierMemberId;
 
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name="supplier_member_id", referencedColumnName="id", insertable=false, updatable=false)
+	private SupplierMember supplierMember;
+	
 	public long getId() {
 		return id;
 	}
@@ -122,12 +128,12 @@ public class Msec_detail extends AuditModel {
 		this.reExamination = reExamination;
 	}
 
-	public int getSupplier_member() {
-		return supplier_member;
+	public long getSupplierMemberId() {
+		return supplierMemberId;
 	}
 
-	public void setSupplier_member(int supplier_member) {
-		this.supplier_member = supplier_member;
+	public void setSupplierMemberId(long supplier_member) {
+		this.supplierMemberId = supplier_member;
 	}
 
 	public String getExaminationType() {
@@ -136,5 +142,13 @@ public class Msec_detail extends AuditModel {
 
 	public void setExaminationType(String examinationType) {
 		this.examinationType = examinationType;
+	}
+
+	public SupplierMember getSupplierMember() {
+		return supplierMember;
+	}
+
+	public void setSupplierMember(SupplierMember supplierMember) {
+		this.supplierMember = supplierMember;
 	}
 }

@@ -2,9 +2,12 @@ package com.webdatabase.dgz.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.springframework.lang.Nullable;
@@ -28,11 +31,15 @@ public class Counterpart extends AuditModel {
 	@Column(name = "name")
     private String name;
     
-	@MetaFieldName(label = "Тип партнера")
-    @Nullable
-    @Column(name = "counterpart_type")
-    private int counterpart_type;
+	@MetaFieldName(label = "Тип партнера", selectClassName = "CounterpartType")
+    @Column(name = "counterpart_type_id", nullable = true)
+    private long counterpartTypeId;
     
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name="counterpart_type_id", referencedColumnName="id", insertable=false, updatable=false)
+	private CounterpartType counterpartType;
+	
+	
 	@MetaFieldName(label = "Контактные данные")
     @Column(columnDefinition = "text", name = "contact_data")
     private String contactData;
@@ -65,14 +72,6 @@ public class Counterpart extends AuditModel {
 		this.name = name;
 	}
 
-	public int getCounterpart_type() {
-		return counterpart_type;
-	}
-
-	public void setCounterpart_type(int counterpart_type) {
-		this.counterpart_type = counterpart_type;
-	}
-
 	public String getContactData() {
 		return contactData;
 	}
@@ -103,5 +102,21 @@ public class Counterpart extends AuditModel {
 
 	public void setComments(String comments) {
 		this.comments = comments;
+	}
+
+	public long getCounterpartTypeId() {
+		return counterpartTypeId;
+	}
+
+	public void setCounterpartTypeId(long counterpartTypeId) {
+		this.counterpartTypeId = counterpartTypeId;
+	}
+
+	public CounterpartType getCounterpartType() {
+		return counterpartType;
+	}
+
+	public void setCounterpartType(CounterpartType counterpartType) {
+		this.counterpartType = counterpartType;
 	}
 }

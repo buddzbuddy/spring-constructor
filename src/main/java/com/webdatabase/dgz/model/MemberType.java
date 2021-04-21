@@ -19,7 +19,7 @@ import com.webdatabase.dgz.query.utils.MetaFieldName;
 
 @Entity
 @Table(name = "member_types")
-@IsMetaClass(label = "Тип члена")
+@IsMetaClass(label = "Тип участника")
 public class MemberType extends AuditModel{
 	@MetaFieldName(label = "ID")
 	@Id

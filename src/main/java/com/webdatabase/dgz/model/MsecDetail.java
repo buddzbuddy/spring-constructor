@@ -23,7 +23,7 @@ import com.webdatabase.dgz.query.utils.MetaFieldName;
 @Entity
 @Table(name = "msec_details")
 @IsMetaClass(label = "Детализация МСЭК")
-public class Msec_detail extends AuditModel {
+public class MsecDetail extends AuditModel {
 
 	@MetaFieldName(label = "ID")
 	@Id
@@ -68,10 +68,6 @@ public class Msec_detail extends AuditModel {
     @Column(name = "supplier_member_id", nullable = true)
     private long supplierMemberId;
 
-	@ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name="supplier_member_id", referencedColumnName="id", insertable=false, updatable=false)
-	private SupplierMember supplierMember;
-	
 	public long getId() {
 		return id;
 	}
@@ -142,13 +138,5 @@ public class Msec_detail extends AuditModel {
 
 	public void setExaminationType(String examinationType) {
 		this.examinationType = examinationType;
-	}
-
-	public SupplierMember getSupplierMember() {
-		return supplierMember;
-	}
-
-	public void setSupplierMember(SupplierMember supplierMember) {
-		this.supplierMember = supplierMember;
 	}
 }

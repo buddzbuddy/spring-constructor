@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.webdatabase.dgz.model.Debt;
 import com.webdatabase.dgz.model.License;
 import com.webdatabase.dgz.model.Supplier;
 import com.webdatabase.dgz.query.utils.SearchQuery;
@@ -82,16 +83,17 @@ public class SupplierDetailsController {
     		Date fd = SpecificationUtil.castToDate(specObj.getDateFrom());
 			Date ld = SpecificationUtil.castToDate(specObj.getDateTo());
 			List<Supplier> newList = new ArrayList<>();
-			/*for(Supplier supplier : list) {
-    			for(License l : supplier.getLicenses()) {
-    				if(l.getExpiryDate().before(ld)
+			for(Supplier supplier : list) {
+    			for(Debt l : supplier.getDebts()) {
+    				if(l.getCreatedAt().before(ld)
     					&&
-    					l.getExpiryDate().after(fd)) {
+    					l.getCreatedAt().after(fd)
+    					&& l.isHas()) {
     					newList.add(supplier);
     					break;
     				}
     			}
-    		}*/
+    		}
     		list = newList;
     	}
     	

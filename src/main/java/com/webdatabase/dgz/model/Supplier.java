@@ -118,6 +118,10 @@ public class Supplier extends AuditModel {
 	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name = "supplier_id", nullable = true)
 	private Set<Appeal> appeals;
+
+	@OneToMany(fetch = FetchType.LAZY)
+	@JoinColumn(name = "supplier_id")
+	private Set<Debt> debts;
 	
 	
 	public long getId() {
@@ -281,6 +285,14 @@ public class Supplier extends AuditModel {
 
 	public void setSupplierMembers(Set<SupplierMember> supplierMembers) {
 		this.supplierMembers = supplierMembers;
+	}
+
+	public Set<Debt> getDebts() {
+		return debts;
+	}
+
+	public void setDebts(Set<Debt> debts) {
+		this.debts = debts;
 	}
 	
 }

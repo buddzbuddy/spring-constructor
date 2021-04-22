@@ -1,6 +1,7 @@
 package com.webdatabase.dgz.model;
 
 import java.util.Date;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -11,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -152,6 +154,10 @@ public class SupplierMember extends AuditModel {
 	@Column(name = "house_id")
 	private int houseId;
 	
+
+	@OneToMany(fetch = FetchType.LAZY)
+	@JoinColumn(name = "supplier_member_id", nullable = true)
+	private Set<MsecDetail> msecDetails;
 	
 	public long getId() {
 		return id;
@@ -384,6 +390,14 @@ public class SupplierMember extends AuditModel {
 
 	public void setMemberType(MemberType memberType) {
 		this.memberType = memberType;
+	}
+
+	public Set<MsecDetail> getMsecDetails() {
+		return msecDetails;
+	}
+
+	public void setMsecDetails(Set<MsecDetail> msecDetails) {
+		this.msecDetails = msecDetails;
 	}
 	
 }

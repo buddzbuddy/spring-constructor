@@ -144,6 +144,12 @@ public class SupplierDetailsController {
 		System.out.println(s.getOwnershipType().getName());
     	return new ResponseEntity<>(s, HttpStatus.OK);
     }
+	
+	@GetMapping(path = "/initMsecData/{id}")
+    public ResponseEntity<?> initMsecData(@PathVariable long id)
+    {
+    	return new ResponseEntity<>(null, HttpStatus.OK);
+    }
 }
 class CustomQueryModel{
 	private SearchQuery searchQuery;

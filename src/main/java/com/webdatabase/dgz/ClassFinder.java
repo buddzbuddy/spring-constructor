@@ -20,6 +20,7 @@ public class ClassFinder {
         if (scannedUrl == null) {
             throw new IllegalArgumentException(String.format(BAD_PACKAGE_ERROR, scannedPath, scannedPackage));
         }
+        System.out.println(scannedUrl.getFile());
         File scannedDir = new File(scannedUrl.getFile());
         List<Class<?>> classes = new ArrayList<Class<?>>();
         for (File file : scannedDir.listFiles()) {

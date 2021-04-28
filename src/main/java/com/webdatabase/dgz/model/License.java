@@ -20,7 +20,7 @@ import com.webdatabase.dgz.query.utils.MetaFieldName;
 
 @Entity
 @Table(name = "license")
-@IsMetaClass(label = "Лицензия")
+@IsMetaClass(label = "Лицензия", orderNo = 4)
 public class License extends AuditModel{
 	
 	@MetaFieldName(label = "ID")

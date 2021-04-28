@@ -123,6 +123,13 @@ public class Supplier extends AuditModel {
 	@JoinColumn(name = "supplier_id")
 	private Set<Debt> debts;
 	
+	@OneToMany(fetch = FetchType.LAZY)
+	@JoinColumn(name = "supplier_id")
+	private Set<Litigation> litigations;
+	
+	@OneToMany(fetch = FetchType.LAZY)
+	@JoinColumn(name = "supplier_id")
+	private Set<CriminalCase> criminalCases;
 	
 	public long getId() {
 		return id;
@@ -293,6 +300,22 @@ public class Supplier extends AuditModel {
 
 	public void setDebts(Set<Debt> debts) {
 		this.debts = debts;
+	}
+
+	public Set<Litigation> getLitigations() {
+		return litigations;
+	}
+
+	public void setLitigations(Set<Litigation> litigations) {
+		this.litigations = litigations;
+	}
+
+	public Set<CriminalCase> getCriminalCases() {
+		return criminalCases;
+	}
+
+	public void setCriminalCases(Set<CriminalCase> criminalCases) {
+		this.criminalCases = criminalCases;
 	}
 	
 }

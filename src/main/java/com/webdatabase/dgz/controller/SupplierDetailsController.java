@@ -18,8 +18,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.webdatabase.dgz.model.CriminalCase;
 import com.webdatabase.dgz.model.Debt;
 import com.webdatabase.dgz.model.License;
+import com.webdatabase.dgz.model.Litigation;
 import com.webdatabase.dgz.model.Supplier;
 import com.webdatabase.dgz.query.utils.SearchQuery;
 import com.webdatabase.dgz.query.utils.SpecificationUtil;
@@ -98,38 +100,38 @@ public class SupplierDetailsController {
     	}
     	
 
-    	if(customQuery.getSpec4() != null) {//наличие задолженности за период
+    	if(customQuery.getSpec4() != null) {//наличие уголовных дел
     		spec2 specObj = customQuery.getSpec4();
     		Date fd = SpecificationUtil.castToDate(specObj.getDateFrom());
 			Date ld = SpecificationUtil.castToDate(specObj.getDateTo());
 			List<Supplier> newList = new ArrayList<>();
-			/*for(Supplier supplier : list) {
-    			for(License l : supplier.getLicenses()) {
-    				if(l.getExpiryDate().before(ld)
+			for(Supplier supplier : list) {
+    			for(CriminalCase c : supplier.getCriminalCases()) {
+    				if(c.getCreatedAt().before(ld)
     					&&
-    					l.getExpiryDate().after(fd)) {
+    					c.getCreatedAt().after(fd)) {
     					newList.add(supplier);
     					break;
     				}
     			}
-    		}*/
+    		}
     		list = newList;
     	}
-    	if(customQuery.getSpec5() != null) {//наличие задолженности за период
+    	if(customQuery.getSpec5() != null) {//наличие судебных тяжб
     		spec2 specObj = customQuery.getSpec5();
     		Date fd = SpecificationUtil.castToDate(specObj.getDateFrom());
 			Date ld = SpecificationUtil.castToDate(specObj.getDateTo());
 			List<Supplier> newList = new ArrayList<>();
-			/*for(Supplier supplier : list) {
-    			for(License l : supplier.getLicenses()) {
-    				if(l.getExpiryDate().before(ld)
+			for(Supplier supplier : list) {
+    			for(Litigation l : supplier.getLitigations()) {
+    				if(l.getCreatedAt().before(ld)
     					&&
-    					l.getExpiryDate().after(fd)) {
+    					l.getCreatedAt().after(fd)) {
     					newList.add(supplier);
     					break;
     				}
     			}
-    		}*/
+    		}
     		list = newList;
     	}
     	

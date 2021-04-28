@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
+import com.webdatabase.dgz.model.Appeal;
 import com.webdatabase.dgz.model.CriminalCase;
 import com.webdatabase.dgz.model.Debt;
 import com.webdatabase.dgz.model.License;
@@ -135,6 +138,24 @@ public class SupplierDetailsController {
     		list = newList;
     	}
     	
+    	if(customQuery.getSpec6() != null) {//наличие жалобы
+    		spec2 specObj = customQuery.getSpec6();
+    		Date fd = SpecificationUtil.castToDate(specObj.getDateFrom());
+			Date ld = SpecificationUtil.castToDate(specObj.getDateTo());
+			List<Supplier> newList = new ArrayList<>();
+			for(Supplier supplier : list) {
+    			for(Appeal a : supplier.getAppeals()) {
+    				if(a.getCreatedAt().before(ld)
+    					&&
+    					a.getCreatedAt().after(fd)) {
+    					newList.add(supplier);
+    					break;
+    				}
+    			}
+    		}
+    		list = newList;
+    	}
+    	
     	QueryResult res = new QueryResult(true, "", list.toArray(new Supplier[0]));
     	return new ResponseEntity<QueryResult>(res, HttpStatus.OK);
     }
@@ -149,7 +170,11 @@ public class SupplierDetailsController {
 	
 	@GetMapping(path = "/initMsecData/{id}")
     public ResponseEntity<?> initMsecData(@PathVariable long id)
-    {
+    {	
+		RestTemplate restTemplate = new RestTemplate();
+		HttpEntity<Supplier> requestEntity = new HttpEntity<>(null);
+		
+		Supplier supplier = supplierRepo.findById(id).get();
     	return new ResponseEntity<>(null, HttpStatus.OK);
     }
 }
@@ -161,6 +186,7 @@ class CustomQueryModel{
 	private spec2 spec3;
 	private spec2 spec4;
 	private spec2 spec5;
+	private spec2 spec6;
 
 	public SearchQuery getSearchQuery() {
 		return searchQuery;
@@ -208,6 +234,14 @@ class CustomQueryModel{
 
 	public void setSpec5(spec2 spec5) {
 		this.spec5 = spec5;
+	}
+
+	public spec2 getSpec6() {
+		return spec6;
+	}
+
+	public void setSpec6(spec2 spec6) {
+		this.spec6 = spec6;
 	}
 	
 	

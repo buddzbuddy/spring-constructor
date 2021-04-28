@@ -140,10 +140,11 @@ public class SupplierDetailsController {
     	
     	if(customQuery.getSpec6() != null) {//наличие жалобы
     		spec2 specObj = customQuery.getSpec6();
-    		Date fd = SpecificationUtil.castToDate(specObj.getDateFrom());
-			Date ld = SpecificationUtil.castToDate(specObj.getDateTo());
+    		Date fd = specObj.getDateFrom() != null ? SpecificationUtil.castToDate(specObj.getDateFrom()) : null;
+			Date ld = specObj.getDateTo() != null ? SpecificationUtil.castToDate(specObj.getDateTo()) : null;
 			List<Supplier> newList = new ArrayList<>();
 			for(Supplier supplier : list) {
+				if(fd != null && ld != null)
     			for(Appeal a : supplier.getAppeals()) {
     				if(a.getCreatedAt().before(ld)
     					&&
@@ -152,6 +153,11 @@ public class SupplierDetailsController {
     					break;
     				}
     			}
+				else {
+					if (supplier.getAppeals() != null && supplier.getAppeals().size() > 0) {
+						newList.add(supplier);
+					}
+				}
     		}
     		list = newList;
     	}

@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -170,7 +171,9 @@ public class SupplierDetailsController {
 	@GetMapping(path = "/getDetails/{id}")
     public ResponseEntity<?> get(@PathVariable long id)
     {
-		Supplier s = supplierRepo.findById(id).get();
+		Optional<Supplier> sop = supplierRepo.findById(id);
+		assert sop.isPresent();
+		Supplier s = sop.get();
 		System.out.println(s.getOwnershipType().getName());
     	return new ResponseEntity<>(s, HttpStatus.OK);
     }
@@ -180,8 +183,9 @@ public class SupplierDetailsController {
     {	
 		RestTemplate restTemplate = new RestTemplate();
 		HttpEntity<Supplier> requestEntity = new HttpEntity<>(null);
-		
-		Supplier supplier = supplierRepo.findById(id).get();
+		Optional<Supplier> sop = supplierRepo.findById(id);
+		assert sop.isPresent();
+		Supplier supplier = sop.get();
     	return new ResponseEntity<>(null, HttpStatus.OK);
     }
 }

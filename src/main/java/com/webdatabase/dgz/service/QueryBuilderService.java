@@ -1,11 +1,7 @@
 package com.webdatabase.dgz.service;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,6 +17,8 @@ import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
+
+import org.reflections.Reflections;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import com.webdatabase.dgz.ClassFinder;
@@ -170,12 +168,17 @@ public class QueryBuilderService {
 	}
 
 	public MyClassDesc[] getMetaDescription() {
-		List<Class<?>> classes = ClassFinder.find("com.webdatabase.dgz.model");
+
+		Reflections reflections = new Reflections("com.webdatabase.dgz.model");
+
+		Set<Class<?>> annotated = reflections.getTypesAnnotatedWith(IsMetaClass.class);
+
+		//List<Class<?>> classes = ClassFinder.find("com.webdatabase.dgz.model");
 		
 		
 		
 		ArrayList<MyClassDesc> descModel = new ArrayList<MyClassDesc> ();
-		for(Class<?> c : classes) {
+		for(Class<?> c : annotated) {
 			IsMetaClass mc = c.getAnnotation(IsMetaClass.class);
 			if(mc == null) {
 				continue;

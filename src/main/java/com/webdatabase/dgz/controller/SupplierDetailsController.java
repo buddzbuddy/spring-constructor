@@ -71,7 +71,8 @@ public class SupplierDetailsController {
 			List<Supplier> newList = new ArrayList<>();
 			for(Supplier supplier : list) {
     			for(License l : supplier.getLicenses()) {
-    				if(l.getExpiryDate().before(ld)
+					assert l.getExpiryDate() != null;
+					if(l.getExpiryDate().before(ld)
     					&&
     					l.getExpiryDate().after(fd)) {
     					newList.add(supplier);

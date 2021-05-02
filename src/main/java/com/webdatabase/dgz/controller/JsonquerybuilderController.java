@@ -73,27 +73,12 @@ public class JsonquerybuilderController {
 				Constructor<?> constructor = birdClass.getConstructor();
 	    	    Object t = constructor.newInstance();
 	    		queryApi.addEntry(insert, t.getClass());
-			} catch (NoSuchMethodException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (SecurityException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InstantiationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
+			} catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-    	      
-        	QueryResult res = new QueryResult(true, "", null);
+
+			QueryResult res = new QueryResult(true, "", null);
 	    	return new ResponseEntity<Boolean>(true, HttpStatus.OK);
 		} catch (ClassNotFoundException e) {
 	    	QueryResult res = new QueryResult(false, "Класс не найден", null);

@@ -7,6 +7,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import com.webdatabase.dgz.model.License;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -15,15 +17,11 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
 
 public class ExcelUpload {
+
 	public static String TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 	
 	public static boolean hasExcelFormat(MultipartFile file) {
-
-	    if (!TYPE.equals(file.getContentType())) {
-	      return false;
-	    }
-	
-	    return true;
+		return TYPE.equals(file.getContentType());
 	}
 
 	public static List<InsertEntityModel> excelToList(InputStream iStream, String entityName, Class<?> clazz) {
@@ -122,4 +120,41 @@ public class ExcelUpload {
 		}
 	    return entries;
 	  }
+
+	private static final int license_secret_row = 0;
+	private static final int license_secret_col = 7;
+	private static final String license_secret_word = "license_s3cret";
+	private static boolean isLicenseFile(Sheet sheet){
+		Row r = sheet.getRow(license_secret_row);
+		Cell c = r.getCell(license_secret_col);
+		System.out.println(c.getStringCellValue());
+		return c.getStringCellValue().equals(license_secret_word);
+	}
+	public static List<License> excelLicenseToList(InputStream iStream) {
+
+		List<License> licenses = new ArrayList<>();
+		try {
+			Workbook workbook = new XSSFWorkbook(iStream);
+
+			Sheet sheet = workbook.getSheetAt(0);
+
+			if(!isLicenseFile(sheet)) {
+				return licenses;
+			}
+
+			for (int i = 1; i < 1001; i++) {
+				Row r = sheet.getRow(i);
+
+
+			}
+
+			workbook.close();
+		} catch (IOException e) {
+			throw new RuntimeException("fail to parse Excel file: " + e.getMessage());
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return licenses;
+	}
 }

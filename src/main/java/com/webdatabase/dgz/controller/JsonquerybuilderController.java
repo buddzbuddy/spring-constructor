@@ -123,6 +123,26 @@ public class JsonquerybuilderController {
         message = "Загрузите файл в формате Excel!";
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(message));
     }
+
+
+	@PostMapping("/upload/license")
+	public ResponseEntity<ResponseMessage> uploadLicense(@RequestParam("file") MultipartFile file) {
+		String message = "";
+
+		if (ExcelUpload.hasExcelFormat(file)) {
+			try {
+				ExcelUpload.excelLicenseToList(file.getInputStream());
+				message = "Файл успешно загружен: " + file.getOriginalFilename();
+				return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
+			} catch (Exception e) {
+				message = "Не удалось загрузить файл: " + file.getOriginalFilename() + "!";
+				return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
+			}
+		}
+
+		message = "Загрузите файл в формате Excel!";
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(message));
+	}
 }
 class QueryCondition {
 	private String table;

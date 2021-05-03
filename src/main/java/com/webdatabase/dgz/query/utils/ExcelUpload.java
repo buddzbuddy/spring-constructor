@@ -11,8 +11,13 @@ import java.time.format.ResolverStyle;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import com.webdatabase.dgz.model.License;
+import com.webdatabase.dgz.model.LicenseType;
+import com.webdatabase.dgz.model.Supplier;
+import com.webdatabase.dgz.repository.LicenseTypeRepository;
+import com.webdatabase.dgz.repository.SupplierRepository;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -125,6 +130,14 @@ public class ExcelUpload {
 	    return entries;
 	  }
 
+
+	  private final SupplierRepository _supplierRepo;
+	private final LicenseTypeRepository _licenseTypeRepo;
+
+	public ExcelUpload(SupplierRepository supplierRepository, LicenseTypeRepository licenseTypeRepository) {
+		_supplierRepo = supplierRepository;
+		_licenseTypeRepo = licenseTypeRepository;
+	}
 	private static final int license_secret_row = 0;
 	private static final int license_secret_col = 7;
 	private static final String license_secret_word = "license_s3cret";
@@ -134,7 +147,7 @@ public class ExcelUpload {
 		System.out.println(c.getStringCellValue());
 		return c.getStringCellValue().equals(license_secret_word);
 	}
-	public static ExcelUploadResultMessage excelLicenseToList(InputStream iStream) {
+	public ExcelUploadResultMessage excelLicenseToList(InputStream iStream) {
 		ExcelUploadResultMessage response = new ExcelUploadResultMessage();
 		List<License> licenses = new ArrayList<>();
 		try {
@@ -164,16 +177,24 @@ public class ExcelUpload {
 					response.setErrorMessage("Один из полей строки № " + (i+1) + " пуст!");
 					return response;
 				}
-				if(!isValid(issueDateStr)) {
+				if(isError(issueDateStr)) {
 					response.setResult(false);
 					response.setErrorMessage("Значение поля \"Дата выдачи\" некорректный - строка № " + (i+1));
 					return response;
 				}
-				if(!isValid(expiryDateStr)) {
+				if(isError(expiryDateStr)) {
 					response.setResult(false);
 					response.setErrorMessage("Значение поля \"Срок окончания\" некорректный - строка № " + (i+1));
 					return response;
 				}
+				Supplier supplier = getSupplierByInn(supplierInn);
+				if(supplier == null) {
+					response.setResult(false);
+					response.setErrorMessage("Поставщик с ИНН \""+ supplierInn +"\" не найден в базе - строка № " + (i+1));
+					return response;
+				}
+
+
 			}
 
 			workbook.close();
@@ -185,25 +206,32 @@ public class ExcelUpload {
 		}
 		return response;
 	}
-	public static boolean isValid(final String date) {
+	private Supplier getSupplierByInn(String inn) {
+		Optional<Supplier> obj = _supplierRepo.findByInn(inn);
+		return obj.orElse(null);
+	}
+	private LicenseType getLicenseTypeByName(String name) {
+		Optional<LicenseType> obj = _licenseTypeRepo.findByName(name);
+		return obj.orElse(null);
+	}
+	public static boolean isError(final String date) {
 
-		boolean valid = false;
+		boolean error = true;
 
 		try {
 
 			// ResolverStyle.STRICT for 30, 31 days checking, and also leap year.
 			LocalDate.parse(date,
-					DateTimeFormatter.ofPattern("uuuu-M-d")
+					DateTimeFormatter.ofPattern("dd.MM.yyyy")
 							.withResolverStyle(ResolverStyle.STRICT)
 			);
 
-			valid = true;
+			error = false;
 
 		} catch (DateTimeParseException e) {
 			e.printStackTrace();
-			valid = false;
 		}
 
-		return valid;
+		return error;
 	}
 }

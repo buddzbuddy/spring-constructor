@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import com.webdatabase.dgz.repository.LicenseTypeRepository;
+import com.webdatabase.dgz.repository.SupplierRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -38,6 +40,10 @@ import com.webdatabase.dgz.service.QueryBuilderService;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class JsonquerybuilderController {
 
+	@Autowired
+	private SupplierRepository supplierRepo;
+	@Autowired
+	private LicenseTypeRepository licenseTypeRepo;
     @Autowired
     private QueryBuilderService queryApi;
     
@@ -128,10 +134,10 @@ public class JsonquerybuilderController {
 	@PostMapping("/upload/license")
 	public ResponseEntity<ResponseMessage> uploadLicense(@RequestParam("file") MultipartFile file) {
 		String message = "";
-
-		if (ExcelUpload.hasExcelFormat(file)) {
+		ExcelUpload excelUpload = new ExcelUpload(supplierRepo, licenseTypeRepo);
+		if (excelUpload.hasExcelFormat(file)) {
 			try {
-				ExcelUpload.excelLicenseToList(file.getInputStream());
+				excelUpload.excelLicenseToList(file.getInputStream());
 				message = "Файл успешно загружен: " + file.getOriginalFilename();
 				return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
 			} catch (Exception e) {

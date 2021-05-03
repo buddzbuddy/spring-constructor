@@ -4,6 +4,10 @@ import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -16,8 +20,8 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
 
-public class ExcelUpload {
 
+public class ExcelUpload {
 	public static String TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 	
 	public static boolean hasExcelFormat(MultipartFile file) {
@@ -130,8 +134,8 @@ public class ExcelUpload {
 		System.out.println(c.getStringCellValue());
 		return c.getStringCellValue().equals(license_secret_word);
 	}
-	public static List<License> excelLicenseToList(InputStream iStream) {
-
+	public static ExcelUploadResultMessage excelLicenseToList(InputStream iStream) {
+		ExcelUploadResultMessage response = new ExcelUploadResultMessage();
 		List<License> licenses = new ArrayList<>();
 		try {
 			Workbook workbook = new XSSFWorkbook(iStream);
@@ -139,13 +143,37 @@ public class ExcelUpload {
 			Sheet sheet = workbook.getSheetAt(0);
 
 			if(!isLicenseFile(sheet)) {
-				return licenses;
+				response.setResult(false);
+				response.setErrorMessage("Файл не идентифицирован! Вы используете сторонний файл!");
+				return response;
 			}
 
 			for (int i = 1; i < 1001; i++) {
 				Row r = sheet.getRow(i);
-
-
+				String issuer = r.getCell(0).getStringCellValue();
+				String no = r.getCell(1).getStringCellValue();
+				String issueDateStr = r.getCell(2).getStringCellValue();
+				String supplierInn = r.getCell(3).getStringCellValue();
+				String licenseTypeName = r.getCell(4).getStringCellValue();
+				String expiryDateStr = r.getCell(5).getStringCellValue();
+				String additionalInfo = r.getCell(6).getStringCellValue();
+				if(issuer.isEmpty() || no.isEmpty() || issueDateStr.isEmpty() ||
+						supplierInn.isEmpty() || licenseTypeName.isEmpty() ||
+						expiryDateStr.isEmpty() || additionalInfo.isEmpty()) {
+					response.setResult(false);
+					response.setErrorMessage("Один из полей строки № " + (i+1) + " пуст!");
+					return response;
+				}
+				if(!isValid(issueDateStr)) {
+					response.setResult(false);
+					response.setErrorMessage("Значение поля \"Дата выдачи\" некорректный - строка № " + (i+1));
+					return response;
+				}
+				if(!isValid(expiryDateStr)) {
+					response.setResult(false);
+					response.setErrorMessage("Значение поля \"Срок окончания\" некорректный - строка № " + (i+1));
+					return response;
+				}
 			}
 
 			workbook.close();
@@ -155,6 +183,27 @@ public class ExcelUpload {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return licenses;
+		return response;
+	}
+	public static boolean isValid(final String date) {
+
+		boolean valid = false;
+
+		try {
+
+			// ResolverStyle.STRICT for 30, 31 days checking, and also leap year.
+			LocalDate.parse(date,
+					DateTimeFormatter.ofPattern("uuuu-M-d")
+							.withResolverStyle(ResolverStyle.STRICT)
+			);
+
+			valid = true;
+
+		} catch (DateTimeParseException e) {
+			e.printStackTrace();
+			valid = false;
+		}
+
+		return valid;
 	}
 }

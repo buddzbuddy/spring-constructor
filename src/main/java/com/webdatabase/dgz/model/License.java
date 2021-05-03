@@ -29,7 +29,7 @@ public class License extends AuditModel{
 	@Column(name = "id")
 	private long id;
 	
-	@MetaFieldName(label = "Эмитент")
+	@MetaFieldName(label = "Выдавший орган")
 	@Column(name = "issuer")
 	private String issuer;
 	

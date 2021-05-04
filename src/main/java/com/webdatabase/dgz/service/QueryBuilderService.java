@@ -1,9 +1,14 @@
 package com.webdatabase.dgz.service;
 
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -16,16 +21,17 @@ import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
-
-import org.reflections.Reflections;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import com.webdatabase.dgz.ClassFinder;
+import com.webdatabase.dgz.query.utils.QueryCriteriaConsumer;
 import com.webdatabase.dgz.query.utils.FieldDesc;
 import com.webdatabase.dgz.query.utils.InsertEntityFieldModel;
 import com.webdatabase.dgz.query.utils.InsertEntityModel;
 import com.webdatabase.dgz.query.utils.IsMetaClass;
 import com.webdatabase.dgz.query.utils.MetaFieldName;
 import com.webdatabase.dgz.query.utils.MyClassDesc;
+import com.webdatabase.dgz.query.utils.SearchCriteria;
 import com.webdatabase.dgz.query.utils.SearchQuery;
 import com.webdatabase.dgz.query.utils.SpecificationUtil;
 
@@ -119,7 +125,13 @@ public class QueryBuilderService {
 				}
 					
 				
-			} catch (RuntimeException | NoSuchFieldException e) {
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (RuntimeException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NoSuchFieldException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (Exception e) {
@@ -129,7 +141,6 @@ public class QueryBuilderService {
 			
 			
 		}
-		assert et != null;
 		String queryString = "INSERT INTO " + et.name() + " ("+ String.join(", ", names) +") VALUES (" + String.join(",", symbols) + ")";
 		Query q = entityManager.createNativeQuery(queryString);
 	
@@ -159,17 +170,12 @@ public class QueryBuilderService {
 	}
 
 	public MyClassDesc[] getMetaDescription() {
-
-		Reflections reflections = new Reflections("com.webdatabase.dgz.model");
-
-		Set<Class<?>> annotated = reflections.getTypesAnnotatedWith(IsMetaClass.class);
-
-		//List<Class<?>> classes = ClassFinder.find("com.webdatabase.dgz.model");
+		List<Class<?>> classes = ClassFinder.find("com.webdatabase.dgz.model");
 		
 		
 		
 		ArrayList<MyClassDesc> descModel = new ArrayList<MyClassDesc> ();
-		for(Class<?> c : annotated) {
+		for(Class<?> c : classes) {
 			IsMetaClass mc = c.getAnnotation(IsMetaClass.class);
 			if(mc == null) {
 				continue;
@@ -201,12 +207,12 @@ public class QueryBuilderService {
 		}
 		
 
-		descModel.sort(new Comparator<MyClassDesc>() {
-			@Override
-			public int compare(MyClassDesc c1, MyClassDesc c2) {
-				return c1.getOrderNo().compareTo(c2.getOrderNo());
-			}
-		});
+		Collections.sort(descModel, new Comparator<MyClassDesc>() {
+			  @Override
+			  public int compare(MyClassDesc c1, MyClassDesc c2) {
+			    return c1.getOrderNo().compareTo(c2.getOrderNo());
+			  }
+			});
 		
 		MyClassDesc[] a = new MyClassDesc[descModel.size()];
 		return descModel.toArray(a);
@@ -244,12 +250,8 @@ public class QueryBuilderService {
 		return cm;
 	}
 	public Class<?> findClassByName(String name){
-		Reflections reflections = new Reflections("com.webdatabase.dgz.model");
-
-		Set<Class<?>> annotated = reflections.getTypesAnnotatedWith(IsMetaClass.class);
-
-		//List<Class<?>> classes = ClassFinder.find("com.webdatabase.dgz.model");
-		for(Class<?> c : annotated) {
+		List<Class<?>> classes = ClassFinder.find("com.webdatabase.dgz.model");
+		for(Class<?> c : classes) {
 			IsMetaClass mc = c.getAnnotation(IsMetaClass.class);
 			if(mc == null) {
 				continue;

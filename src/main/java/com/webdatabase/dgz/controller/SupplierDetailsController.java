@@ -236,8 +236,12 @@ public class SupplierDetailsController {
 				}
 			}
 		}
+
+		JSONObject response = new JSONObject();
+		response.put("message", "Данные МСЭК успешно обновлены у " + successCount + " участников");
+		response.put("scannedCount", listSuppliers.size());
 		
-		return new ResponseEntity<>("Данные МСЭК успешно обновлены у " + successCount + " участников", HttpStatus.OK);
+		return new ResponseEntity<>(response.toMap(), HttpStatus.OK);
 	}
 	
 	public static Date parseDate(final String date) {

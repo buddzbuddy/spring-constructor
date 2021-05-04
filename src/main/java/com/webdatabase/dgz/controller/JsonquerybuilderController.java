@@ -10,6 +10,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import com.webdatabase.dgz.query.utils.*;
+import com.webdatabase.dgz.repository.LicenseRepository;
+import com.webdatabase.dgz.repository.LicenseTypeRepository;
+import com.webdatabase.dgz.repository.SupplierRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,12 +29,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.webdatabase.dgz.message.ResponseMessage;
-import com.webdatabase.dgz.query.utils.ExcelUpload;
-import com.webdatabase.dgz.query.utils.InsertEntityFieldModel;
-import com.webdatabase.dgz.query.utils.InsertEntityModel;
-import com.webdatabase.dgz.query.utils.MyClassDesc;
-import com.webdatabase.dgz.query.utils.SearchCriteria;
-import com.webdatabase.dgz.query.utils.SearchQuery;
 import com.webdatabase.dgz.service.QueryBuilderService;
 
 @RestController
@@ -38,6 +36,12 @@ import com.webdatabase.dgz.service.QueryBuilderService;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class JsonquerybuilderController {
 
+	@Autowired
+	private SupplierRepository supplierRepo;
+	@Autowired
+	private LicenseTypeRepository licenseTypeRepo;
+	@Autowired
+	private LicenseRepository licenseRepo;
     @Autowired
     private QueryBuilderService queryApi;
     
@@ -73,27 +77,12 @@ public class JsonquerybuilderController {
 				Constructor<?> constructor = birdClass.getConstructor();
 	    	    Object t = constructor.newInstance();
 	    		queryApi.addEntry(insert, t.getClass());
-			} catch (NoSuchMethodException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (SecurityException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InstantiationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
+			} catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-    	      
-        	QueryResult res = new QueryResult(true, "", null);
+
+			QueryResult res = new QueryResult(true, "", null);
 	    	return new ResponseEntity<Boolean>(true, HttpStatus.OK);
 		} catch (ClassNotFoundException e) {
 	    	QueryResult res = new QueryResult(false, "Класс не найден", null);
@@ -138,6 +127,32 @@ public class JsonquerybuilderController {
         message = "Загрузите файл в формате Excel!";
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(message));
     }
+
+
+	@PostMapping("/upload/license")
+	public ResponseEntity<ResponseMessage> uploadLicense(@RequestParam("file") MultipartFile file) {
+		String message = "";
+		ExcelUpload excelUpload = new ExcelUpload(supplierRepo, licenseTypeRepo, licenseRepo);
+		if (excelUpload.hasExcelFormat(file)) {
+			try {
+				ExcelUploadResultMessage resultMessage = excelUpload.excelLicenseToList(file.getInputStream());
+				if(resultMessage.isResult()) {
+					message = "Файл успешно загружен: " + file.getOriginalFilename();
+				}
+				else {
+					message = resultMessage.getErrorMessage();
+				}
+				return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
+			} catch (Exception e) {
+				e.printStackTrace();
+				message = "Не удалось загрузить файл: " + file.getOriginalFilename() + "!";
+				return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
+			}
+		}
+
+		message = "Загрузите файл в формате Excel!";
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(message));
+	}
 }
 class QueryCondition {
 	private String table;

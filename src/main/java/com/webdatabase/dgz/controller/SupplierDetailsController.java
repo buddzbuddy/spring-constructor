@@ -2,15 +2,13 @@ package com.webdatabase.dgz.controller;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.webdatabase.dgz.model.Appeal;
 import com.webdatabase.dgz.model.CriminalCase;
@@ -71,7 +71,8 @@ public class SupplierDetailsController {
 			List<Supplier> newList = new ArrayList<>();
 			for(Supplier supplier : list) {
     			for(License l : supplier.getLicenses()) {
-    				if(l.getExpiryDate().before(ld)
+					assert l.getExpiryDate() != null;
+					if(l.getExpiryDate().before(ld)
     					&&
     					l.getExpiryDate().after(fd)) {
     					newList.add(supplier);
@@ -169,12 +170,47 @@ public class SupplierDetailsController {
 	@GetMapping(path = "/getDetails/{id}")
     public ResponseEntity<?> get(@PathVariable long id)
     {
-		Supplier s = supplierRepo.findById(id).get();
+		Optional<Supplier> sop = supplierRepo.findById(id);
+		assert sop.isPresent();
+		Supplier s = sop.get();
 		System.out.println(s.getOwnershipType().getName());
     	return new ResponseEntity<>(s, HttpStatus.OK);
     }
-	
 
+
+	private final ObjectMapper objectMapper = new ObjectMapper();
+	@GetMapping(path = "/initMsecData/{id}")
+    public ResponseEntity<?> initMsecData(@PathVariable long id)
+    {
+		Optional<Supplier> sop = supplierRepo.findById(id);
+		assert sop.isPresent();
+		Supplier supplier = sop.get();
+
+		//setting up the request headers
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		RestTemplate restTemplate = new RestTemplate();
+
+		JSONObject msecReq = new JSONObject();
+		msecReq.put("clientId", "ebb7570a-5357-4afa-8430-19843b34dfd7");
+
+		JSONObject item_1 = new JSONObject();
+		JSONObject item_1_1 = new JSONObject();
+		JSONObject item_1_1_1 = new JSONObject();
+		item_1_1_1.put("PIN", "12001197100390");
+		item_1_1.put("request", item_1_1_1);
+		item_1.put("MSECDetails", item_1_1);
+		msecReq.put("request", item_1);
+
+		HttpEntity<String> request = new HttpEntity<String>(msecReq.toString(), headers);
+		String msecResultStr = restTemplate.postForObject("http://195.38.189.101:8088/ServiceConstructor/SoapClient/SendRequest2", request, String.class);
+		JSONObject res = new JSONObject(msecResultStr);
+		JSONObject res_item_1 = res.getJSONObject("response");
+		JSONObject res_item_1_1 = res_item_1.getJSONObject("MSECDetailsResponse");
+		JSONObject res_item_1_1_2 = res_item_1_1.getJSONObject("response");
+
+		return new ResponseEntity<>(res_item_1_1_2.getString("OrganizationName"), HttpStatus.OK);
+    }
 }
 class CustomQueryModel{
 	private SearchQuery searchQuery;

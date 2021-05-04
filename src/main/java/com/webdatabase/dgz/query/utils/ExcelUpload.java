@@ -151,9 +151,7 @@ public class ExcelUpload {
 		List<License> licenses = new ArrayList<>();
 		try {
 			Workbook workbook = new XSSFWorkbook(iStream);
-
 			Sheet sheet = workbook.getSheetAt(0);
-
 			if(!isLicenseFile(sheet)) {
 				response.setResult(false);
 				response.setErrorMessage("Файл не идентифицирован! Вы используете сторонний файл!");
@@ -171,6 +169,11 @@ public class ExcelUpload {
 					String licenseTypeName = r.getCell(4).getStringCellValue();
 					String expiryDateStr = r.getCell(5).getStringCellValue();
 					String additionalInfo = r.getCell(6).getStringCellValue();
+					if(issuer.isEmpty() && no.isEmpty() && issueDateStr.isEmpty() &&
+							supplierInn.isEmpty() && licenseTypeName.isEmpty() &&
+							expiryDateStr.isEmpty() && additionalInfo.isEmpty()) {
+						break;
+					}
 					if(issuer.isEmpty() || no.isEmpty() || issueDateStr.isEmpty() ||
 							supplierInn.isEmpty() || licenseTypeName.isEmpty() ||
 							expiryDateStr.isEmpty() || additionalInfo.isEmpty()) {

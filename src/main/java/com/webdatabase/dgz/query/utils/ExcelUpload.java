@@ -4,10 +4,6 @@ import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.time.format.ResolverStyle;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -16,6 +12,7 @@ import java.util.Optional;
 import com.webdatabase.dgz.model.License;
 import com.webdatabase.dgz.model.LicenseType;
 import com.webdatabase.dgz.model.Supplier;
+import com.webdatabase.dgz.repository.LicenseRepository;
 import com.webdatabase.dgz.repository.LicenseTypeRepository;
 import com.webdatabase.dgz.repository.SupplierRepository;
 import org.apache.poi.ss.usermodel.Cell;
@@ -133,10 +130,12 @@ public class ExcelUpload {
 
 	  private final SupplierRepository _supplierRepo;
 	private final LicenseTypeRepository _licenseTypeRepo;
+	private final LicenseRepository _licenseRepo;
 
-	public ExcelUpload(SupplierRepository supplierRepository, LicenseTypeRepository licenseTypeRepository) {
+	public ExcelUpload(SupplierRepository supplierRepository, LicenseTypeRepository licenseTypeRepository, LicenseRepository licenseRepository) {
 		_supplierRepo = supplierRepository;
 		_licenseTypeRepo = licenseTypeRepository;
+		_licenseRepo = licenseRepository;
 	}
 	private static final int license_secret_row = 0;
 	private static final int license_secret_col = 7;
@@ -161,43 +160,67 @@ public class ExcelUpload {
 				return response;
 			}
 
+			List<License> licenseList = new ArrayList<>();
 			for (int i = 1; i < 1001; i++) {
 				Row r = sheet.getRow(i);
-				String issuer = r.getCell(0).getStringCellValue();
-				String no = r.getCell(1).getStringCellValue();
-				String issueDateStr = r.getCell(2).getStringCellValue();
-				String supplierInn = r.getCell(3).getStringCellValue();
-				String licenseTypeName = r.getCell(4).getStringCellValue();
-				String expiryDateStr = r.getCell(5).getStringCellValue();
-				String additionalInfo = r.getCell(6).getStringCellValue();
-				if(issuer.isEmpty() || no.isEmpty() || issueDateStr.isEmpty() ||
-						supplierInn.isEmpty() || licenseTypeName.isEmpty() ||
-						expiryDateStr.isEmpty() || additionalInfo.isEmpty()) {
-					response.setResult(false);
-					response.setErrorMessage("Один из полей строки № " + (i+1) + " пуст!");
-					return response;
-				}
-				if(isError(issueDateStr)) {
-					response.setResult(false);
-					response.setErrorMessage("Значение поля \"Дата выдачи\" некорректный - строка № " + (i+1));
-					return response;
-				}
-				if(isError(expiryDateStr)) {
-					response.setResult(false);
-					response.setErrorMessage("Значение поля \"Срок окончания\" некорректный - строка № " + (i+1));
-					return response;
-				}
-				Supplier supplier = getSupplierByInn(supplierInn);
-				if(supplier == null) {
-					response.setResult(false);
-					response.setErrorMessage("Поставщик с ИНН \""+ supplierInn +"\" не найден в базе - строка № " + (i+1));
-					return response;
-				}
+				try {
+					String issuer = r.getCell(0).getStringCellValue();
+					String no = r.getCell(1).getStringCellValue().replace("'", "");
+					String issueDateStr = r.getCell(2).getStringCellValue();
+					String supplierInn = r.getCell(3).getStringCellValue().replace("'", "");
+					String licenseTypeName = r.getCell(4).getStringCellValue();
+					String expiryDateStr = r.getCell(5).getStringCellValue();
+					String additionalInfo = r.getCell(6).getStringCellValue();
+					if(issuer.isEmpty() || no.isEmpty() || issueDateStr.isEmpty() ||
+							supplierInn.isEmpty() || licenseTypeName.isEmpty() ||
+							expiryDateStr.isEmpty() || additionalInfo.isEmpty()) {
+						response.setResult(false);
+						response.setErrorMessage("Один из полей строки № " + (i+1) + " пуст!");
+						return response;
+					}
+					Date issueDate = parseDate(issueDateStr);
+					if(issueDate == null) {
+						response.setResult(false);
+						response.setErrorMessage("Значение поля \"Дата выдачи\" некорректный - строка № " + (i+1));
+						return response;
+					}
+					Date expiryDate = parseDate(expiryDateStr);
+					if(expiryDate == null) {
+						response.setResult(false);
+						response.setErrorMessage("Значение поля \"Срок окончания\" некорректный - строка № " + (i+1));
+						return response;
+					}
+					Supplier supplier = getSupplierByInn(supplierInn);
+					if(supplier == null) {
+						response.setResult(false);
+						response.setErrorMessage("Поставщик с ИНН \""+ supplierInn +"\" не найден в базе - строка № " + (i+1));
+						return response;
+					}
 
+					LicenseType licenseType = getLicenseTypeByName(licenseTypeName);
+					License license = new License();
+					license.setLicenseTypeId(licenseType.getId());
+					license.setSupplierId(supplier.getId());
+					license.setIssuer(issuer);
+					license.setNo(no);
+					license.setIssueDate(issueDate);
+					license.setExpiryDate(expiryDate);
+					license.setAdditionalInfo(additionalInfo);
 
+					licenseList.add(license);
+				} catch (IllegalStateException e) {
+					if(e.getMessage().equals("Cannot get a STRING value from a NUMERIC cell")){
+						response.setResult(false);
+						response.setErrorMessage("Одно из значений поля строки № " + (i+1) + " предоставлено как число. Просьба поменять на текстовый формат (или можно перед числом вставить символ ' - одинарная ковычка)");
+						return response;
+					}
+				}
 			}
-
 			workbook.close();
+			_licenseRepo.saveAll(licenseList);
+			response.setResult(true);
+			return response;
+
 		} catch (IOException e) {
 			throw new RuntimeException("fail to parse Excel file: " + e.getMessage());
 		} catch (SecurityException e) {
@@ -212,26 +235,24 @@ public class ExcelUpload {
 	}
 	private LicenseType getLicenseTypeByName(String name) {
 		Optional<LicenseType> obj = _licenseTypeRepo.findByName(name);
-		return obj.orElse(null);
+		if(obj.isPresent()) {
+			return obj.get();
+		}
+		else {
+			LicenseType newObj = new LicenseType();
+			newObj.setName(name);
+			_licenseTypeRepo.save(newObj);
+			return newObj;
+		}
 	}
-	public static boolean isError(final String date) {
-
-		boolean error = true;
-
+	public static Date parseDate(final String date) {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		try {
-
-			// ResolverStyle.STRICT for 30, 31 days checking, and also leap year.
-			LocalDate.parse(date,
-					DateTimeFormatter.ofPattern("dd.MM.yyyy")
-							.withResolverStyle(ResolverStyle.STRICT)
-			);
-
-			error = false;
-
-		} catch (DateTimeParseException e) {
+			return sdf.parse(date);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		return error;
+		return null;
 	}
 }

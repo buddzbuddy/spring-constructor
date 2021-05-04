@@ -216,24 +216,24 @@ public class SupplierDetailsController {
 	@GetMapping(path = "/initMsecDataAll")
 	public ResponseEntity<?> initMsecDataAll(Pageable pageable) {
 		List<Supplier> listSuppliers = supplierRepo.findAll();
-		assert listSuppliers.isEmpty();
-		Supplier supplier = listSuppliers.get(0);
-		
+		assert !listSuppliers.isEmpty();
 		int successCount = 0;
-		for(SupplierMember supplierMember : supplier.getSupplierMembers()) {
-			JSONObject reqMsecData = requestMsecData(supplierMember.getPin());
-			if(reqMsecData.getString("StatusCode").equals("SUCCESS")) {
-				MsecDetail msecDetail = new MsecDetail();
-				msecDetail.setDisabilityGroup(reqMsecData.getString("DisabilityGroup"));
-				msecDetail.setExaminationDate(parseDate(reqMsecData.getString("ExaminationDate")));
-				msecDetail.setExaminationType(reqMsecData.getString("ExaminationType"));
-				msecDetail.setFromDate(parseDate(reqMsecData.getString("From")));
-				msecDetail.setToDate(parseDate(reqMsecData.getString("To")));
-				msecDetail.setOrganizationName(reqMsecData.getString("OrganizationName"));
-				msecDetail.setReExamination(reqMsecData.getString("ReExamination"));
-				msecDetail.setSupplierMemberId(supplierMember.getId());
-				msec_detailRepository.save(msecDetail);
-				successCount++;
+		for (Supplier supplier : listSuppliers){
+			for(SupplierMember supplierMember : supplier.getSupplierMembers()) {
+				JSONObject reqMsecData = requestMsecData(supplierMember.getPin());
+				if(reqMsecData.getString("StatusCode").equals("SUCCESS")) {
+					MsecDetail msecDetail = new MsecDetail();
+					msecDetail.setDisabilityGroup(reqMsecData.getString("DisabilityGroup"));
+					msecDetail.setExaminationDate(parseDate(reqMsecData.getString("ExaminationDate")));
+					msecDetail.setExaminationType(reqMsecData.getString("ExaminationType"));
+					msecDetail.setFromDate(parseDate(reqMsecData.getString("From")));
+					msecDetail.setToDate(parseDate(reqMsecData.getString("To")));
+					msecDetail.setOrganizationName(reqMsecData.getString("OrganizationName"));
+					msecDetail.setReExamination(reqMsecData.getString("ReExamination"));
+					msecDetail.setSupplierMemberId(supplierMember.getId());
+					msec_detailRepository.save(msecDetail);
+					successCount++;
+				}
 			}
 		}
 		

@@ -9,6 +9,9 @@ import javax.print.attribute.standard.Fidelity;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.webdatabase.dgz.model.*;
+import com.webdatabase.dgz.repository.Msec_detailRepository;
+import com.webdatabase.dgz.repository.SupplierMemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -23,13 +26,6 @@ import org.springframework.web.client.RestTemplate;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.webdatabase.dgz.model.Appeal;
-import com.webdatabase.dgz.model.CriminalCase;
-import com.webdatabase.dgz.model.Debt;
-import com.webdatabase.dgz.model.License;
-import com.webdatabase.dgz.model.Litigation;
-import com.webdatabase.dgz.model.Supplier;
-import com.webdatabase.dgz.model.SupplierMember;
 import com.webdatabase.dgz.query.utils.SearchQuery;
 import com.webdatabase.dgz.query.utils.SpecificationUtil;
 import com.webdatabase.dgz.repository.SupplierRepository;
@@ -41,6 +37,10 @@ import com.webdatabase.dgz.service.QueryBuilderService;
 public class SupplierDetailsController {
 	@Autowired
 	private SupplierRepository supplierRepo;
+
+	@Autowired
+	private Msec_detailRepository msec_detailRepository;
+
     @Autowired
     private QueryBuilderService queryApi;
 	private Object object;
@@ -191,6 +191,41 @@ public class SupplierDetailsController {
 		assert sop.isPresent();
 		Supplier supplier = sop.get();
 
+		int successCount = 0;
+		for(SupplierMember supplierMember : supplier.getSupplierMembers()) {
+			JSONObject reqMsecData = requestMsecData(supplierMember.getPin());
+			if(reqMsecData.getString("StatusCode").equals("SUCCESS")){
+				//TODO: Save to DB
+				MsecDetail msecDetail = new MsecDetail();
+				msecDetail.setDisabilityGroup(reqMsecData.getString("DisabilityGroup"));
+				msecDetail.setExaminationDate(parseDate(reqMsecData.getString("ExaminationDate")));
+				msecDetail.setExaminationType(reqMsecData.getString("ExaminationType"));
+				msecDetail.setFromDate(parseDate(reqMsecData.getString("From")));
+				msecDetail.setToDate(parseDate(reqMsecData.getString("To")));
+				msecDetail.setOrganizationName(reqMsecData.getString("OrganizationName"));
+				msecDetail.setReExamination(reqMsecData.getString("ReExamination"));
+				msecDetail.setSupplierMemberId(supplierMember.getId());
+				msec_detailRepository.save(msecDetail);
+				successCount++;
+			}
+		}
+
+		return new ResponseEntity<>("Данные МСЭК успешно обновлены у " + successCount + " участников", HttpStatus.OK);
+    }
+
+	public static Date parseDate(final String date) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		try {
+			return sdf.parse(date);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+    private JSONObject requestMsecData(String pin) {
+
 		//setting up the request headers
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
@@ -202,7 +237,7 @@ public class SupplierDetailsController {
 		JSONObject item_1 = new JSONObject();
 		JSONObject item_1_1 = new JSONObject();
 		JSONObject item_1_1_1 = new JSONObject();
-		item_1_1_1.put("PIN", "12001197100390");
+		item_1_1_1.put("PIN", pin);
 		item_1_1.put("request", item_1_1_1);
 		item_1.put("MSECDetails", item_1_1);
 		msecReq.put("request", item_1);
@@ -213,24 +248,8 @@ public class SupplierDetailsController {
 		JSONObject res_item_1 = res.getJSONObject("response");
 		JSONObject res_item_1_1 = res_item_1.getJSONObject("MSECDetailsResponse");
 		JSONObject res_item_1_1_2 = res_item_1_1.getJSONObject("response");
-		
-		Supplier supplier2 = new Supplier();
-		
-		for(SupplierMember supplierMember : supplier2.getSupplierMembers()) {
-			supplierMember.getSupplierId();
-			if(msecResultStr != null){
-				
-			} 
-		}
-		
-		
-		
-
-		return new ResponseEntity<>(res_item_1_1_2.getJSONObject(msecResultStr).toMap(), HttpStatus.OK);
-		
-		
-		
-    }
+		return res_item_1_1_2;
+	}
 }
 class CustomQueryModel{
 	private SearchQuery searchQuery;

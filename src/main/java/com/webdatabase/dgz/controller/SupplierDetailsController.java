@@ -13,6 +13,7 @@ import com.webdatabase.dgz.model.*;
 import com.webdatabase.dgz.repository.Msec_detailRepository;
 import com.webdatabase.dgz.repository.SupplierMemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -182,8 +183,7 @@ public class SupplierDetailsController {
     	return new ResponseEntity<>(s, HttpStatus.OK);
     }
 
-
-	private final ObjectMapper objectMapper = new ObjectMapper();
+	
 	@GetMapping(path = "/initMsecData/{id}")
     public ResponseEntity<?> initMsecData(@PathVariable long id)
     {
@@ -212,7 +212,34 @@ public class SupplierDetailsController {
 
 		return new ResponseEntity<>("Данные МСЭК успешно обновлены у " + successCount + " участников", HttpStatus.OK);
     }
-
+	
+	@GetMapping(path = "/initMsecDataAll")
+	public ResponseEntity<?> initMsecDataAll(Pageable pageable) {
+		List<Supplier> listSuppliers = supplierRepo.findAll();
+		assert listSuppliers.isEmpty();
+		Supplier supplier = listSuppliers.get(0);
+		
+		int successCount = 0;
+		for(SupplierMember supplierMember : supplier.getSupplierMembers()) {
+			JSONObject reqMsecData = requestMsecData(supplierMember.getPin());
+			if(reqMsecData.getString("StatusCode").equals("SUCCESS")) {
+				MsecDetail msecDetail = new MsecDetail();
+				msecDetail.setDisabilityGroup(reqMsecData.getString("DisabilityGroup"));
+				msecDetail.setExaminationDate(parseDate(reqMsecData.getString("ExaminationDate")));
+				msecDetail.setExaminationType(reqMsecData.getString("ExaminationType"));
+				msecDetail.setFromDate(parseDate(reqMsecData.getString("From")));
+				msecDetail.setToDate(parseDate(reqMsecData.getString("To")));
+				msecDetail.setOrganizationName(reqMsecData.getString("OrganizationName"));
+				msecDetail.setReExamination(reqMsecData.getString("ReExamination"));
+				msecDetail.setSupplierMemberId(supplierMember.getId());
+				msec_detailRepository.save(msecDetail);
+				successCount++;
+			}
+		}
+		
+		return new ResponseEntity<>("Данные МСЭК успешно обновлены у " + successCount + " участников", HttpStatus.OK);
+	}
+	
 	public static Date parseDate(final String date) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		try {

@@ -4,6 +4,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import javax.print.attribute.standard.Fidelity;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException.NotFound;
 import org.springframework.web.client.RestTemplate;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,6 +29,7 @@ import com.webdatabase.dgz.model.Debt;
 import com.webdatabase.dgz.model.License;
 import com.webdatabase.dgz.model.Litigation;
 import com.webdatabase.dgz.model.Supplier;
+import com.webdatabase.dgz.model.SupplierMember;
 import com.webdatabase.dgz.query.utils.SearchQuery;
 import com.webdatabase.dgz.query.utils.SpecificationUtil;
 import com.webdatabase.dgz.repository.SupplierRepository;
@@ -39,6 +43,7 @@ public class SupplierDetailsController {
 	private SupplierRepository supplierRepo;
     @Autowired
     private QueryBuilderService queryApi;
+	private Object object;
     
     @PostMapping(path = "/exec",
     		consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -208,8 +213,23 @@ public class SupplierDetailsController {
 		JSONObject res_item_1 = res.getJSONObject("response");
 		JSONObject res_item_1_1 = res_item_1.getJSONObject("MSECDetailsResponse");
 		JSONObject res_item_1_1_2 = res_item_1_1.getJSONObject("response");
+		
+		Supplier supplier2 = new Supplier();
+		
+		for(SupplierMember supplierMember : supplier2.getSupplierMembers()) {
+			supplierMember.getSupplierId();
+			if(msecResultStr != null){
+				
+			} 
+		}
+		
+		
+		
 
-		return new ResponseEntity<>(res_item_1_1_2.getString("OrganizationName"), HttpStatus.OK);
+		return new ResponseEntity<>(res_item_1_1_2.getJSONObject(msecResultStr).toMap(), HttpStatus.OK);
+		
+		
+		
     }
 }
 class CustomQueryModel{

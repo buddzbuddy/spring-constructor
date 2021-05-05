@@ -9,9 +9,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import com.webdatabase.dgz.model.Debt;
 import com.webdatabase.dgz.model.License;
 import com.webdatabase.dgz.model.LicenseType;
 import com.webdatabase.dgz.model.Supplier;
+import com.webdatabase.dgz.repository.DebtRepository;
 import com.webdatabase.dgz.repository.LicenseRepository;
 import com.webdatabase.dgz.repository.LicenseTypeRepository;
 import com.webdatabase.dgz.repository.SupplierRepository;
@@ -131,11 +133,13 @@ public class ExcelUpload {
 	  private final SupplierRepository _supplierRepo;
 	private final LicenseTypeRepository _licenseTypeRepo;
 	private final LicenseRepository _licenseRepo;
+	private final DebtRepository _debtRepo;
 
-	public ExcelUpload(SupplierRepository supplierRepository, LicenseTypeRepository licenseTypeRepository, LicenseRepository licenseRepository) {
+	public ExcelUpload(SupplierRepository supplierRepository, LicenseTypeRepository licenseTypeRepository, LicenseRepository licenseRepository, DebtRepository debtRepository) {
 		_supplierRepo = supplierRepository;
 		_licenseTypeRepo = licenseTypeRepository;
 		_licenseRepo = licenseRepository;
+		_debtRepo = debtRepository;
 	}
 	private static final int license_secret_row = 0;
 	private static final int license_secret_col = 7;
@@ -257,5 +261,88 @@ public class ExcelUpload {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+
+	private static final int debt_secret_row = 0;
+	private static final int debt_secret_col = 2;
+	private static final String debt_secret_word = "debt_s3cret";
+	private static boolean isDebtFile(Sheet sheet){
+		try {
+			Row r = sheet.getRow(debt_secret_row);
+			Cell c = r.getCell(debt_secret_col);
+			System.out.println(c.getStringCellValue());
+			return c.getStringCellValue().equals(debt_secret_word);
+		} catch (IllegalStateException e) {
+			return false;
+		}
+	}
+	public ExcelUploadResultMessage uploadDebts(InputStream iStream) {
+		ExcelUploadResultMessage response = new ExcelUploadResultMessage();
+		List<Debt> debts = new ArrayList<>();
+		try {
+			Workbook workbook = new XSSFWorkbook(iStream);
+			Sheet sheet = workbook.getSheetAt(0);
+			if(!isDebtFile(sheet)) {
+				response.setResult(false);
+				response.setErrorMessage("Файл не идентифицирован! Вы используете сторонний файл!");
+				return response;
+			}
+
+			List<Debt> debtList = new ArrayList<>();
+			for (int i = 1; i < 1001; i++) {
+				Row r = sheet.getRow(i);
+				try {
+					String supplierInn = r.getCell(0).getStringCellValue().replace("'", "");
+					String hasStr = r.getCell(1).getStringCellValue();
+					if(supplierInn.isEmpty()&& hasStr.isEmpty()) {
+						break;
+					}
+					if(supplierInn.isEmpty() || hasStr.isEmpty()) {
+						response.setResult(false);
+						response.setErrorMessage("Один из полей строки № " + (i+1) + " пуст!");
+						return response;
+					}
+					boolean has = false;
+					if(!(hasStr.trim().equalsIgnoreCase("да") || hasStr.trim().equalsIgnoreCase("нет"))) {
+						response.setResult(false);
+						response.setErrorMessage("Значение наличия о задолженности не определен в строке № " + (i+1) + ". Допустимо только ДА или НЕТ");
+						return response;
+					}
+					else {
+						has = hasStr.trim().equalsIgnoreCase("да");
+					}
+
+					Supplier supplier = getSupplierByInn(supplierInn);
+					if(supplier == null) {
+						response.setResult(false);
+						response.setErrorMessage("Поставщик с ИНН \""+ supplierInn +"\" не найден в базе - строка № " + (i+1));
+						return response;
+					}
+					Debt debt = new Debt();
+					debt.setSupplierId(supplier.getId());
+					debt.setHas(has);
+
+					debtList.add(debt);
+				} catch (IllegalStateException e) {
+					if(e.getMessage().equals("Cannot get a STRING value from a NUMERIC cell")){
+						response.setResult(false);
+						response.setErrorMessage("Одно из значений поля строки № " + (i+1) + " предоставлено как число. Просьба поменять на текстовый формат (или можно перед числом вставить символ ' - одинарная ковычка)");
+						return response;
+					}
+				}
+			}
+			workbook.close();
+			_debtRepo.saveAll(debtList);
+			response.setResult(true);
+			return response;
+
+		} catch (IOException e) {
+			throw new RuntimeException("fail to parse Excel file: " + e.getMessage());
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return response;
 	}
 }

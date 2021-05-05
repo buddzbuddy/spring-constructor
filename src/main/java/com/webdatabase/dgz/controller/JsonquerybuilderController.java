@@ -8,18 +8,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import com.webdatabase.dgz.query.utils.*;
 import com.webdatabase.dgz.repository.LicenseRepository;
 import com.webdatabase.dgz.repository.LicenseTypeRepository;
 import com.webdatabase.dgz.repository.SupplierRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -36,6 +32,9 @@ import com.webdatabase.dgz.service.QueryBuilderService;
 @RequestMapping("/data-api/query")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class JsonquerybuilderController {
+
+	//@Autowired
+	//private AppConfig appConfig;
 
 	@Autowired
 	private SupplierRepository supplierRepo;
@@ -154,11 +153,14 @@ public class JsonquerybuilderController {
 		message = "Загрузите файл в формате Excel!";
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(message));
 	}
-	private static final String LICENSE_TMPL_PATH = "F:\\license-template.xlsx";
+
+	@Value("${spring.app-settings.license-template-path}")
+	private String LICENSE_TMPL_PATH;
 	@RequestMapping(path = "/download/license", method = RequestMethod.GET)
 	public ResponseEntity<Resource> download(String param) throws IOException {
+		System.out.println(LICENSE_TMPL_PATH);
 		File file = new File(LICENSE_TMPL_PATH);
-		HttpHeaders headers = new HttpHeaders(); headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=шаблон-загрузки-лицензий.xlsx");
+		HttpHeaders headers = new HttpHeaders(); headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=license-template.xlsx");
 		Path path = Paths.get(LICENSE_TMPL_PATH);
 		ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
 

@@ -1,8 +1,13 @@
 package com.webdatabase.dgz.controller;
 
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -15,17 +20,13 @@ import com.webdatabase.dgz.repository.LicenseRepository;
 import com.webdatabase.dgz.repository.LicenseTypeRepository;
 import com.webdatabase.dgz.repository.SupplierRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.webdatabase.dgz.message.ResponseMessage;
@@ -152,6 +153,20 @@ public class JsonquerybuilderController {
 
 		message = "Загрузите файл в формате Excel!";
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(message));
+	}
+	private static final String LICENSE_TMPL_PATH = "F:\\license-template.xlsx";
+	@RequestMapping(path = "/download/license", method = RequestMethod.GET)
+	public ResponseEntity<Resource> download(String param) throws IOException {
+		File file = new File(LICENSE_TMPL_PATH);
+		HttpHeaders headers = new HttpHeaders(); headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=шаблон-загрузки-лицензий.xlsx");
+		Path path = Paths.get(LICENSE_TMPL_PATH);
+		ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
+
+		return ResponseEntity.ok()
+				.headers(headers)
+				.contentLength(file.length())
+				.contentType(MediaType.APPLICATION_OCTET_STREAM)
+				.body(resource);
 	}
 }
 class QueryCondition {

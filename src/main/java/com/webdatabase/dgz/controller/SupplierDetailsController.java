@@ -185,8 +185,7 @@ public class SupplierDetailsController {
 
 	
 	@GetMapping(path = "/initMsecData/{id}")
-    public ResponseEntity<?> initMsecData(@PathVariable long id)
-    {
+    public ResponseEntity<?> initMsecData(@PathVariable long id) throws JSONException {
 		Optional<Supplier> sop = supplierRepo.findById(id);
 		assert sop.isPresent();
 		Supplier supplier = sop.get();
@@ -213,8 +212,9 @@ public class SupplierDetailsController {
 		return new ResponseEntity<>("Данные МСЭК успешно обновлены у " + successCount + " участников", HttpStatus.OK);
     }
 	
-	@GetMapping(path = "/initMsecDataAll")
-	public ResponseEntity<?> initMsecDataAll(Pageable pageable) {
+	@GetMapping(path = "/initMsecDataAll",
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> initMsecDataAll(Pageable pageable) throws JSONException {
 		List<Supplier> listSuppliers = supplierRepo.findAll();
 		assert !listSuppliers.isEmpty();
 		int successCount = 0;
@@ -241,7 +241,7 @@ public class SupplierDetailsController {
 		response.put("message", "Данные МСЭК успешно обновлены у " + successCount + " участников");
 		response.put("scannedCount", listSuppliers.size());
 		
-		return new ResponseEntity<>(response.toMap(), HttpStatus.OK);
+		return new ResponseEntity<>(response.toString(), HttpStatus.OK);
 	}
 	
 	public static Date parseDate(final String date) {
@@ -255,7 +255,7 @@ public class SupplierDetailsController {
 		return null;
 	}
 
-    private JSONObject requestMsecData(String pin) {
+    private JSONObject requestMsecData(String pin) throws JSONException {
 
 		//setting up the request headers
 		HttpHeaders headers = new HttpHeaders();

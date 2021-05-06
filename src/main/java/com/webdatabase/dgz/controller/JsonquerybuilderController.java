@@ -11,10 +11,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import com.webdatabase.dgz.query.utils.*;
-import com.webdatabase.dgz.repository.DebtRepository;
-import com.webdatabase.dgz.repository.LicenseRepository;
-import com.webdatabase.dgz.repository.LicenseTypeRepository;
-import com.webdatabase.dgz.repository.SupplierRepository;
+import com.webdatabase.dgz.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
@@ -45,6 +42,10 @@ public class JsonquerybuilderController {
 	private LicenseRepository licenseRepo;
 	@Autowired
 	private DebtRepository debtRepo;
+	@Autowired
+	private OwnershipTypeRepository ownershipTypeRepo;
+	@Autowired
+	private IndustryRepository industryRepo;
     @Autowired
     private QueryBuilderService queryApi;
     
@@ -135,7 +136,7 @@ public class JsonquerybuilderController {
 	@PostMapping("/upload/license")
 	public ResponseEntity<ResponseMessage> uploadLicense(@RequestParam("file") MultipartFile file) {
 		String message = "";
-		ExcelUpload excelUpload = new ExcelUpload(supplierRepo, licenseTypeRepo, licenseRepo, debtRepo);
+		ExcelUpload excelUpload = new ExcelUpload(supplierRepo, licenseTypeRepo, licenseRepo, debtRepo, ownershipTypeRepo, industryRepo);
 		if (excelUpload.hasExcelFormat(file)) {
 			try {
 				ExcelUploadResultMessage resultMessage = excelUpload.excelLicenseToList(file.getInputStream());
@@ -195,10 +196,53 @@ public class JsonquerybuilderController {
 	@PostMapping("/upload/debt")
 	public ResponseEntity<ResponseMessage> uploadDebt(@RequestParam("file") MultipartFile file) {
 		String message = "";
-		ExcelUpload excelUpload = new ExcelUpload(supplierRepo, licenseTypeRepo, licenseRepo, debtRepo);
+		ExcelUpload excelUpload = new ExcelUpload(supplierRepo, licenseTypeRepo, licenseRepo, debtRepo, ownershipTypeRepo, industryRepo);
 		if (excelUpload.hasExcelFormat(file)) {
 			try {
 				ExcelUploadResultMessage resultMessage = excelUpload.uploadDebts(file.getInputStream());
+				if(resultMessage.isResult()) {
+					message = "Файл успешно загружен: " + file.getOriginalFilename();
+				}
+				else {
+					message = resultMessage.getErrorMessage();
+				}
+				return ResponseEntity.ok(new ResponseMessage(message));
+			} catch (Exception e) {
+				e.printStackTrace();
+				message = "Не удалось загрузить файл: " + file.getOriginalFilename() + "!";
+				return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
+			}
+		}
+
+		message = "Загрузите файл в формате Excel!";
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(message));
+	}
+
+
+
+	@Value("${spring.app-settings.supplier-one-template-path}")
+	private String SUPPLIER_ONE_TMPL_PATH;
+	@RequestMapping(path = "/download/supplierone", method = RequestMethod.GET)
+	public ResponseEntity<Resource> downloadSupplierOne(String param) throws IOException {
+		System.out.println(SUPPLIER_ONE_TMPL_PATH);
+		File file = new File(SUPPLIER_ONE_TMPL_PATH);
+		HttpHeaders headers = new HttpHeaders(); headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=supplier-one-template.xlsx");
+		Path path = Paths.get(SUPPLIER_ONE_TMPL_PATH);
+		ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
+
+		return ResponseEntity.ok()
+				.headers(headers)
+				.contentLength(file.length())
+				.contentType(MediaType.APPLICATION_OCTET_STREAM)
+				.body(resource);
+	}
+	@PostMapping("/upload/supplierone")
+	public ResponseEntity<ResponseMessage> uploadSupplierOne(@RequestParam("file") MultipartFile file) {
+		String message = "";
+		ExcelUpload excelUpload = new ExcelUpload(supplierRepo, licenseTypeRepo, licenseRepo, debtRepo, ownershipTypeRepo, industryRepo);
+		if (excelUpload.hasExcelFormat(file)) {
+			try {
+				ExcelUploadResultMessage resultMessage = excelUpload.uploadSupplierOnes(file.getInputStream());
 				if(resultMessage.isResult()) {
 					message = "Файл успешно загружен: " + file.getOriginalFilename();
 				}

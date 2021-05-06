@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -27,14 +28,17 @@ public class Minjust_founder extends AuditModel{
 	
 	@MetaFieldName(label = "ФИО или наименование учредителя")
 	@Column(name = "full_name")
+	@ElementCollection(targetClass = String.class)
 	private List<String> fullName = new ArrayList<>();
 	
 	@MetaFieldName(label = "Гражданство (страна)")
 	@Column(name = "citizenship")
+	@ElementCollection(targetClass = String.class)
 	private List<String> citizenship = new ArrayList<>();
 	
 	@MetaFieldName(label = "ИНН учредителя")
 	@Column(name = "tin")
+	@ElementCollection(targetClass = String.class)
 	private List<String> tin = new ArrayList<>();
 
 	public long getId() {

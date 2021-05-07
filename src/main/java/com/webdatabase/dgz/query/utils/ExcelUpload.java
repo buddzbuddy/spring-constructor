@@ -9,14 +9,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import com.webdatabase.dgz.model.Debt;
-import com.webdatabase.dgz.model.License;
-import com.webdatabase.dgz.model.LicenseType;
-import com.webdatabase.dgz.model.Supplier;
-import com.webdatabase.dgz.repository.DebtRepository;
-import com.webdatabase.dgz.repository.LicenseRepository;
-import com.webdatabase.dgz.repository.LicenseTypeRepository;
-import com.webdatabase.dgz.repository.SupplierRepository;
+import com.webdatabase.dgz.model.*;
+import com.webdatabase.dgz.repository.*;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -132,11 +126,16 @@ public class ExcelUpload {
 
 	  private final SupplierRepository _supplierRepo;
 	private final LicenseTypeRepository _licenseTypeRepo;
+	private final OwnershipTypeRepository _ownershipTypeRepo;
+	private final IndustryRepository _industryRepo;
 	private final LicenseRepository _licenseRepo;
 	private final DebtRepository _debtRepo;
 
-	public ExcelUpload(SupplierRepository supplierRepository, LicenseTypeRepository licenseTypeRepository, LicenseRepository licenseRepository, DebtRepository debtRepository) {
+	public ExcelUpload(SupplierRepository supplierRepository, LicenseTypeRepository licenseTypeRepository, LicenseRepository licenseRepository, DebtRepository debtRepository,
+					   OwnershipTypeRepository ownershipTypeRepository, IndustryRepository industryRepository) {
 		_supplierRepo = supplierRepository;
+		_ownershipTypeRepo = ownershipTypeRepository;
+		_industryRepo = industryRepository;
 		_licenseTypeRepo = licenseTypeRepository;
 		_licenseRepo = licenseRepository;
 		_debtRepo = debtRepository;
@@ -252,6 +251,30 @@ public class ExcelUpload {
 			return newObj;
 		}
 	}
+	private OwnershipType getOwnershipTypeByName(String name) {
+		Optional<OwnershipType> obj = _ownershipTypeRepo.findByName(name);
+		if(obj.isPresent()) {
+			return obj.get();
+		}
+		else {
+			OwnershipType newObj = new OwnershipType();
+			newObj.setName(name);
+			_ownershipTypeRepo.save(newObj);
+			return newObj;
+		}
+	}
+	private Industry getIndustryByName(String name) {
+		Optional<Industry> obj = _industryRepo.findByName(name);
+		if(obj.isPresent()) {
+			return obj.get();
+		}
+		else {
+			Industry newObj = new Industry();
+			newObj.setName(name);
+			_industryRepo.save(newObj);
+			return newObj;
+		}
+	}
 	public static Date parseDate(final String date) {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		try {
@@ -337,6 +360,115 @@ public class ExcelUpload {
 			response.setResult(true);
 			return response;
 
+		} catch (IOException e) {
+			throw new RuntimeException("fail to parse Excel file: " + e.getMessage());
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return response;
+	}
+
+
+	private static final int supplier_one_secret_row = 0;
+	private static final int supplier_one_secret_col = 9;
+	private static final String supplier_one_secret_word = "supplier_one_s3cret";
+	private static boolean isSupplierOneFile(Sheet sheet){
+		try {
+			Row r = sheet.getRow(supplier_one_secret_row);
+			Cell c = r.getCell(supplier_one_secret_col);
+			System.out.println(c.getStringCellValue());
+			return c.getStringCellValue().equals(supplier_one_secret_word);
+		} catch (IllegalStateException e) {
+			return false;
+		}
+	}
+	public ExcelUploadResultMessage uploadSupplierOnes(InputStream iStream) {
+		ExcelUploadResultMessage response = new ExcelUploadResultMessage();
+		List<Supplier> suppliers = new ArrayList<>();
+		try {
+			Workbook workbook = new XSSFWorkbook(iStream);
+			Sheet sheet = workbook.getSheetAt(0);
+			if(!isSupplierOneFile(sheet)) {
+				response.setResult(false);
+				response.setErrorMessage("Файл не идентифицирован! Вы используете сторонний файл!");
+				return response;
+			}
+
+			List<Supplier> supplierList = new ArrayList<>();
+			for (int i = 1; i < 1001; i++) {
+				Row r = sheet.getRow(i);
+				try {
+					String supplierName = r.getCell(0).getStringCellValue();
+					String supplierInn = r.getCell(1).getStringCellValue().replace("'", "");
+					String ownershipTypeName = r.getCell(2).getStringCellValue();
+					String industryName = r.getCell(3).getStringCellValue();
+					String legalAddress = r.getCell(4).getStringCellValue();
+					String factAddress = r.getCell(5).getStringCellValue();
+					String isResidentStr = r.getCell(6).getStringCellValue();
+					String isBlackStr = r.getCell(7).getStringCellValue();
+					String telephone = r.getCell(8).getStringCellValue().replace("'", "");
+					if(supplierInn.isEmpty()&& isResidentStr.isEmpty()) {
+						break;
+					}
+					if(supplierName.isEmpty() || supplierInn.isEmpty() || telephone.isEmpty()
+					|| ownershipTypeName.isEmpty() || industryName.isEmpty() || legalAddress.isEmpty()
+					|| factAddress.isEmpty() || isResidentStr.isEmpty() || isBlackStr.isEmpty()) {
+						response.setResult(false);
+						response.setErrorMessage("Один из полей строки № " + (i+1) + " пуст!");
+						return response;
+					}
+					boolean isResident = false;
+					if(!(isResidentStr.trim().equalsIgnoreCase("да") || isResidentStr.trim().equalsIgnoreCase("нет"))) {
+						response.setResult(false);
+						response.setErrorMessage("Значение наличия о задолженности не определен в строке № " + (i+1) + ". Допустимо только ДА или НЕТ");
+						return response;
+					}
+					else {
+						isResident = isResidentStr.trim().equalsIgnoreCase("да");
+					}
+					boolean isBlack = false;
+					if(!(isBlackStr.trim().equalsIgnoreCase("да") || isBlackStr.trim().equalsIgnoreCase("нет"))) {
+						response.setResult(false);
+						response.setErrorMessage("Значение наличия о задолженности не определен в строке № " + (i+1) + ". Допустимо только ДА или НЕТ");
+						return response;
+					}
+					else {
+						isBlack = isBlackStr.trim().equalsIgnoreCase("да");
+					}
+
+					Supplier supplier = getSupplierByInn(supplierInn);
+					if(supplier != null) {
+						response.setResult(false);
+						response.setErrorMessage("Поставщик с ИНН \""+ supplierInn +"\" уже существует в базе - строка № " + (i+1));
+						return response;
+					}
+
+					supplier = new Supplier();
+					supplier.setName(supplierName);
+					supplier.setInn(supplierInn);
+					OwnershipType ownershipType = getOwnershipTypeByName(ownershipTypeName);
+					Industry industry = getIndustryByName(industryName);
+					supplier.setOwnershipTypeId(ownershipType.getId());
+					supplier.setIndustryId(industry.getId());
+					supplier.setLegalAddress(legalAddress);
+					supplier.setFactAddress(factAddress);
+					supplier.setTelephone(telephone);
+					supplier.setIsBlack(isBlack);
+					supplier.setIsResident(isResident);
+					supplierList.add(supplier);
+				} catch (IllegalStateException e) {
+					if(e.getMessage().equals("Cannot get a STRING value from a NUMERIC cell")){
+						response.setResult(false);
+						response.setErrorMessage("Одно из значений поля строки № " + (i+1) + " предоставлено как число. Просьба поменять на текстовый формат (или можно перед числом вставить символ ' - одинарная ковычка)");
+						return response;
+					}
+				}
+			}
+			workbook.close();
+			_supplierRepo.saveAll(supplierList);
+			response.setResult(true);
+			return response;
 		} catch (IOException e) {
 			throw new RuntimeException("fail to parse Excel file: " + e.getMessage());
 		} catch (SecurityException e) {

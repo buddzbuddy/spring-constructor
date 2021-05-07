@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import com.webdatabase.dgz.model.GrantedSource;
 import com.webdatabase.dgz.query.utils.*;
 import com.webdatabase.dgz.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,10 @@ public class JsonquerybuilderController {
 	private OwnershipTypeRepository ownershipTypeRepo;
 	@Autowired
 	private IndustryRepository industryRepo;
+
+	@Autowired
+	private GrantedSourceRepository grantedSourceRepo;
+
     @Autowired
     private QueryBuilderService queryApi;
     
@@ -259,6 +264,35 @@ public class JsonquerybuilderController {
 
 		message = "Загрузите файл в формате Excel!";
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(message));
+	}
+
+
+
+	@PostMapping(path = "/grant-source",
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ResponseMessage> grantSource(@RequestBody GrantedSource grantedSource) {
+
+		if(grantedSource.getSourceType() != null) {
+			grantedSourceRepo.save(grantedSource);
+			return ResponseEntity.ok(new ResponseMessage("Настройки обновлены!"));
+		}
+		return ResponseEntity.ok(new ResponseMessage("Что-то пошло не так!"));
+	}
+	@PostMapping(path = "/deny-source",
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ResponseMessage> denySource(@RequestBody GrantedSource grantedSource) {
+
+		if(grantedSource.getSourceType() != null) {
+			for (GrantedSource source : grantedSourceRepo.findAll()) {
+				if(source.getSourceType().equals(grantedSource.getSourceType())) {
+					grantedSourceRepo.delete(source);
+				}
+			}
+			return ResponseEntity.ok(new ResponseMessage("Настройки обновлены!"));
+		}
+		return ResponseEntity.ok(new ResponseMessage("Что-то пошло не так!"));
 	}
 }
 class QueryCondition {

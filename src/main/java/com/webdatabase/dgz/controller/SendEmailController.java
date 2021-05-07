@@ -4,7 +4,6 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -50,23 +49,6 @@ public class SendEmailController {
 
 		helper.setText(htmlMsg, true);
 		emailSender.send(message);
-
-		/*MimeMessage message = emailSender.createMimeMessage();
-		
-		boolean html = true;
-		
-		MimeMessageHelper helper = new MimeMessageHelper(message, html, "utf-8"); 
-		
-		String htmlMsg = "<h4>Уважаемый пользователь. Ваши учетные данные успешно зарегистрированы в систему со след. параметрами:</h4>"
-				+ "<p>Логин: <b>" + username + "</b></p>"
-				+ "<p>Пароль: <b>" + password + "</b></p>"; 
-		
-		message.setContent(htmlMsg, "text/html");
-		
-		helper.setTo(gmail);
-		helper.setText("Уведомление логин-пароль Департамент государственных закупок пр МФ КР");*/
-		
-		//emailSender.send(message);
 		
 		return true;
 	}

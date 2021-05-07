@@ -20,10 +20,7 @@ public class SendEmailController {
 	
 	@Autowired
 	private JavaMailSender emailSender;
-	
-	public String userName = "admin";
-	public String password = "a1234";
-	
+
 	@ResponseBody
 	@GetMapping(path = "/mail")
 	public final boolean sendUserEmail(String email, String username, String password) throws MessagingException{
@@ -31,35 +28,30 @@ public class SendEmailController {
 	}
 	
 	private boolean _sendEmail(String email, String username, String password) throws MessagingException {
-		
-		this.userName = username;
-		this.password = password;
-		/*
+
 		if (email == null || email.isEmpty()) {
 			return false;
-		}*/
-		String gmail = "adilet.turarov13@gmail.com";
+		}
 		String mailAddress = "intersoftkgz@gmail.com";
-		
-		/*
+
+
 		MimeMessage message = emailSender.createMimeMessage();
 		MimeMessageHelper helper = new MimeMessageHelper(message);
 		
 		
 		helper.addTo(email);
 		helper.setFrom(mailAddress);
-		helper.setTo(gmail);
+		helper.setTo(email);
 		helper.setSubject("Уведомление логин-пароль Департамент государственных закупок пр МФ КР");
 		
 		String htmlMsg = "<h4>Уважаемый пользователь. Ваши учетные данные успешно зарегистрированы в систему со след. параметрами:</h4>"
                 + "<p>Логин: <b>" + username + "</b></p>"
                 + "<p>Пароль: <b>" + password + "</b></p>";
-		
-		boolean html = true;
-		helper.setText(htmlMsg, html);
+
+		helper.setText(htmlMsg, true);
 		emailSender.send(message);
-		*/
-		MimeMessage message = emailSender.createMimeMessage();
+
+		/*MimeMessage message = emailSender.createMimeMessage();
 		
 		boolean html = true;
 		
@@ -72,9 +64,9 @@ public class SendEmailController {
 		message.setContent(htmlMsg, "text/html");
 		
 		helper.setTo(gmail);
-		helper.setText("Уведомление логин-пароль Департамент государственных закупок пр МФ КР");
+		helper.setText("Уведомление логин-пароль Департамент государственных закупок пр МФ КР");*/
 		
-		emailSender.send(message);
+		//emailSender.send(message);
 		
 		return true;
 	}

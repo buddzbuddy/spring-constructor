@@ -8,9 +8,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.webdatabase.dgz.model.GrantedSource;
+import com.webdatabase.dgz.model.LocalGrantedSource;
+import com.webdatabase.dgz.model.SourceType;
+import com.webdatabase.dgz.model.Supplier;
 import com.webdatabase.dgz.query.utils.*;
 import com.webdatabase.dgz.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +55,9 @@ public class JsonquerybuilderController {
 
 	@Autowired
 	private GrantedSourceRepository grantedSourceRepo;
+
+	@Autowired
+	private LocalGrantedSourceRepository localGrantedSourceRepo;
 
     @Autowired
     private QueryBuilderService queryApi;
@@ -166,7 +174,7 @@ public class JsonquerybuilderController {
 	@Value("${spring.app-settings.license-template-path}")
 	private String LICENSE_TMPL_PATH;
 	@RequestMapping(path = "/download/license", method = RequestMethod.GET)
-	public ResponseEntity<Resource> downloadLicense(String param) throws IOException {
+	public ResponseEntity<Resource> downloadLicense() throws IOException {
 		System.out.println(LICENSE_TMPL_PATH);
 		File file = new File(LICENSE_TMPL_PATH);
 		HttpHeaders headers = new HttpHeaders(); headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=license-template.xlsx");
@@ -185,7 +193,7 @@ public class JsonquerybuilderController {
 	@Value("${spring.app-settings.debt-template-path}")
 	private String DEBT_TMPL_PATH;
 	@RequestMapping(path = "/download/debt", method = RequestMethod.GET)
-	public ResponseEntity<Resource> downloadDebt(String param) throws IOException {
+	public ResponseEntity<Resource> downloadDebt() throws IOException {
 		System.out.println(DEBT_TMPL_PATH);
 		File file = new File(DEBT_TMPL_PATH);
 		HttpHeaders headers = new HttpHeaders(); headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=debt-template.xlsx");
@@ -223,12 +231,10 @@ public class JsonquerybuilderController {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(message));
 	}
 
-
-
 	@Value("${spring.app-settings.supplier-one-template-path}")
 	private String SUPPLIER_ONE_TMPL_PATH;
 	@RequestMapping(path = "/download/supplierone", method = RequestMethod.GET)
-	public ResponseEntity<Resource> downloadSupplierOne(String param) throws IOException {
+	public ResponseEntity<Resource> downloadSupplierOne() throws IOException {
 		System.out.println(SUPPLIER_ONE_TMPL_PATH);
 		File file = new File(SUPPLIER_ONE_TMPL_PATH);
 		HttpHeaders headers = new HttpHeaders(); headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=supplier-one-template.xlsx");
@@ -294,7 +300,96 @@ public class JsonquerybuilderController {
 		}
 		return ResponseEntity.ok(new ResponseMessage("Что-то пошло не так!"));
 	}
+
+	@GetMapping(path = "/privacy-source-types")
+	public ResponseEntity<SourceType[]> getPrivacyTypes(){
+		List<SourceType> sourceTypes = new ArrayList<>();
+		sourceTypes.add(SourceType.LICENSE);
+		sourceTypes.add(SourceType.DEBT);
+		return new ResponseEntity<SourceType[]>(sourceTypes.toArray(new SourceType[0]), HttpStatus.OK);
+	}
+
+	@GetMapping(path = "/get-granted-sources/")
+	public ResponseEntity<LocalGrantedSource[]> getLocalGrantedByInnAll(){
+		return new ResponseEntity<>(localGrantedSourceRepo.findAll().toArray(new LocalGrantedSource[0]), HttpStatus.OK);
+	}
+
+	@GetMapping(path = "/get-granted-sources/{supplierInn}")
+	public ResponseEntity<SourceType[]> getLocalGrantedByInn(@PathVariable String supplierInn){
+		List<SourceType> sourceTypes = new ArrayList<>();
+		Supplier s = getSupplierByInn(supplierInn);
+		if(s != null) {
+			List<LocalGrantedSource> localGrantedSources = localGrantedSourceRepo.findBySupplierId(s.getId());
+			for (LocalGrantedSource l : localGrantedSources){
+				sourceTypes.add(l.getSourceType());
+			}
+		}
+		return new ResponseEntity<>(sourceTypes.toArray(new SourceType[0]), HttpStatus.OK);
+	}
+
+	@PostMapping(path = "/grant-source-local",
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ResponseMessage> grantSourceLocal(@RequestBody LocalGrantedSourceViewModel grantedSource) {
+
+		if(grantedSource.getSourceType() != null) {
+			Supplier s = getSupplierByInn(grantedSource.getSupplierInn());
+			if(s != null) {
+				LocalGrantedSource obj = new LocalGrantedSource();
+				obj.setSourceType(grantedSource.getSourceType());
+				obj.setSupplierId(s.getId());
+				localGrantedSourceRepo.save(obj);
+				return ResponseEntity.ok(new ResponseMessage("Настройки обновлены!"));
+			}
+			return ResponseEntity.ok(new ResponseMessage("Поставщик с ИНН \""+grantedSource.getSupplierInn()+"\" не найден в базе поставщиков!"));
+		}
+		return ResponseEntity.ok(new ResponseMessage("Тип источника пуст!"));
+	}
+	@PostMapping(path = "/deny-source-local",
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ResponseMessage> denySourceLocal(@RequestBody LocalGrantedSourceViewModel grantedSource) {
+
+		if(grantedSource.getSourceType() != null) {
+			Supplier s = getSupplierByInn(grantedSource.getSupplierInn());
+			if(s == null) {
+				return ResponseEntity.ok(new ResponseMessage("Поставщик с ИНН \""+grantedSource.getSupplierInn()+"\" не найден в базе поставщиков!"));
+			}
+			for (LocalGrantedSource source : localGrantedSourceRepo.findBySupplierIdAndSourceType(s.getId(), grantedSource.getSourceType())) {
+				localGrantedSourceRepo.delete(source);
+			}
+			return ResponseEntity.ok(new ResponseMessage("Настройки обновлены!"));
+		}
+		return ResponseEntity.ok(new ResponseMessage("Тип источника пуст!"));
+	}
+	private Supplier getSupplierByInn(String inn) {
+		Optional<Supplier> obj = supplierRepo.findByInn(inn);
+		return obj.orElse(null);
+	}
+
 }
+
+class LocalGrantedSourceViewModel {
+	private SourceType sourceType;
+	private String supplierInn;
+
+	public SourceType getSourceType() {
+		return sourceType;
+	}
+
+	public void setSourceType(SourceType sourceType) {
+		this.sourceType = sourceType;
+	}
+
+	public String getSupplierInn() {
+		return supplierInn;
+	}
+
+	public void setSupplierInn(String supplierInn) {
+		this.supplierInn = supplierInn;
+	}
+}
+
 class QueryCondition {
 	private String table;
 	

@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.webdatabase.dgz.model.*;
+import com.webdatabase.dgz.repository.LocalGrantedSourceRepository;
 import com.webdatabase.dgz.repository.Msec_detailRepository;
 import com.webdatabase.dgz.repository.SupplierMemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,11 @@ public class SupplierDetailsController {
 	@Autowired
 	private Msec_detailRepository msec_detailRepository;
 
+
+
+	@Autowired
+	private LocalGrantedSourceRepository localGrantedSourceRepo;
+
     @Autowired
     private QueryBuilderService queryApi;
 	private Object object;
@@ -53,14 +59,17 @@ public class SupplierDetailsController {
     		)
     {
     	List<Supplier> list = queryApi.exec(Supplier.class, customQuery.getSearchQuery());
-		
+
+
+
+		List<LocalGrantedSource> localGrantedSourceList = localGrantedSourceRepo.findAll();
     	if(customQuery.getSpec1() != null) {//наличие лицензии
     		spec1 s1 = customQuery.getSpec1();
     		int licenseTypeId = s1.getLicenseTypeId();
     		
     		List<Supplier> newList = new ArrayList<Supplier>();
-    		
     		for(Supplier supplier : list) {
+				if(hasLicenseConstraint(localGrantedSourceList, supplier)) continue;//Local grant deny rules
     			for(License l : supplier.getLicenses()) {
     				if(l.getLicenseTypeId() == licenseTypeId) {
     					newList.add(supplier);
@@ -76,6 +85,7 @@ public class SupplierDetailsController {
 			Date ld = SpecificationUtil.castToDate(s2.getDateTo());
 			List<Supplier> newList = new ArrayList<>();
 			for(Supplier supplier : list) {
+				if(hasLicenseConstraint(localGrantedSourceList, supplier)) continue;//Local grant deny rules
     			for(License l : supplier.getLicenses()) {
 					assert l.getExpiryDate() != null;
 					if(l.getExpiryDate().before(ld)
@@ -96,6 +106,7 @@ public class SupplierDetailsController {
 			Date ld = SpecificationUtil.castToDate(specObj.getDateTo());
 			List<Supplier> newList = new ArrayList<>();
 			for(Supplier supplier : list) {
+				if(hasDebtConstraint(localGrantedSourceList, supplier)) continue;//Local grant deny rules
     			for(Debt l : supplier.getDebts()) {
     				if(l.getCreatedAt().before(ld)
     					&&
@@ -172,7 +183,24 @@ public class SupplierDetailsController {
     	QueryResult res = new QueryResult(true, "", list.toArray(new Supplier[0]));
     	return new ResponseEntity<QueryResult>(res, HttpStatus.OK);
     }
-    
+
+	private boolean hasLicenseConstraint(List<LocalGrantedSource> localGrantedSourceList, Supplier supplier) {
+		for (LocalGrantedSource lgs : localGrantedSourceList) {
+			if(lgs.getSupplierId() == supplier.getId()) {
+				return lgs.getSourceType().equals(SourceType.LICENSE);
+			}
+		}
+		return false;
+	}
+	private boolean hasDebtConstraint(List<LocalGrantedSource> localGrantedSourceList, Supplier supplier) {
+		for (LocalGrantedSource lgs : localGrantedSourceList) {
+			if(lgs.getSupplierId() == supplier.getId()) {
+				return lgs.getSourceType().equals(SourceType.DEBT);
+			}
+		}
+		return false;
+	}
+
 	@GetMapping(path = "/getDetails/{id}")
     public ResponseEntity<?> get(@PathVariable long id)
     {

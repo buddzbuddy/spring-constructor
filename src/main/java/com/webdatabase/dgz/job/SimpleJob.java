@@ -26,6 +26,10 @@ public class SimpleJob extends QuartzJobBean implements InterruptableJob{
 	@Autowired
 	JobService jobService;
 	
+	static final String MSECData = "Обновление данных МТСР - МСЭК";
+	static final String LICENSEData = "Обновление данных Госархстрой - Лицензии";
+	static final String DEBTData = "Обновление данных ГНС - Задолженность";
+	
 	@Override
 	protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		JobKey key = jobExecutionContext.getJobDetail().getKey();
@@ -52,9 +56,37 @@ public class SimpleJob extends QuartzJobBean implements InterruptableJob{
         }
         YourClass yourClassObject = (YourClass) schedulerContext.get("storedObjectKey");
 		 */
-		System.out.println("Выполняю запрос в МСЭК...");
-		int resCount =  _govServices.initMsecAll(null);
-		System.out.println("Запрос в МСЭК обработал " + resCount + " записей.");
+		
+		if(key.getName().equals(MSECData)) {
+			System.out.println("Выполняю запрос в МСЭК...");
+			int resCount =  _govServices.initMsecAll(null);
+			System.out.println("Запрос в МСЭК обработал " + resCount + " записей.");	
+		}
+		else if(key.getName().equals(LICENSEData)) {
+			System.out.println("Выполняю " + LICENSEData);
+			//TODO: Call service
+			try {
+				Thread.sleep(10000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			System.out.println("Выполнено " + LICENSEData);
+		}
+		else if(key.getName().equals(DEBTData)) {
+			System.out.println("Выполняю " + DEBTData);
+			//TODO: Call service
+			try {
+				Thread.sleep(10000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			System.out.println("Выполнено " + DEBTData);	
+		}
+		else {
+			System.out.println("Неизвестная задача - " + key.getName());
+		}
 
 		/*while(toStopFlag){
 			try {
@@ -65,7 +97,7 @@ public class SimpleJob extends QuartzJobBean implements InterruptableJob{
 			}
 		}*/
 		//System.out.println("Thread: "+ Thread.currentThread().getName() +" stopped.");
-		toStopFlag = false;
+		//toStopFlag = false;
 	}
 
 	@Override

@@ -28,7 +28,7 @@ public class GovServicesImpl implements GovServices {
 	private Msec_detailRepository _msec_detailRepository;
 	@Override
 	public int initMsecAll(List<Supplier> listSuppliers) {
-		int successCount = 100500;
+		int successCount = 0;
 		if(listSuppliers == null) {
 			listSuppliers = _supplierRepo.findAll();
 		}

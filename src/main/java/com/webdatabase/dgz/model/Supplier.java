@@ -107,27 +107,27 @@ public class Supplier extends AuditModel {
 	private boolean isBlack;
 	
 	
-	@OneToMany(fetch = FetchType.LAZY)
+	@OneToMany(fetch = FetchType.EAGER)
 	@JoinColumn(name = "supplier_id")
 	private Set<License> licenses;
 	
-	@OneToMany(fetch = FetchType.LAZY)
+	@OneToMany(fetch = FetchType.EAGER)
 	@JoinColumn(name = "supplier_id", nullable = true)
 	private Set<SupplierMember> supplierMembers;
 	
-	@OneToMany(fetch = FetchType.LAZY)
+	@OneToMany(fetch = FetchType.EAGER)
 	@JoinColumn(name = "supplier_id", nullable = true)
 	private Set<Appeal> appeals;
 
-	@OneToMany(fetch = FetchType.LAZY)
+	@OneToMany(fetch = FetchType.EAGER)
 	@JoinColumn(name = "supplier_id")
 	private Set<Debt> debts;
 	
-	@OneToMany(fetch = FetchType.LAZY)
+	@OneToMany(fetch = FetchType.EAGER)
 	@JoinColumn(name = "supplier_id")
 	private Set<Litigation> litigations;
 	
-	@OneToMany(fetch = FetchType.LAZY)
+	@OneToMany(fetch = FetchType.EAGER)
 	@JoinColumn(name = "supplier_id")
 	private Set<CriminalCase> criminalCases;
 	

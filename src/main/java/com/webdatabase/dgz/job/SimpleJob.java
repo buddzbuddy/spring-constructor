@@ -12,10 +12,14 @@ import org.quartz.UnableToInterruptJobException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
+import com.webdatabase.dgz.service.GovServices;
 import com.webdatabase.dgz.service.JobService;
 
 
 public class SimpleJob extends QuartzJobBean implements InterruptableJob{
+	
+	@Autowired
+	private GovServices _govServices; 
 	
 	private volatile boolean toStopFlag = true;
 	
@@ -48,16 +52,20 @@ public class SimpleJob extends QuartzJobBean implements InterruptableJob{
         }
         YourClass yourClassObject = (YourClass) schedulerContext.get("storedObjectKey");
 		 */
+		System.out.println("Выполняю запрос в МСЭК...");
+		int resCount =  _govServices.initMsecAll(null);
+		System.out.println("Запрос в МСЭК обработал " + resCount + " записей.");
 
-		while(toStopFlag){
+		/*while(toStopFlag){
 			try {
 				System.out.println("Test Job Running... Thread Name :"+Thread.currentThread().getName());
 				Thread.sleep(2000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-		}
-		System.out.println("Thread: "+ Thread.currentThread().getName() +" stopped.");
+		}*/
+		//System.out.println("Thread: "+ Thread.currentThread().getName() +" stopped.");
+		toStopFlag = false;
 	}
 
 	@Override

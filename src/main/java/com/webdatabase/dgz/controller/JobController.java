@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +21,7 @@ import com.webdatabase.dgz.util.ServerResponseCode;
 
 @RestController
 @RequestMapping("/data-api/scheduler/")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class JobController {
 
 	@Autowired

@@ -367,6 +367,13 @@ public class JsonquerybuilderController {
 		return obj.orElse(null);
 	}
 
+	
+
+	@GetMapping(path = "/get-sql")
+	public ResponseEntity<Object[]> getSQL(){
+		return new ResponseEntity<Object[]>(queryApi.testSQL().toArray(), HttpStatus.OK);
+	}
+
 }
 
 class LocalGrantedSourceViewModel {

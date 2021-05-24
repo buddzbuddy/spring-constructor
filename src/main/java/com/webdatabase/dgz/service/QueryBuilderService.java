@@ -68,6 +68,31 @@ public class QueryBuilderService {
         return result;
 	}
 	
+	public List<Object[]> testSQL(/*List<String> strings*/) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT t0.id as t0_id, t0.name as t0_name,\r\n"
+        		+ "t1.name as t1_name,\r\n"
+        		+ "t0.inn as t0_inn,\r\n"
+        		+ "t0.fact_address as t0_fact_address,\r\n"
+        		+ "t2.name as t2_name,\r\n"
+        		+ "t3.surname as t3_surname\r\n"
+        		+ "FROM suppliers t0\r\n"
+        		+ "inner join ownership_types t1 on t1.id = t0.ownership_type_id\r\n"
+        		+ "inner join industries t2 on t2.id = t0.industry_id\r\n"
+        		+ "inner join supplier_members t3 on t3.supplier_id = t0.id");
+/*
+        if(strings.get(0)!=null && !strings.get(0).isEmpty()) {
+            sb.append(" AND to_char(o.date, 'YYYY-MM-DD') >= :dataInicio ");
+        }*/
+        
+        Query query = entityManager.createNativeQuery(sb.toString());
+        /*if(strings.get(0)!=null && !strings.get(0).isEmpty()) {
+            query.setParameter("dataInicio", strings.get(0));
+        }
+        */
+        return query.getResultList();
+    }
+	
 	@Transactional
 	public void addEntry(InsertEntityModel insertModel, Class<?> clazz) {
 		List<String> names = new ArrayList<>();

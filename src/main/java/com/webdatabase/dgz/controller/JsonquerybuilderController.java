@@ -369,11 +369,25 @@ public class JsonquerybuilderController {
 
 	
 
-	@GetMapping(path = "/get-sql")
-	public ResponseEntity<Object[]> getSQL(){
-		return new ResponseEntity<Object[]>(queryApi.testSQL().toArray(), HttpStatus.OK);
+	@PostMapping(path = "/exec-sql",
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Object[]> getSQL(@RequestBody JsonSqlScript model){
+		return new ResponseEntity<Object[]>(queryApi.executeSQL(model.getSqlScript()).toArray(), HttpStatus.OK);
 	}
 
+}
+
+class JsonSqlScript {
+	private String sqlScript;
+
+	public String getSqlScript() {
+		return sqlScript;
+	}
+
+	public void setSqlScript(String sqlScript) {
+		this.sqlScript = sqlScript;
+	}
 }
 
 class LocalGrantedSourceViewModel {

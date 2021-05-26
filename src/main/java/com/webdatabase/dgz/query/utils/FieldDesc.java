@@ -6,6 +6,7 @@ public class FieldDesc {
 	private String dataType;
 	private String dictionaryClassName;
 	private String dictionaryFieldName;
+	private String dbName;
 	
 	
 	public String getName() {
@@ -37,5 +38,11 @@ public class FieldDesc {
 	}
 	public void setDictionaryFieldName(String dictionaryFieldName) {
 		this.dictionaryFieldName = dictionaryFieldName;
+	}
+	public String getDbName() {
+		return dbName;
+	}
+	public void setDbName(String dbName) {
+		this.dbName = dbName;
 	}
 }

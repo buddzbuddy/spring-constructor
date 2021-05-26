@@ -7,6 +7,7 @@ public class MyClassDesc {
 	private String classLabel;
 	private Integer orderNo;
 	private List <FieldDesc> propList;
+	private String dbName;
 	public String getClassName() {
 		return className;
 	}
@@ -30,5 +31,11 @@ public class MyClassDesc {
 	}
 	public void setOrderNo(Integer orderNo) {
 		this.orderNo = orderNo;
+	}
+	public String getDbName() {
+		return dbName;
+	}
+	public void setDbName(String dbName) {
+		this.dbName = dbName;
 	}
 }

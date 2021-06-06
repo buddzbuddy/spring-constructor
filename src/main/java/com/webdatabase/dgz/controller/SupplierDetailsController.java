@@ -33,6 +33,7 @@ import com.webdatabase.dgz.query.utils.SpecificationUtil;
 import com.webdatabase.dgz.repository.SupplierRepository;
 import com.webdatabase.dgz.service.GovServices;
 import com.webdatabase.dgz.service.QueryBuilderService;
+import com.webdatabase.dgz.util.SOAPClientSAAJ;
 
 @RestController
 @RequestMapping("/data-api/supplier-requests")
@@ -217,7 +218,7 @@ public class SupplierDetailsController {
 	
 	@GetMapping(path = "/initMsecDataAll",
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> initMsecDataAll(Pageable pageable) throws JSONException {
+	public ResponseEntity<?> initMsecDataAll() throws JSONException {
 		List<Supplier> listSuppliers = supplierRepo.findAll();
 		int successCount = _govServices.initMsecAll(listSuppliers);
 		JSONObject response = new JSONObject();
@@ -225,6 +226,15 @@ public class SupplierDetailsController {
 		response.put("scannedCount", listSuppliers.size());
 		
 		return new ResponseEntity<>(response.toString(), HttpStatus.OK);
+	}
+	
+	@GetMapping(path = "/testAddressApi",
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> testAddressApi() throws JSONException {
+		SOAPClientSAAJ.execute();
+		
+		
+		return new ResponseEntity<>(true, HttpStatus.OK);
 	}
 }
 class CustomQueryModel{

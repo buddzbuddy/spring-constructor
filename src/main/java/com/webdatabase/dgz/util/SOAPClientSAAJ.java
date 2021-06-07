@@ -68,7 +68,10 @@ public class SOAPClientSAAJ {
             System.out.println("Response SOAP Message:");
             soapResponse.writeTo(System.out);
             System.out.println();
-
+            
+            org.w3c.dom.Node item = soapResponse.getSOAPBody().getElementsByTagName("return").item(0).getFirstChild();
+            System.out.println(item.getTextContent());
+            
             soapConnection.close();
         } catch (Exception e) {
             System.err.println("\nError occurred while sending SOAP Request to Server!\nMake sure you have the correct endpoint URL and SOAPAction!\n");

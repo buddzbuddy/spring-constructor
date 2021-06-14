@@ -127,7 +127,7 @@ public class UserConstraintController {
 	}
 	
 	
-	@DeleteMapping(path = "/get/delete/{id}", consumes = MediaType.APPLICATION_JSON_VALUE , produces = MediaType.APPLICATION_JSON_VALUE)
+	@DeleteMapping(path = "/delete/{id}", consumes = MediaType.APPLICATION_JSON_VALUE , produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<HttpStatus> deleteUserConstraint(@PathVariable long id){
 		try {
 			Optional<UserConstraint> userConstraintOptional = userConstraintRepository.findById(id);

@@ -27,7 +27,7 @@ public class UserConstraintRole extends AuditModel {
 	private String name;
 	
 	@OneToMany(fetch = FetchType.EAGER)
-	@JoinColumn(name = "role_id")
+	@JoinColumn(name = "role_id", referencedColumnName="id", insertable=false, updatable=false)
 	private Set<UserConstraint> userConstraints;
 	
 	public long getId() {

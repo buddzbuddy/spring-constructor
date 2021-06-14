@@ -53,7 +53,7 @@ public class UserConstraintController {
 				.orElse(ResponseEntity.notFound().build());
 	}
 	
-	@GetMapping(path = "/role/get-all", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/role/getAll", produces = MediaType.APPLICATION_JSON_VALUE)
 	public  ResponseEntity<List<UserConstraintRole>> getUserConstraintRoleAll(){
 		try {
 			List<UserConstraintRole> listUserConstraintRoles  = userConstraintRoleRepository.findAll();
@@ -113,7 +113,7 @@ public class UserConstraintController {
 				.orElse(ResponseEntity.notFound().build());
 	}
 	
-	@GetMapping(path = "/get-all", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/getAll", produces = MediaType.APPLICATION_JSON_VALUE)
 	public  ResponseEntity<List<UserConstraint>> getUserConstraintAll(){
 		try {
 			List<UserConstraint> listUserConstraints  = userConstraintRepository.findAll();

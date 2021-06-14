@@ -34,7 +34,7 @@ public class UserConstraintController {
 	private UserConstraintRoleRepository userConstraintRoleRepository;
 	
 	
-	@PostMapping(path = "/create-user-constraint-role", 
+	@PostMapping(path = "/role/create", 
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<UserConstraintRole> createUserRole(@RequestBody UserConstraintRole userConstraintRole){
@@ -46,14 +46,14 @@ public class UserConstraintController {
 	}
 	
 	
-	@GetMapping(path = "/get-user-constraint-role/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/role/get/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> getUserConstraintRole(@PathVariable long id){
 		return userConstraintRoleRepository.findById(id)
 				.map(record -> ResponseEntity.ok().body(record))
 				.orElse(ResponseEntity.notFound().build());
 	}
 	
-	@GetMapping(path = "/get-user-constraint-role-all", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/role/getAll", produces = MediaType.APPLICATION_JSON_VALUE)
 	public  ResponseEntity<List<UserConstraintRole>> getUserConstraintRoleAll(){
 		try {
 			List<UserConstraintRole> listUserConstraintRoles  = userConstraintRoleRepository.findAll();
@@ -66,7 +66,7 @@ public class UserConstraintController {
 		}
 	}
 	
-	@PutMapping(path = "/get-user-constraint-role/update",consumes = MediaType.APPLICATION_JSON_VALUE , produces = MediaType.APPLICATION_JSON_VALUE)
+	@PutMapping(path = "/role/update",consumes = MediaType.APPLICATION_JSON_VALUE , produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<UserConstraintRole> updateUserConstraintRole(@RequestBody UserConstraintRole userConstraintRole){
 		try {
 			return new ResponseEntity<>(userConstraintRoleRepository.save(userConstraintRole), HttpStatus.OK);
@@ -75,7 +75,7 @@ public class UserConstraintController {
 		}
 	}
 	
-	@DeleteMapping(path = "/get-user-constraint-role/delete/{id}", consumes = MediaType.APPLICATION_JSON_VALUE , produces = MediaType.APPLICATION_JSON_VALUE)
+	@DeleteMapping(path = "/role/delete/{id}", consumes = MediaType.APPLICATION_JSON_VALUE , produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<HttpStatus> deleteUserConstraintRole(@PathVariable long id){
 		try {
 			Optional<UserConstraintRole> userConstraintOptional = userConstraintRoleRepository.findById(id);
@@ -94,7 +94,7 @@ public class UserConstraintController {
 	
 	
 	
-	@PostMapping(path = "/create-user-constraint", 
+	@PostMapping(path = "/create", 
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<UserConstraint> createUserConstraint(@RequestBody UserConstraint userConstraint){
@@ -106,14 +106,14 @@ public class UserConstraintController {
 	}
 	
 	
-	@GetMapping(path = "/get-user-constraint/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/get/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> getUserConstraint(@PathVariable long id){
 		return userConstraintRepository.findById(id)
 				.map(record -> ResponseEntity.ok().body(record))
 				.orElse(ResponseEntity.notFound().build());
 	}
 	
-	@GetMapping(path = "/get-user-constraint-all", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/getAll", produces = MediaType.APPLICATION_JSON_VALUE)
 	public  ResponseEntity<List<UserConstraint>> getUserConstraintAll(){
 		try {
 			List<UserConstraint> listUserConstraints  = userConstraintRepository.findAll();
@@ -127,7 +127,7 @@ public class UserConstraintController {
 	}
 	
 	
-	@DeleteMapping(path = "/get-user-constraint/delete/{id}", consumes = MediaType.APPLICATION_JSON_VALUE , produces = MediaType.APPLICATION_JSON_VALUE)
+	@DeleteMapping(path = "/delete/{id}", consumes = MediaType.APPLICATION_JSON_VALUE , produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<HttpStatus> deleteUserConstraint(@PathVariable long id){
 		try {
 			Optional<UserConstraint> userConstraintOptional = userConstraintRepository.findById(id);

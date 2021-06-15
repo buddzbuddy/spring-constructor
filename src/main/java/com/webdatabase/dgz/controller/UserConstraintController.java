@@ -24,7 +24,7 @@ import com.webdatabase.dgz.repository.UserConstraintRoleRepository;
 
 @RestController
 @RequestMapping("data-api/user-constraint")
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+//@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class UserConstraintController {
 	
 	@Autowired
@@ -75,7 +75,7 @@ public class UserConstraintController {
 		}
 	}
 	
-	@DeleteMapping(path = "/role/delete/{id}", consumes = MediaType.APPLICATION_JSON_VALUE , produces = MediaType.APPLICATION_JSON_VALUE)
+	@DeleteMapping(path = "/role/delete/{id}"/*, consumes = MediaType.APPLICATION_JSON_VALUE , produces = MediaType.APPLICATION_JSON_VALUE*/)
 	public ResponseEntity<HttpStatus> deleteUserConstraintRole(@PathVariable long id){
 		try {
 			Optional<UserConstraintRole> userConstraintOptional = userConstraintRoleRepository.findById(id);

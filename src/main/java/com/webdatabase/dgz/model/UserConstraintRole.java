@@ -26,6 +26,9 @@ public class UserConstraintRole extends AuditModel {
 	@Column(name = "name")
 	private String name;
 	
+	@Column(name = "label")
+	private String label;
+	
 	@OneToMany(fetch = FetchType.EAGER)
 	@JoinColumn(name = "role_id", referencedColumnName="id", insertable=false, updatable=false)
 	private Set<UserConstraint> userConstraints;
@@ -52,5 +55,13 @@ public class UserConstraintRole extends AuditModel {
 
 	public void setUserConstraints(Set<UserConstraint> userConstraints) {
 		this.userConstraints = userConstraints;
+	}
+
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
 	}
 }

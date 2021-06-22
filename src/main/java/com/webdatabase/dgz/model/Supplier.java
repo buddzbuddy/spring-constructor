@@ -35,6 +35,10 @@ public class Supplier extends AuditModel {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name = "id")
     private long id;
+	
+	@Column(name = "keycloak_user_id")
+	private String keycloakUserId;
+	
 
 	@MetaFieldName(label = "Наименование поставщика")
 	@Column(name = "name")
@@ -316,6 +320,14 @@ public class Supplier extends AuditModel {
 
 	public void setCriminalCases(Set<CriminalCase> criminalCases) {
 		this.criminalCases = criminalCases;
+	}
+
+	public String getKeycloakUserId() {
+		return keycloakUserId;
+	}
+
+	public void setKeycloakUserId(String keycloakUserId) {
+		this.keycloakUserId = keycloakUserId;
 	}
 	
 }

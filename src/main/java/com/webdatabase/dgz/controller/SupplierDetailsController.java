@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.webdatabase.dgz.model.*;
+import com.webdatabase.dgz.repository.BuyerRepository;
 import com.webdatabase.dgz.repository.LocalGrantedSourceRepository;
 import com.webdatabase.dgz.repository.Msec_detailRepository;
 import com.webdatabase.dgz.repository.SupplierMemberRepository;
@@ -37,10 +38,11 @@ import com.webdatabase.dgz.util.SOAPClientSAAJ;
 
 @RestController
 @RequestMapping("/data-api/supplier-requests")
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class SupplierDetailsController {
 	@Autowired
 	private SupplierRepository supplierRepo;
+	@Autowired
+	private BuyerRepository buyerRepo;
 
 	@Autowired
 	private Msec_detailRepository msec_detailRepository;
@@ -216,6 +218,71 @@ public class SupplierDetailsController {
     	return new ResponseEntity<>(s, HttpStatus.OK);
     }
 	
+	@GetMapping(path = "/isConnectedToSupplier/{iin}")
+    public ResponseEntity<?> isConnectedToSupplier(@PathVariable String iin)
+    {
+		Optional<Supplier> sop = supplierRepo.findByInn(iin);
+		boolean res = sop.isPresent() && sop.get().getKeycloakUserId() != null && !sop.get().getKeycloakUserId().isBlank();
+		return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+	@GetMapping(path = "/isConnectedToBuyer/{iin}")
+    public ResponseEntity<?> isConnectedToBuyer(@PathVariable String iin)
+    {
+		Optional<Buyer> sop = buyerRepo.findByInn(iin);
+		boolean res = sop.isPresent() && sop.get().getKeycloakUserId() != null && !sop.get().getKeycloakUserId().isBlank();
+		return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+	
+	@PostMapping(path = "/connectToSupplier",
+	consumes = MediaType.APPLICATION_JSON_VALUE,
+    produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> connectToSupplier(@RequestBody connectToModel model)
+    {
+		Optional<Supplier> sop = supplierRepo.findByInn(model.getIin());
+		
+		if(sop.isPresent()) {
+			Supplier s = sop.get();
+			s.setKeycloakUserId(model.getKeycloakUserId());
+			supplierRepo.save(s);
+		}
+		else {
+			Supplier s = new Supplier();
+			s.setKeycloakUserId(model.getKeycloakUserId());
+			s.setInn(model.getIin());
+			s.setName(model.getOrgName());
+			//DEFAULTS
+			s.setOwnershipTypeId(1);
+			s.setIndustryId(1);
+			
+			
+			supplierRepo.save(s);
+		}
+		return new ResponseEntity<>(true, HttpStatus.OK);
+    }
+	
+	@PostMapping(path = "/connectToBuyer",
+	consumes = MediaType.APPLICATION_JSON_VALUE,
+    produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> connectToBuyer(@RequestBody connectToModel model)
+    {
+		Optional<Buyer> sop = buyerRepo.findByInn(model.getIin());
+		
+		if(sop.isPresent()) {
+			Buyer s = sop.get();
+			s.setKeycloakUserId(model.getKeycloakUserId());
+			buyerRepo.save(s);
+		}
+		else {
+			Buyer s = new Buyer();
+			s.setKeycloakUserId(model.getKeycloakUserId());
+			s.setInn(model.getIin());
+			s.setName(model.getOrgName());
+			buyerRepo.save(s);
+		}
+		return new ResponseEntity<>(true, HttpStatus.OK);
+    }
+	
 	@GetMapping(path = "/initMsecDataAll",
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> initMsecDataAll() throws JSONException {
@@ -235,6 +302,40 @@ public class SupplierDetailsController {
 		
 		
 		return new ResponseEntity<>(true, HttpStatus.OK);
+	}
+
+	@GetMapping(path = "/getSupplierByUserId/{keycloakUserId}")
+    public ResponseEntity<?> getSupplierByUserId(@PathVariable String keycloakUserId)
+    {
+		Optional<Supplier> sop = supplierRepo.findByKeycloakUserId(keycloakUserId);
+		if (sop.isPresent()) {
+			return new ResponseEntity<>(sop.get(), HttpStatus.OK);			
+		}
+		return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+}
+
+class connectToModel {
+	private String iin;
+	private String keycloakUserId;
+	private String orgName;
+	public String getIin() {
+		return iin;
+	}
+	public void setIin(String iin) {
+		this.iin = iin;
+	}
+	public String getKeycloakUserId() {
+		return keycloakUserId;
+	}
+	public void setKeycloakUserId(String keycloakUserId) {
+		this.keycloakUserId = keycloakUserId;
+	}
+	public String getOrgName() {
+		return orgName;
+	}
+	public void setOrgName(String orgName) {
+		this.orgName = orgName;
 	}
 }
 class CustomQueryModel{

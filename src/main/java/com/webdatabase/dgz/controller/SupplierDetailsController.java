@@ -43,6 +43,9 @@ public class SupplierDetailsController {
 	private SupplierRepository supplierRepo;
 	@Autowired
 	private BuyerRepository buyerRepo;
+	
+	@Autowired
+	private SupplierMemberRepository supplierMemberRepo;
 
 	@Autowired
 	private Msec_detailRepository msec_detailRepository;
@@ -283,6 +286,53 @@ public class SupplierDetailsController {
 		return new ResponseEntity<>(true, HttpStatus.OK);
     }
 	
+	@PostMapping(path = "/saveInitialSupplier",
+	consumes = MediaType.APPLICATION_JSON_VALUE,
+    produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> saveInitialSupplier(@RequestBody saveInitialSupplierModel model)
+    {
+		Optional<Supplier> sop = supplierRepo.findById(model.getSupplierId());
+		
+		if(sop.isPresent()) {
+			Supplier s = sop.get();
+			s.setFactAddress(model.getFactAddress());
+			s.setLegalAddress(model.getLegalAddress());
+			s.setOwnershipTypeId(model.getOwnershipTypeId());
+			s.setIndustryId(model.getIndustryId());
+			s.setTelephone(model.getTelephone());
+			s.setBankName(model.getBankName());
+			s.setBankAccount(model.getBankAccount());
+			s.setBic(model.getBic());
+			s.setResident(model.getResident());
+			s.setHasInit(true);
+			supplierRepo.save(s);
+			
+			if(model.getManagerPin() != null && !model.getManagerPin().isBlank()
+					&& model.getManagerLastname() != null && !model.getManagerLastname().isBlank()
+							&& model.getManagerFirstname() != null && !model.getManagerFirstname().isBlank()
+									&& model.getManagerMiddlename() != null && !model.getManagerMiddlename().isBlank()
+					) {
+				SupplierMember sm = new SupplierMember();
+				sm.setSupplierId(s.getId());
+				sm.setName(model.getManagerFirstname());
+				sm.setSurname(model.getManagerLastname());
+				sm.setPatronymic(model.getManagerMiddlename());
+				sm.setPin(model.getManagerPin());
+				
+				long managerId = 2;
+				sm.setMemberTypeId(managerId);
+				
+				supplierMemberRepo.save(sm);	
+			}
+			
+			return new ResponseEntity<>(true, HttpStatus.OK);
+		}
+		else {
+			return new ResponseEntity<>(false, HttpStatus.OK);
+		}
+    }
+	
+	
 	@GetMapping(path = "/initMsecDataAll",
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> initMsecDataAll() throws JSONException {
@@ -336,6 +386,107 @@ class connectToModel {
 	}
 	public void setOrgName(String orgName) {
 		this.orgName = orgName;
+	}
+}
+
+class saveInitialSupplierModel {
+	private long supplierId;
+	private String factAddress;
+	private String legalAddress;
+	private long ownershipTypeId;
+	private long industryId;
+	private String telephone;
+	private String bankName;
+	private String bankAccount;
+	private String bic;
+	private boolean resident;
+	private String managerPin;
+	private String managerLastname;
+	private String managerFirstname;
+	private String managerMiddlename;
+	public long getSupplierId() {
+		return supplierId;
+	}
+	public void setSupplierId(long supplierId) {
+		this.supplierId = supplierId;
+	}
+	public String getFactAddress() {
+		return factAddress;
+	}
+	public void setFactAddress(String factAddress) {
+		this.factAddress = factAddress;
+	}
+	public String getLegalAddress() {
+		return legalAddress;
+	}
+	public void setLegalAddress(String legalAddress) {
+		this.legalAddress = legalAddress;
+	}
+	public long getOwnershipTypeId() {
+		return ownershipTypeId;
+	}
+	public void setOwnershipTypeId(long ownershipTypeId) {
+		this.ownershipTypeId = ownershipTypeId;
+	}
+	public long getIndustryId() {
+		return industryId;
+	}
+	public void setIndustryId(long industryId) {
+		this.industryId = industryId;
+	}
+	public String getTelephone() {
+		return telephone;
+	}
+	public void setTelephone(String telephone) {
+		this.telephone = telephone;
+	}
+	public String getBankName() {
+		return bankName;
+	}
+	public void setBankName(String bankName) {
+		this.bankName = bankName;
+	}
+	public String getBankAccount() {
+		return bankAccount;
+	}
+	public void setBankAccount(String bankAccount) {
+		this.bankAccount = bankAccount;
+	}
+	public String getBic() {
+		return bic;
+	}
+	public void setBic(String bic) {
+		this.bic = bic;
+	}
+	public boolean getResident() {
+		return resident;
+	}
+	public void setResident(boolean resident) {
+		this.resident = resident;
+	}
+	public String getManagerPin() {
+		return managerPin;
+	}
+	public void setManagerPin(String managerPin) {
+		this.managerPin = managerPin;
+	}
+	public String getManagerLastname() {
+		return managerLastname;
+	}
+	public void setManagerLastname(String managerLastname) {
+		this.managerLastname = managerLastname;
+	}
+	public String getManagerFirstname() {
+		return managerFirstname;
+	}
+	public void setManagerFirstname(String managerFirstname) {
+		this.managerFirstname = managerFirstname;
+	}
+	public String getManagerMiddlename() {
+		return managerMiddlename;
+	}
+	public void setManagerMiddlename(String managerMiddlename) {
+		this.managerMiddlename = managerMiddlename;
 	}
 }
 class CustomQueryModel{

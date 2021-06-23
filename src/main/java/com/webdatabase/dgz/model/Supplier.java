@@ -101,11 +101,9 @@ public class Supplier extends AuditModel {
 	private String rayonCode;
 
 	@MetaFieldName(label = "Резидент (да/нет)")
-	@Nullable
-	@Column(name = "is_resident")
-	private boolean isResident;
+	@Column(name = "resident")
+	private boolean resident;
 	
-	@Nullable
 	@MetaFieldName(label = "В черном списке (да/нет)")
 	@Column(name = "is_black")
 	private boolean isBlack;
@@ -134,6 +132,9 @@ public class Supplier extends AuditModel {
 	@OneToMany(fetch = FetchType.EAGER)
 	@JoinColumn(name = "supplier_id")
 	private Set<CriminalCase> criminalCases;
+	
+	@Column(name = "has_init")
+	private boolean hasInit;
 	
 	public long getId() {
 		return id;
@@ -224,12 +225,12 @@ public class Supplier extends AuditModel {
 		this.rayonCode = rayonCode;
 	}
 
-	public boolean getIsResident() {
-		return isResident;
+	public boolean getResident() {
+		return resident;
 	}
 
-	public void setIsResident(boolean isResident) {
-		this.isResident = isResident;
+	public void setResident(boolean resident) {
+		this.resident = resident;
 	}
 
 	public boolean getIsBlack() {
@@ -328,6 +329,14 @@ public class Supplier extends AuditModel {
 
 	public void setKeycloakUserId(String keycloakUserId) {
 		this.keycloakUserId = keycloakUserId;
+	}
+
+	public boolean getHasInit() {
+		return hasInit;
+	}
+
+	public void setHasInit(boolean hasInit) {
+		this.hasInit = hasInit;
 	}
 	
 }

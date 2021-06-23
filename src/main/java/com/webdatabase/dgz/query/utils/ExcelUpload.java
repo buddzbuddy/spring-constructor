@@ -455,7 +455,7 @@ public class ExcelUpload {
 					supplier.setFactAddress(factAddress);
 					supplier.setTelephone(telephone);
 					supplier.setIsBlack(isBlack);
-					supplier.setIsResident(isResident);
+					supplier.setResident(isResident);
 					supplierList.add(supplier);
 				} catch (IllegalStateException e) {
 					if(e.getMessage().equals("Cannot get a STRING value from a NUMERIC cell")){

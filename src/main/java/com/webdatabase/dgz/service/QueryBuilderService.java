@@ -159,22 +159,18 @@ public class QueryBuilderService {
 		System.out.println("insert-result" + q.executeUpdate());
 	}
 	
+
+	@Transactional
+	public void deleteEntry(String deleteModelName, long id) {
+		MyClassDesc t = getClassDescription(deleteModelName);
+		String queryString = "DELETE FROM " + t.getDbName() + " WHERE id=" + id;
+		Query q = entityManager.createNativeQuery(queryString);
 	
-	public static <T> Specification<T> joinTest2(Class<?> input, String onField) {
-	    return new Specification<T>() {
-	        /**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
-
-			public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-	            Join<T,Class<?>> userProd = root.join(onField);
-	            //Join<FollowingRelationship,Product> prodRelation = userProd.join("ownedRelationships");
-	            return cb.equal(userProd.get("id"), input);
-	        }
-	    };
+		System.out.println(queryString);
+		
+		System.out.println("delete-result rows: " + q.executeUpdate());
 	}
-
+	
 	public MyClassDesc[] getMetaDescription() {
 
 		Reflections reflections = new Reflections("com.webdatabase.dgz.model");

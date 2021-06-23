@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.Entity;
+
 import com.webdatabase.dgz.model.GrantedSource;
 import com.webdatabase.dgz.model.LocalGrantedSource;
 import com.webdatabase.dgz.model.SourceType;
@@ -105,6 +107,13 @@ public class JsonquerybuilderController {
 			e.printStackTrace();
 			return new ResponseEntity<Boolean>(true, HttpStatus.BAD_REQUEST);
 		}
+    }
+
+    @GetMapping(path = "/delete/{deleteName}/{id}")
+    public ResponseEntity<Boolean> delete(@PathVariable String deleteName, @PathVariable long id)
+    {
+    	queryApi.deleteEntry(deleteName, id);
+    	return new ResponseEntity<Boolean>(true, HttpStatus.OK);
     }
     
     @GetMapping(path = "/getMeta")

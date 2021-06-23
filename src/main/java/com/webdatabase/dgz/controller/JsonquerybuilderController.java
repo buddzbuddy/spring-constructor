@@ -34,7 +34,6 @@ import com.webdatabase.dgz.service.QueryBuilderService;
 
 @RestController
 @RequestMapping("/data-api/query")
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class JsonquerybuilderController {
 
 	//@Autowired

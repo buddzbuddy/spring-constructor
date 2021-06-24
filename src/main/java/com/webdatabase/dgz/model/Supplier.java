@@ -133,6 +133,10 @@ public class Supplier extends AuditModel {
 	@JoinColumn(name = "supplier_id")
 	private Set<CriminalCase> criminalCases;
 	
+	@OneToMany(fetch = FetchType.EAGER)
+	@JoinColumn(name = "supplier_id")
+	private Set<DealContract> dealContracts;
+	
 	@Column(name = "has_init")
 	private boolean hasInit;
 	
@@ -337,6 +341,14 @@ public class Supplier extends AuditModel {
 
 	public void setHasInit(boolean hasInit) {
 		this.hasInit = hasInit;
+	}
+
+	public Set<DealContract> getDealContracts() {
+		return dealContracts;
+	}
+
+	public void setDealContracts(Set<DealContract> dealContracts) {
+		this.dealContracts = dealContracts;
 	}
 	
 }

@@ -1,6 +1,8 @@
 package com.webdatabase.dgz.service;
 
 import java.lang.reflect.Field;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import javax.persistence.Column;
@@ -109,7 +111,7 @@ public class QueryBuilderService {
 					vals.add((int)item.getVal());
 				}
 				else if (f.getType().getName().equals(float.class.getName())) {
-					vals.add((float)item.getVal());
+					vals.add((float)(int)item.getVal());
 				}
 				else if (f.getType().getName().equals(double.class.getName())) {
 					vals.add((double)item.getVal());
@@ -121,7 +123,13 @@ public class QueryBuilderService {
 					vals.add((String)item.getVal());
 				}
 				else if (f.getType().getName().equals(Date.class.getName())) {
-					vals.add((Date)item.getVal());
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+					try {
+						vals.add(sdf.parse((String)item.getVal()));
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 				else {
 					System.out.println("Поле " + item.getName() + " имеет неизвстный тип: " + f.getType().getName());

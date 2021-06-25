@@ -71,6 +71,16 @@ public class FilesStorageServiceImpl implements FilesStorageService {
   public void deleteAll() {
     FileSystemUtils.deleteRecursively(root.toFile());
   }
+  
+  @Override
+  public void deleteOne(String fileName, long supplierId) {
+	  Path subRoot = Paths.get("uploads/"+supplierId);
+  	if(Files.notExists(subRoot)) {
+  		return;
+  	}
+    Path file = subRoot.resolve(fileName);
+	  FileSystemUtils.deleteRecursively(file.toFile());
+  }
 
   @Override
   public Stream<Path> loadAll(long supplierId) {

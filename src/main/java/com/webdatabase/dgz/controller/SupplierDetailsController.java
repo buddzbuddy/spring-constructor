@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.webdatabase.dgz.model.*;
 import com.webdatabase.dgz.repository.BuyerRepository;
+import com.webdatabase.dgz.repository.ComplaintRepository;
 import com.webdatabase.dgz.repository.LocalGrantedSourceRepository;
 import com.webdatabase.dgz.repository.Msec_detailRepository;
 import com.webdatabase.dgz.repository.SupplierMemberRepository;
@@ -43,6 +44,9 @@ public class SupplierDetailsController {
 	private SupplierRepository supplierRepo;
 	@Autowired
 	private BuyerRepository buyerRepo;
+	
+	@Autowired
+	private ComplaintRepository complaintRepo;
 	
 	@Autowired
 	private SupplierMemberRepository supplierMemberRepo;
@@ -173,14 +177,17 @@ public class SupplierDetailsController {
 			List<Supplier> newList = new ArrayList<>();
 			for(Supplier supplier : list) {
 				if(fd != null && ld != null)
-    			for(Appeal a : supplier.getAppeals()) {
-    				if(a.getCreatedAt().before(ld)
-    					&&
-    					a.getCreatedAt().after(fd)) {
-    					newList.add(supplier);
-    					break;
-    				}
-    			}
+				{
+					List<Complaint> complaints = complaintRepo.findBySupplierId(supplier.getId());
+					for(Complaint a : complaints) {
+	    				if(a.getCreatedAt().before(ld)
+	    					&&
+	    					a.getCreatedAt().after(fd)) {
+	    					newList.add(supplier);
+	    					break;
+	    				}
+	    			}
+				}
 				else {
 					if (supplier.getAppeals() != null && supplier.getAppeals().size() > 0) {
 						newList.add(supplier);
@@ -396,6 +403,25 @@ public class SupplierDetailsController {
 			return new ResponseEntity<>(false, HttpStatus.OK);
 		}
     }
+	
+
+	
+	@GetMapping(path = "/getComplaintsBySupplierId/{supplierId}")
+    public ResponseEntity<Complaint[]> getComplaintsBySupplierId(@PathVariable long supplierId)
+    {
+		List<Complaint> sop = complaintRepo.findBySupplierId(supplierId);
+		return new ResponseEntity<Complaint[]>(sop.toArray(new Complaint[0]), HttpStatus.OK);
+    }
+
+	@GetMapping(path = "/getComplaintsByBuyerId/{buyerId}")
+    public ResponseEntity<Complaint[]> getComplaintsByBuyerId(@PathVariable long buyerId)
+    {
+		List<Complaint> sop = complaintRepo.findByBuyerId(buyerId);
+		System.out.println("1111111111");
+		return new ResponseEntity<Complaint[]>(sop.toArray(new Complaint[0]), HttpStatus.OK);
+    }
+	
+
 }
 
 class connectToModel {

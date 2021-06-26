@@ -143,7 +143,11 @@ public class Supplier extends AuditModel {
 	
 	@Column(name = "has_init")
 	private boolean hasInit;
-	
+/*
+	@OneToMany(fetch = FetchType.LAZY)
+	@JoinColumn(name = "supplier_id")
+	private Set<Complaint> complaints;
+	*/
 	public long getId() {
 		return id;
 	}
@@ -362,5 +366,13 @@ public class Supplier extends AuditModel {
 	public void setCertificates(Set<Certificate> certificates) {
 		this.certificates = certificates;
 	}
-	
+/*
+	public Set<Complaint> getComplaints() {
+		return complaints;
+	}
+
+	public void setComplaints(Set<Complaint> complaints) {
+		this.complaints = complaints;
+	}
+	*/
 }

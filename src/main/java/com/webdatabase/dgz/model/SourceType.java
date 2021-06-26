@@ -2,5 +2,7 @@ package com.webdatabase.dgz.model;
 
 public enum SourceType {
     LICENSE,
-    DEBT
+    DEBT,
+    COMPLAINT,
+    BUYER_SUPPLIER_REGISTRY
 }

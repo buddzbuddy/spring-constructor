@@ -314,6 +314,8 @@ public class JsonquerybuilderController {
 		List<SourceType> sourceTypes = new ArrayList<>();
 		sourceTypes.add(SourceType.LICENSE);
 		sourceTypes.add(SourceType.DEBT);
+		sourceTypes.add(SourceType.COMPLAINT);
+		sourceTypes.add(SourceType.BUYER_SUPPLIER_REGISTRY);
 		return new ResponseEntity<SourceType[]>(sourceTypes.toArray(new SourceType[0]), HttpStatus.OK);
 	}
 

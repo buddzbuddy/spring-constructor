@@ -1,10 +1,15 @@
 package com.webdatabase.dgz.model;
 
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.webdatabase.dgz.model.base.AuditModel;
@@ -48,7 +53,11 @@ public class Buyer extends AuditModel {
 	
 	@Column(name = "has_init")
 	private boolean hasInit;
-
+/*
+	@OneToMany(fetch = FetchType.LAZY)
+	@JoinColumn(name = "buyer_id")
+	private Set<Complaint> complaints;
+	*/
 	public long getId() {
 		return id;
 	}
@@ -112,4 +121,12 @@ public class Buyer extends AuditModel {
 	public void setHasInit(boolean hasInit) {
 		this.hasInit = hasInit;
 	}
+/*
+	public Set<Complaint> getComplaints() {
+		return complaints;
+	}
+
+	public void setComplaints(Set<Complaint> complaints) {
+		this.complaints = complaints;
+	}*/
 }

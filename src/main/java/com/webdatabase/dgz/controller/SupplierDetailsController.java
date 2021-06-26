@@ -363,6 +363,39 @@ public class SupplierDetailsController {
 		}
 		return new ResponseEntity<>(null, HttpStatus.OK);
     }
+	
+	@GetMapping(path = "/getBuyerByUserId/{keycloakUserId}")
+    public ResponseEntity<?> getBuyerByUserId(@PathVariable String keycloakUserId)
+    {
+		Optional<Buyer> sop = buyerRepo.findByKeycloakUserId(keycloakUserId);
+		if (sop.isPresent()) {
+			return new ResponseEntity<>(sop.get(), HttpStatus.OK);			
+		}
+		return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+	
+
+	@PostMapping(path = "/saveInitialBuyer",
+	consumes = MediaType.APPLICATION_JSON_VALUE,
+    produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> saveInitialBuyer(@RequestBody saveInitialBuyerModel model)
+    {
+		Optional<Buyer> sop = buyerRepo.findById(model.getBuyerId());
+		
+		if(sop.isPresent()) {
+			Buyer s = sop.get();
+			s.setFactAddress(model.getFactAddress());
+			s.setLegalAddress(model.getLegalAddress());
+			s.setTelephone(model.getTelephone());
+			s.setHasInit(true);
+			buyerRepo.save(s);
+			
+			return new ResponseEntity<>(true, HttpStatus.OK);
+		}
+		else {
+			return new ResponseEntity<>(false, HttpStatus.OK);
+		}
+    }
 }
 
 class connectToModel {
@@ -487,6 +520,37 @@ class saveInitialSupplierModel {
 	}
 	public void setManagerMiddlename(String managerMiddlename) {
 		this.managerMiddlename = managerMiddlename;
+	}
+}
+
+class saveInitialBuyerModel {
+	private long buyerId;
+	private String factAddress;
+	private String legalAddress;
+	private String telephone;
+	public long getBuyerId() {
+		return buyerId;
+	}
+	public void setBuyerId(long buyerId) {
+		this.buyerId = buyerId;
+	}
+	public String getFactAddress() {
+		return factAddress;
+	}
+	public void setFactAddress(String factAddress) {
+		this.factAddress = factAddress;
+	}
+	public String getLegalAddress() {
+		return legalAddress;
+	}
+	public void setLegalAddress(String legalAddress) {
+		this.legalAddress = legalAddress;
+	}
+	public String getTelephone() {
+		return telephone;
+	}
+	public void setTelephone(String telephone) {
+		this.telephone = telephone;
 	}
 }
 class CustomQueryModel{

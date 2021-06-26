@@ -137,6 +137,10 @@ public class Supplier extends AuditModel {
 	@JoinColumn(name = "supplier_id")
 	private Set<DealContract> dealContracts;
 	
+	@OneToMany(fetch = FetchType.EAGER)
+	@JoinColumn(name = "supplier_id")
+	private Set<Certificate> certificates;
+	
 	@Column(name = "has_init")
 	private boolean hasInit;
 	
@@ -349,6 +353,14 @@ public class Supplier extends AuditModel {
 
 	public void setDealContracts(Set<DealContract> dealContracts) {
 		this.dealContracts = dealContracts;
+	}
+
+	public Set<Certificate> getCertificates() {
+		return certificates;
+	}
+
+	public void setCertificates(Set<Certificate> certificates) {
+		this.certificates = certificates;
 	}
 	
 }

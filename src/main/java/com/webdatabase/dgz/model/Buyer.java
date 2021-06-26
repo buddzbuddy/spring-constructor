@@ -26,7 +26,7 @@ public class Buyer extends AuditModel {
 	private String keycloakUserId;
 	
 
-	@MetaFieldName(label = "Наименование поставщика")
+	@MetaFieldName(label = "Наименование организации")
 	@Column(name = "name")
 	private String name;
 	
@@ -45,6 +45,9 @@ public class Buyer extends AuditModel {
 	@MetaFieldName(label = "Телефон")
 	@Column(name = "telephone")
 	private String telephone;
+	
+	@Column(name = "has_init")
+	private boolean hasInit;
 
 	public long getId() {
 		return id;
@@ -100,5 +103,13 @@ public class Buyer extends AuditModel {
 
 	public void setTelephone(String telephone) {
 		this.telephone = telephone;
+	}
+
+	public boolean isHasInit() {
+		return hasInit;
+	}
+
+	public void setHasInit(boolean hasInit) {
+		this.hasInit = hasInit;
 	}
 }

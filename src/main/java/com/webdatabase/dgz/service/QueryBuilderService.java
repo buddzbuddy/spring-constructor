@@ -178,6 +178,89 @@ public class QueryBuilderService {
 		
 		System.out.println("delete-result rows: " + q.executeUpdate());
 	}
+
+	@Transactional
+	public void updateEntry(long id, InsertEntityModel insertModel, Class<?> clazz) {
+		List<String> names = new ArrayList<>();
+		List<String> symbols = new ArrayList<>();
+		List<Object> vals = new ArrayList<>();
+		Table et = clazz.getAnnotation(Table.class);
+		if(et == null) {
+			System.out.println("Entity не найден у класса " + clazz.getName());
+		}
+		else
+		for(InsertEntityFieldModel item : insertModel.getFields()) {
+			
+			try {
+				Field f = clazz.getDeclaredField(item.getName());
+				if(f.getName().equals("id")) continue;
+				
+				f.setAccessible(true);
+				if(f.getType().getName().equals(long.class.getName())) {
+					vals.add(((Number) item.getVal()).longValue());
+				}
+				else if (f.getType().getName().equals(int.class.getName())) {
+					vals.add((int)item.getVal());
+				}
+				else if (f.getType().getName().equals(float.class.getName())) {
+					vals.add((float)(int)item.getVal());
+				}
+				else if (f.getType().getName().equals(double.class.getName())) {
+					vals.add((double)item.getVal());
+				}
+				else if (f.getType().getName().equals(boolean.class.getName())) {
+					vals.add((boolean)item.getVal());
+				}
+				else if (f.getType().getName().equals(String.class.getName())) {
+					vals.add((String)item.getVal());
+				}
+				else if (f.getType().getName().equals(Date.class.getName())) {
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+					try {
+						vals.add(sdf.parse((String)item.getVal()));
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				else {
+					System.out.println("Поле " + item.getName() + " имеет неизвстный тип: " + f.getType().getName());
+				}
+				Column cAnnot = f.getAnnotation(Column.class);
+				if(cAnnot != null) {
+					names.add(cAnnot.name() + "=?");
+					symbols.add("?");
+				}
+				else {
+					System.out.println("Поле " + item.getName() + " не имеет аннотации Column");
+				}
+					
+				
+			} catch (RuntimeException | NoSuchFieldException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (Exception e) {
+				System.out.println(item.getName());
+				e.printStackTrace();
+			}
+			
+			
+		}
+		assert et != null;
+		String queryString = 
+				"UPDATE " 
+				+ et.name()
+				+ " SET "+ String.join(", ", names) +" WHERE id=" + id;
+		Query q = entityManager.createNativeQuery(queryString);
+	
+		System.out.println(queryString);
+		
+		for(int i = 0; i < names.size(); i++) {
+			q = q.setParameter(i + 1, vals.get(i));
+		}
+		
+		System.out.println("update-result" + q.executeUpdate());
+	}
 	
 	public MyClassDesc[] getMetaDescription() {
 

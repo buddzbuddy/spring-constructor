@@ -109,6 +109,32 @@ public class JsonquerybuilderController {
 		}
     }
 
+    @PostMapping(path = "/update/{id}",
+    		consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Boolean> insert(@PathVariable long id, @RequestBody InsertEntityModel insert)
+    {
+    	try {
+    		Class<?> birdClass = Class.forName("com.webdatabase.dgz.model." + insert.getEntityName());
+    		 
+			try {
+				Constructor<?> constructor = birdClass.getConstructor();
+	    	    Object t = constructor.newInstance();
+	    		queryApi.updateEntry(id, insert, t.getClass());
+			} catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			QueryResult res = new QueryResult(true, "", null);
+	    	return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+		} catch (ClassNotFoundException e) {
+	    	QueryResult res = new QueryResult(false, "Класс не найден", null);
+			e.printStackTrace();
+			return new ResponseEntity<Boolean>(true, HttpStatus.BAD_REQUEST);
+		}
+    }
+
     @GetMapping(path = "/delete/{deleteName}/{id}")
     public ResponseEntity<Boolean> delete(@PathVariable String deleteName, @PathVariable long id)
     {

@@ -16,7 +16,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class FilesStorageServiceImpl implements FilesStorageService {
 
-  private final Path root = Paths.get("uploads");
+	private static final String rootFolder = "/home/visoft/temp/uploads";
+  private final Path root = Paths.get(rootFolder);
 
   @Override
   public void init() {
@@ -25,14 +26,15 @@ public class FilesStorageServiceImpl implements FilesStorageService {
     		Files.createDirectory(root);	
     	}
     } catch (IOException e) {
-      throw new RuntimeException("Could not initialize folder for upload!");
+    	e.printStackTrace();
+      //throw new RuntimeException("Could not initialize folder for upload!");
     }
   }
 
   @Override
   public void save(MultipartFile file, long supplierId) {
     try {
-    	Path subRoot = Paths.get("uploads/"+supplierId);
+    	Path subRoot = Paths.get(rootFolder+"/"+supplierId);
     	if(Files.notExists(subRoot)) {
     		Files.createDirectory(subRoot);	
     	}
@@ -46,7 +48,7 @@ public class FilesStorageServiceImpl implements FilesStorageService {
   @Override
   public Resource load(String filename, long supplierId) {
     try {
-    	Path subRoot = Paths.get("uploads/"+supplierId);
+    	Path subRoot = Paths.get(rootFolder+"/"+supplierId);
     	if(Files.notExists(subRoot)) {
     		Files.createDirectory(subRoot);	
     	}
@@ -74,7 +76,7 @@ public class FilesStorageServiceImpl implements FilesStorageService {
   
   @Override
   public void deleteOne(String fileName, long supplierId) {
-	  Path subRoot = Paths.get("uploads/"+supplierId);
+	  Path subRoot = Paths.get(rootFolder+"/"+supplierId);
   	if(Files.notExists(subRoot)) {
   		return;
   	}
@@ -85,12 +87,13 @@ public class FilesStorageServiceImpl implements FilesStorageService {
   @Override
   public Stream<Path> loadAll(long supplierId) {
     try {
-    	Path subRoot = Paths.get("uploads/"+supplierId);
+    	Path subRoot = Paths.get(rootFolder+"/"+supplierId);
     	if(Files.notExists(subRoot)) {
     		Files.createDirectory(subRoot);	
     	}
       return Files.walk(subRoot, 1).filter(path -> !path.equals(subRoot)).map(subRoot::relativize);
     } catch (IOException e) {
+    	e.printStackTrace();
       throw new RuntimeException("Could not load the files!");
     }
   }

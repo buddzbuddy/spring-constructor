@@ -31,11 +31,11 @@ public class FilesController {
 	@Autowired
 	  FilesStorageService storageService;
 
-	  @PostMapping("/{supplierId}/upload")
-	  public ResponseEntity<ResponseMessage> uploadFile(@PathVariable long supplierId, @RequestParam("file") MultipartFile file) {
+	  @PostMapping("/{supplierId}/{packageTypeName}/{packageItemId}/upload")
+	  public ResponseEntity<ResponseMessage> uploadFile(@PathVariable long supplierId, @PathVariable String packageTypeName, @PathVariable long packageItemId, @RequestParam("file") MultipartFile file) {
 	    String message = "";
 	    try {
-	      storageService.save(file, supplierId);
+	      storageService.save(file, supplierId, packageTypeName, packageItemId);
 
 	      message = "Uploaded the file successfully: " + file.getOriginalFilename();
 	      return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
@@ -46,12 +46,12 @@ public class FilesController {
 	    }
 	  }
 
-	  @GetMapping("/{supplierId}/list")
-	  public ResponseEntity<List<FileInfo>> getListFiles(@PathVariable long supplierId) {
-	    List<FileInfo> fileInfos = storageService.loadAll(supplierId).map(path -> {
+	  @GetMapping("/{supplierId}/{packageTypeName}/{packageItemId}/list")
+	  public ResponseEntity<List<FileInfo>> getListFiles(@PathVariable long supplierId, @PathVariable String packageTypeName, @PathVariable long packageItemId) {
+	    List<FileInfo> fileInfos = storageService.loadAll(supplierId, packageTypeName, packageItemId).map(path -> {
 	      String filename = path.getFileName().toString();
 	      String url = MvcUriComponentsBuilder
-	          .fromMethodName(FilesController.class, "getFile", supplierId, path.getFileName().toString()).build().toString();
+	          .fromMethodName(FilesController.class, "getFile", supplierId, packageTypeName, packageItemId, path.getFileName().toString()).build().toString();
 
 	      return new FileInfo(filename, url);
 	    }).collect(Collectors.toList());
@@ -59,18 +59,18 @@ public class FilesController {
 	    return ResponseEntity.status(HttpStatus.OK).body(fileInfos);
 	  }
 
-	  @GetMapping("/{supplierId}/download/{filename:.+}")
+	  @GetMapping("/{supplierId}/{packageTypeName}/{packageItemId}/download/{filename:.+}")
 	  @ResponseBody
-	  public ResponseEntity<Resource> getFile(@PathVariable long supplierId, @PathVariable String filename) {
-	    Resource file = storageService.load(filename, supplierId);
+	  public ResponseEntity<Resource> getFile(@PathVariable long supplierId, @PathVariable String packageTypeName, @PathVariable long packageItemId, @PathVariable String filename) {
+	    Resource file = storageService.load(filename, supplierId, packageTypeName, packageItemId);
 	    return ResponseEntity.ok()
 	        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"").body(file);
 	  }
 
-	  @DeleteMapping("/{supplierId}/delete/{filename:.+}")
+	  @DeleteMapping("/{supplierId}/{packageTypeName}/{packageItemId}/delete/{filename:.+}")
 	  @ResponseBody
-	  public ResponseEntity<Boolean> deleteFile(@PathVariable long supplierId, @PathVariable String filename) {
-	    storageService.deleteOne(filename, supplierId);
+	  public ResponseEntity<Boolean> deleteFile(@PathVariable long supplierId, @PathVariable String packageTypeName, @PathVariable long packageItemId, @PathVariable String filename) {
+	    storageService.deleteOne(filename, supplierId, packageTypeName, packageItemId);
 	    return ResponseEntity.ok().body(true);
 	  }
 }

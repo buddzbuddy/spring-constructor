@@ -14,6 +14,7 @@ import java.util.Optional;
 
 import javax.persistence.Entity;
 
+import com.webdatabase.dgz.model.Complaint;
 import com.webdatabase.dgz.model.GrantedSource;
 import com.webdatabase.dgz.model.LocalGrantedSource;
 import com.webdatabase.dgz.model.SourceType;
@@ -63,6 +64,9 @@ public class JsonquerybuilderController {
     @Autowired
     private QueryBuilderService queryApi;
     
+    @Autowired
+    private ComplaintRepository complaintRepo;
+    
     
     @PostMapping(path = "/exec",
     		consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -107,6 +111,14 @@ public class JsonquerybuilderController {
 			e.printStackTrace();
 			return new ResponseEntity<Boolean>(true, HttpStatus.BAD_REQUEST);
 		}
+    }
+    
+    @PostMapping(path = "/insert-complaint",
+    		consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Long> insertComplaint(@RequestBody Complaint insert)
+    {
+    	return new ResponseEntity<Long>(complaintRepo.save(insert).getId(), HttpStatus.OK);
     }
 
     @PostMapping(path = "/update/{id}",

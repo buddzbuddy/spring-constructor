@@ -16,14 +16,14 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class FilesStorageServiceImpl implements FilesStorageService {
 
-	private static final String rootFolder = "/home/visoft/temp/uploads";
+	private static final String rootFolder = "uploads";//"/home/visoft/temp/uploads";
   private final Path root = Paths.get(rootFolder);
 
   @Override
   public void init() {
     try {
     	if(Files.notExists(root)) {
-    		Files.createDirectory(root);	
+    		Files.createDirectories(root);	
     	}
     } catch (IOException e) {
     	e.printStackTrace();
@@ -32,11 +32,11 @@ public class FilesStorageServiceImpl implements FilesStorageService {
   }
 
   @Override
-  public void save(MultipartFile file, long supplierId) {
+  public void save(MultipartFile file, long supplierId, String packageTypeName, long packageItemId) {
     try {
-    	Path subRoot = Paths.get(rootFolder+"/"+supplierId);
+    	Path subRoot = Paths.get(rootFolder+"/"+supplierId+"/"+packageTypeName+"/"+packageItemId);
     	if(Files.notExists(subRoot)) {
-    		Files.createDirectory(subRoot);	
+    		Files.createDirectories(subRoot);	
     	}
     	long t = System.currentTimeMillis();
       Files.copy(file.getInputStream(), subRoot.resolve(t + "-" + file.getOriginalFilename()));
@@ -46,11 +46,11 @@ public class FilesStorageServiceImpl implements FilesStorageService {
   }
 
   @Override
-  public Resource load(String filename, long supplierId) {
+  public Resource load(String filename, long supplierId, String packageTypeName, long packageItemId) {
     try {
-    	Path subRoot = Paths.get(rootFolder+"/"+supplierId);
+    	Path subRoot = Paths.get(rootFolder+"/"+supplierId+"/"+packageTypeName+"/"+packageItemId);
     	if(Files.notExists(subRoot)) {
-    		Files.createDirectory(subRoot);	
+    		Files.createDirectories(subRoot);	
     	}
       Path file = subRoot.resolve(filename);
       Resource resource = new UrlResource(file.toUri());
@@ -75,8 +75,8 @@ public class FilesStorageServiceImpl implements FilesStorageService {
   }
   
   @Override
-  public void deleteOne(String fileName, long supplierId) {
-	  Path subRoot = Paths.get(rootFolder+"/"+supplierId);
+  public void deleteOne(String fileName, long supplierId, String packageTypeName, long packageItemId) {
+	  Path subRoot = Paths.get(rootFolder+"/"+supplierId+"/"+packageTypeName+"/"+packageItemId);
   	if(Files.notExists(subRoot)) {
   		return;
   	}
@@ -85,11 +85,11 @@ public class FilesStorageServiceImpl implements FilesStorageService {
   }
 
   @Override
-  public Stream<Path> loadAll(long supplierId) {
+  public Stream<Path> loadAll(long supplierId, String packageTypeName, long packageItemId) {
     try {
-    	Path subRoot = Paths.get(rootFolder+"/"+supplierId);
+    	Path subRoot = Paths.get(rootFolder+"/"+supplierId+"/"+packageTypeName+"/"+packageItemId);
     	if(Files.notExists(subRoot)) {
-    		Files.createDirectory(subRoot);	
+    		Files.createDirectories(subRoot);	
     	}
       return Files.walk(subRoot, 1).filter(path -> !path.equals(subRoot)).map(subRoot::relativize);
     } catch (IOException e) {

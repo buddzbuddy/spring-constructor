@@ -14,6 +14,7 @@ import com.webdatabase.dgz.repository.BuyerRepository;
 import com.webdatabase.dgz.repository.ComplaintRepository;
 import com.webdatabase.dgz.repository.LocalGrantedSourceRepository;
 import com.webdatabase.dgz.repository.Msec_detailRepository;
+import com.webdatabase.dgz.repository.StiRequestRepository;
 import com.webdatabase.dgz.repository.SupplierMemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -53,6 +54,9 @@ public class SupplierDetailsController {
 
 	@Autowired
 	private Msec_detailRepository msec_detailRepository;
+	
+	@Autowired
+	private StiRequestRepository stiRequestRepo;
 	
 	@Autowired
 	private GovServices _govServices;
@@ -125,7 +129,7 @@ public class SupplierDetailsController {
     				if(l.getCreatedAt().before(ld)
     					&&
     					l.getCreatedAt().after(fd)
-    					&& l.isHas()) {
+    					&& l.getHas()) {
     					newList.add(supplier);
     					break;
     				}
@@ -419,6 +423,28 @@ public class SupplierDetailsController {
 		List<Complaint> sop = complaintRepo.findByBuyerId(buyerId);
 		System.out.println("1111111111");
 		return new ResponseEntity<Complaint[]>(sop.toArray(new Complaint[0]), HttpStatus.OK);
+    }
+
+
+	@PostMapping(path = "/save-sti-request")
+    public ResponseEntity<Long> saveStiRequest(@RequestBody StiRequest request)
+    {
+		long id = stiRequestRepo.save(request).getId();
+		return new ResponseEntity<Long>(id, HttpStatus.OK);
+    }
+
+	@GetMapping(path = "/get-sti-requests")
+    public ResponseEntity<StiRequest[]> getStiRequests()
+    {
+		List<StiRequest> sop = stiRequestRepo.findAll();
+		return new ResponseEntity<StiRequest[]>(sop.toArray(new StiRequest[0]), HttpStatus.OK);
+    }
+
+	@GetMapping(path = "/get-sti-requests/{inn}")
+    public ResponseEntity<StiRequest[]> getStiRequests(@PathVariable String inn)
+    {
+		List<StiRequest> sop = stiRequestRepo.findByInn(inn);
+		return new ResponseEntity<StiRequest[]>(sop.toArray(new StiRequest[0]), HttpStatus.OK);
     }
 	
 

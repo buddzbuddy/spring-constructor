@@ -43,7 +43,7 @@ public class Debt extends AuditModel{
 		this.id = id;
 	}
 
-	public boolean isHas() {
+	public boolean getHas() {
 		return has;
 	}
 
